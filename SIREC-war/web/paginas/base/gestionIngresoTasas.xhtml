@@ -9,9 +9,8 @@
 
     <center>
         <h:panelGrid id="panelIngTasas" width="1000" columns="1" >                                                 
-
             <center>
-                <p:panel>
+                <p:panel style="background: #8BBAC9;">  
                     <center>
                         <h:panelGrid id="panelIngreso" columns="3">    
 
@@ -91,7 +90,7 @@
                     </center>  
                 </p:panel>
 
-                <p:panel id="pnlLstTasa">                                
+                <p:panel id="pnlLstTasa" style="background: #8BBAC9;">                                  
                     <p:dataTable id="lstTasa" value="#{gestionTasasControlador.listaTasas}"  var="tasa"  >
                         <f:facet name="header">
                             <p:outputLabel value="Lista de Tasas" style="font-size:12px;"/>
@@ -131,10 +130,7 @@
                                                 
                                         </p:column>
                         
-                    </p:dataTable>
-                                        
-                                                    
-
+                    </p:dataTable>                                                                                            
                 </p:panel>
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
                                                         <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
