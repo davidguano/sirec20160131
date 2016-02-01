@@ -59,7 +59,6 @@ public class NavegacionControlador extends BaseControlador {
     public void inicializar() {
         try {
 
-            
             usuarioActual = new SegUsuario();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -75,9 +74,9 @@ public class NavegacionControlador extends BaseControlador {
                 getSession().setAttribute("usuario", usuarioActual);
                 cargarListaAccesoApli();
                 //if (listadoAplicaciones.isEmpty()) {
-                  //  addWarningMessage("El usuario no tiene roles asignados !Contáctese con un administrador de sistemas!");
+                //  addWarningMessage("El usuario no tiene roles asignados !Contáctese con un administrador de sistemas!");
                 //} else {
-                    redireccionarAPagina("", "inicio");
+                redireccionarAPagina("", "inicio");
                 //}
             } else {
             }
@@ -94,9 +93,9 @@ public class NavegacionControlador extends BaseControlador {
                 getSession().setAttribute("usuario", usuarioActual);
                 cargarListaAccesoApli();
                 //if (listadoAplicaciones.isEmpty()) {
-                    //addWarningMessage("El usuario no tiene roles asignados !Contáctese con un administrador de sistemas!");
+                //addWarningMessage("El usuario no tiene roles asignados !Contáctese con un administrador de sistemas!");
                 //} else {
-                    redireccionarAPagina("", "inicio");
+                redireccionarAPagina("", "inicio");
                 //}
             } else {
                 addErrorMessage("Credenciales no válidas");
@@ -109,10 +108,6 @@ public class NavegacionControlador extends BaseControlador {
     public void cargarListaAccesoApli() throws Exception {
         listadoAplicaciones = aplicacionServicio.listarAplicaciones(username);
     }
-
-    
-
-    
 
     public String generaIdentificacion() {
         Random rnd = new Random();
@@ -153,42 +148,39 @@ public class NavegacionControlador extends BaseControlador {
             itemGesApl.setIcon("ui-icon-person");
             itemGesApl.setCommand("#{navegacionControlador.redireccionarAPagina('seguridad','gestionAplicaciones')}");
             subMenuAdmin.addElement(itemGesApl);
-            
+
             DefaultMenuItem itemCatDet = new DefaultMenuItem("Gestión de Catalogos");
             itemCatDet.setIcon("ui-icon-person");
             itemCatDet.setCommand("#{navegacionControlador.redireccionarAPagina('base','catalogo_detalle')}");
             subMenuAdmin.addElement(itemCatDet);
-            
+
             menu.addElement(subMenuAdmin);
-            
+
             DefaultSubMenu subMenuPredios = new DefaultSubMenu("Predios");
             //---SubMenu Gestion Usuarios --
             DefaultMenuItem propietario = new DefaultMenuItem("Propietarios");
             propietario.setIcon("ui-icon-person");
             propietario.setCommand("#{navegacionControlador.redireccionarAPagina('base','propietario')}");
             subMenuPredios.addElement(propietario);
-            
+
             DefaultMenuItem fichaCatastral = new DefaultMenuItem("Ficha Catastral");
             fichaCatastral.setIcon("ui-icon-person");
             fichaCatastral.setCommand("#{navegacionControlador.redireccionarAPagina('predio','ficha_catastral')}");
             subMenuPredios.addElement(fichaCatastral);
-            
-            
-            
-             DefaultMenuItem catalogoEdi = new DefaultMenuItem("Catalogo Materiales Edificacion");
+
+            DefaultMenuItem catalogoEdi = new DefaultMenuItem("Catalogo Materiales Edificacion");
             catalogoEdi.setIcon("ui-icon-person");
             catalogoEdi.setCommand("#{navegacionControlador.redireccionarAPagina('base','catalogo_edificaciones')}");
             subMenuPredios.addElement(catalogoEdi);
-            
+
             menu.addElement(subMenuPredios);
-            
-            
+
             DefaultSubMenu subMenuImpuestos = new DefaultSubMenu("Impuestos y Servicios");
-            
+
             DefaultMenuItem predial = new DefaultMenuItem("Predial");
             predial.setIcon("ui-icon-person");
             predial.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','gestionImpuestoPredial')}");
-            subMenuImpuestos.addElement(predial);           
+            subMenuImpuestos.addElement(predial);
             DefaultMenuItem alcabala = new DefaultMenuItem("Alcabala y Plusvalia");
             alcabala.setIcon("ui-icon-person");
             alcabala.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','gestionAlcabalas')}");
@@ -197,25 +189,31 @@ public class NavegacionControlador extends BaseControlador {
             patenteImp.setIcon("ui-icon-person");
             patenteImp.setCommand("#{navegacionControlador.redireccionarAPagina('patente','patente')}");
             subMenuImpuestos.addElement(patenteImp);
-            
+
             DefaultMenuItem decTrib = new DefaultMenuItem("Declaración Tributaria");
             decTrib.setIcon("ui-icon-person");
             decTrib.setCommand("#{navegacionControlador.redireccionarAPagina('patente','declaracionTributaria')}");
             subMenuImpuestos.addElement(decTrib);
-            
+
             DefaultMenuItem servicios = new DefaultMenuItem("Tasas por Servicios");
             servicios.setIcon("ui-icon-person");
             servicios.setCommand("#{navegacionControlador.redireccionarAPagina('base','gestionTasas')}");
             subMenuImpuestos.addElement(servicios);
-            
+
+            DefaultMenuItem cementerios = new DefaultMenuItem("Cementerios");
+            cementerios.setIcon("ui-icon-person");
+            cementerios.setCommand("#{navegacionControlador.redireccionarAPagina('patente','cementeriosFichaReg')}");
+            subMenuImpuestos.addElement(cementerios);
             menu.addElement(subMenuImpuestos);
-            
-             DefaultSubMenu subMenurecaudacion = new DefaultSubMenu("Recaudacion");
-            
+
+            menu.addElement(subMenuImpuestos);
+
+            DefaultSubMenu subMenurecaudacion = new DefaultSubMenu("Recaudacion");
+
             DefaultMenuItem recaudacion = new DefaultMenuItem("Recaudacion");
             recaudacion.setIcon("ui-icon-person");
             recaudacion.setCommand("#{navegacionControlador.redireccionarAPagina('recaudacion','recaudacion')}");
-            subMenurecaudacion.addElement(recaudacion);  
+            subMenurecaudacion.addElement(recaudacion);
             menu.addElement(subMenurecaudacion);
 
             DefaultMenuItem itemInicio = new DefaultMenuItem("Inicio");
@@ -243,8 +241,6 @@ public class NavegacionControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
-
-   
 
     /**
      * Retorna la session http.
@@ -310,7 +306,6 @@ public class NavegacionControlador extends BaseControlador {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
     public List getListadoAplicaciones() {
         return listadoAplicaciones;
