@@ -5,56 +5,26 @@
  */
 package ec.sirec.web.base;
 
-import ec.sirec.web.impuestos.*;
-import ec.sirec.ejb.clases.EjecutarValoracion;
-import ec.sirec.ejb.entidades.AdicionalesDeductivos;
 import ec.sirec.ejb.entidades.CatalogoDetalle;
-import ec.sirec.ejb.entidades.CatastroPredial;
-import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
-import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
-import ec.sirec.ejb.entidades.CatastroPredialValoracion;
-import ec.sirec.ejb.entidades.CpAlcabalaValoracionExtras;
-import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.SegUsuario;
+import ec.sirec.ejb.entidades.Servicios;
 import ec.sirec.ejb.entidades.Tasa;
-import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
-import ec.sirec.ejb.servicios.CatastroPredialAlcabalaValoracionServicio;
-import ec.sirec.ejb.servicios.CatastroPredialPlusvaliaValoracionServicio;
 import ec.sirec.ejb.servicios.CatastroPredialServicio;
-import ec.sirec.ejb.servicios.CatastroPredialValoracionServicio;
-import ec.sirec.ejb.servicios.CpAlcabalaValoracionExtrasServicio;
-import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
-import ec.sirec.ejb.servicios.DatoGlobalServicio;
-import ec.sirec.ejb.servicios.PredioArchivoServicio;
+import ec.sirec.ejb.servicios.PropietarioServicio;
+import ec.sirec.ejb.servicios.ServiciosServicio;
 import ec.sirec.ejb.servicios.TasaServicio;
-import ec.sirec.web.base.BaseControlador;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.StreamedContent;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -76,6 +46,11 @@ public class GestionTasasControlador extends BaseControlador {
     private String tipoSigno;
     private String opcionBoton;
     
+    private String tipoIdentificacion;
+    private Propietario propietarioActual;
+    private Tasa tasasEmisionActual; 
+    private Servicios servicioActual; 
+    
      private List<CatalogoDetalle> listaCatalogoDetalleDepartamentos;
      private List<CatalogoDetalle> listaCatalogoDetalleTipoValor;
      private List<Tasa> listaTasas;
@@ -86,13 +61,25 @@ public class GestionTasasControlador extends BaseControlador {
     private CatastroPredialServicio catastroPredialServicio;
     @EJB
     private TasaServicio tasaServicio;
+    @EJB
+    private PropietarioServicio propietarioServicio;
+    @EJB
+    private ServiciosServicio serviciosServicio;
 
     @PostConstruct
     public void inicializar() {
         try {
+            
+            
              tasasActual= new Tasa();
+             tasasEmisionActual = new Tasa(); 
+             
              opcionBoton = "N";
              tipoSigno="";
+             
+             tipoIdentificacion="";
+             
+             servicioActual = new Servicios(); 
              obtenerUsuario();             
              listarDepartamentos();
              listarTipoValor();
@@ -197,6 +184,92 @@ public class GestionTasasControlador extends BaseControlador {
         }
     }
     
+     public List<Propietario> obtenerPropietarioApellido(String vcedula) {
+        List<Propietario> lstPP = new ArrayList<Propietario>();
+        try {
+            lstPP = propietarioServicio.listarPorCedulaContiene(vcedula);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return lstPP;
+    }
+     
+     public void onItemSelect(SelectEvent event) {
+        try {
+            Propietario pp = (Propietario) event.getObject();
+            propietarioActual = propietarioServicio.buscarPropietario(pp.getProCi());
+           
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     public void calcularEmisionTasa() {
+        try {
+           tasasEmisionActual = tasaServicio.cargarObjetoTasa(tasasEmisionActual.getTasCodigo());
+           
+           if(tasasEmisionActual.getCatdetDepartamento().getCatdetTexto().equals("CENTRO DE REHABILITACION")){            
+               if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")){            
+                servicioActual.setSerDescuento(tasasEmisionActual.getTasValor());             
+            }
+               servicioActual.setSerSubtotal(servicioActual.getSerValor()); 
+            
+            }else{           
+            if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")){            
+                servicioActual.setSerSubtotal(servicioActual.getSerValor().add(tasasEmisionActual.getTasValor()));             
+            }else{
+                 if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Porcentaje RBU")){
+                    BigDecimal porce = servicioActual.getSerValor().multiply(tasasEmisionActual.getTasValor()).divide(new BigDecimal(100));                                         
+                    servicioActual.setSerSubtotal(servicioActual.getSerValor().add(porce));
+                 }                            
+            }
+            servicioActual.setSerDescuento(BigDecimal.ZERO);                         
+           }
+                                                
+            if(tasasEmisionActual.getTasConIva()==true){   
+                servicioActual.setSerIva(servicioActual.getSerSubtotal().multiply(new BigDecimal(12)).divide(new BigDecimal(100)));            
+            }else{
+                servicioActual.setSerIva(BigDecimal.ZERO);
+            }
+            
+            servicioActual.setSerTotal(servicioActual.getSerSubtotal().add(servicioActual.getSerIva()).subtract(servicioActual.getSerDescuento()));
+            
+            
+           
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     
+      public void guardarEmisionTasa() {
+        try {
+            if(servicioActual.getSerTotal()!=null){
+                servicioActual.setProCi(propietarioActual); 
+            servicioActual.setTasCodigo(tasasEmisionActual);
+            servicioActual.setSerActivo(Boolean.FALSE);              
+            serviciosServicio.crearServicios(servicioActual);        
+            nuevoEmisionTasa();
+                addSuccessMessage("Tasa emitida exitosamente!","Tasa emitida exitosamente!"); 
+            }else{
+                addErrorMessage("No se ha realizado el calculo!","No se ha realizado el calculo!"); 
+            }
+            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+      
+      public void nuevoEmisionTasa() {
+        try {      
+                tipoIdentificacion = "";
+                propietarioActual = new Propietario();
+                tasasEmisionActual = new Tasa();
+                servicioActual = new Servicios();         
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
 
     public SegUsuario getUsuarioActual() {
         return usuarioActual;
@@ -253,6 +326,40 @@ public class GestionTasasControlador extends BaseControlador {
     public void setOpcionBoton(String opcionBoton) {
         this.opcionBoton = opcionBoton;
     }
+
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
+    }
+
+    public void setTipoIdentificacion(String tipoIdentificacion) {
+        this.tipoIdentificacion = tipoIdentificacion;
+    }
+
+    public Propietario getPropietarioActual() {
+        return propietarioActual;
+    }
+
+    public void setPropietarioActual(Propietario propietarioActual) {
+        this.propietarioActual = propietarioActual;
+    }
+
+    public Tasa getTasasEmisionActual() {
+        return tasasEmisionActual;
+    }
+
+    public void setTasasEmisionActual(Tasa tasasEmisionActual) {
+        this.tasasEmisionActual = tasasEmisionActual;
+    }
+
+    public Servicios getServicioActual() {
+        return servicioActual;
+    }
+
+    public void setServicioActual(Servicios servicioActual) {
+        this.servicioActual = servicioActual;
+    }
+
+    
 
     
 
