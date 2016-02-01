@@ -347,7 +347,7 @@
                         <h:panelGrid id="panlCambioEstado">
                             <h:panelGrid>
                                 <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_obserba}"/>
-                                <p:inputText id="txtDirN"  value=" " 
+                                <p:inputText id="txtDirN"  value="" 
                                              maxlength="1" size="40"/>
                                 <p:message for="txtDirN"/>
                             </h:panelGrid>
@@ -410,9 +410,9 @@
                                 </center>
                             </p:panel>
                             <h:panelGrid columns="2">
-                                <p:commandButton value="#{txt.btn_guardar}" process="@this" update=""
+                                <p:commandButton value="#{txt.btn_guardar}" style="font-size: 12px" process="@this" update=""
                                                  action="{gestionPatenteControlador.habilitaCamposPropietario()}"/>
-                                <p:commandButton value="#{txt.btn_cancelar}"/>
+                                <p:commandButton value="#{txt.btn_cancelar}" style="font-size: 12px"/>
                             </h:panelGrid>
 
                         </h:panelGrid> 
