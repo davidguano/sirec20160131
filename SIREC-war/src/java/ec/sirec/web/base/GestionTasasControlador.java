@@ -233,9 +233,7 @@ public class GestionTasasControlador extends BaseControlador {
             }
             
             servicioActual.setSerTotal(servicioActual.getSerSubtotal().add(servicioActual.getSerIva()).subtract(servicioActual.getSerDescuento()));
-            
-            
-           
+                                   
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
