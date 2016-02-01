@@ -44,4 +44,8 @@ public class TasaServicio {
         return "se ha eliminado la Tasa" + tasa;
     }
     
+    public Tasa cargarObjetoTasa(Integer vtasa) throws Exception {
+        return tasaDao.buscarPorCampo(ENTIDAD_TASA, "tasCodigo", vtasa);         
+    }
+    
 }
