@@ -84,6 +84,8 @@ public class GestionCementeriosControlador extends BaseControlador {
     private List<PatenteArchivo> listadoArchivos;
     private List<CatalogoDetalle> listaHorarioFunciona;
     private List<CatalogoDetalle> listaCatDetParroquias;
+    private List<Cementerio> listaOccisoInumado;
+    private List<Cementerio> listOccisoExumado;
     private String ciRuc;
 
     /**
@@ -113,6 +115,8 @@ public class GestionCementeriosControlador extends BaseControlador {
             listarEstadoDefuncion();
             listarHorarioFuncionamiento();
             listarParroquias();
+            listarOccisoInhumado();
+            listarOccisoExumado();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -139,7 +143,7 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void guardarCementerios() {
         try {
-            if (habilitaEditar == false) {
+            if (habilitaEditar == false || validaNumeroNichoxParroquia()) {
                 if (existeRuc()) {
                     cargaObjetosBitacora();
                     CatalogoDetalle objCatDet = new CatalogoDetalle();
@@ -176,6 +180,21 @@ public class GestionCementeriosControlador extends BaseControlador {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
+    }
+
+    public boolean validaNumeroNichoxParroquia() {
+        boolean existeNicho = true;
+        Cementerio objCemAux = new Cementerio();
+        try {
+            objCemAux = cementerioServicio.buscarPorParroquiaNumNicho(catDetParroquia.getCatdetCodigo(), cementerioActual.getCemNumNicho());
+            if (objCemAux != null) {
+                existeNicho = false;
+                addErrorMessage("Nú de nicho ingresado existente en parroquia:" + catDetParroquia.getCatdetTexto());
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+        return existeNicho;
     }
 
     public boolean existeRuc() {
@@ -249,6 +268,14 @@ public class GestionCementeriosControlador extends BaseControlador {
         listGenero = catalogoDetalleServicio.listarPorNemonicoCatalogo("GENERO_SX");
     }
 
+    public void listarOccisoInhumado() throws Exception {
+        listaOccisoInumado = cementerioServicio.listarOccisoInhumado();
+    }
+
+    public void listarOccisoExumado() throws Exception {
+        listOccisoExumado = cementerioServicio.listarOccisoExhumado();
+    }
+
     public void listarUbicacionAtaud() throws Exception {
         listaUbicAtaud = catalogoDetalleServicio.listarPorNemonicoCatalogo("UBIC_ATAUD");
     }
@@ -293,7 +320,15 @@ public class GestionCementeriosControlador extends BaseControlador {
             addWarningMessage("No se puede eliminar el regitro");
         }
     }
-
+ public void recuperarCementerioCampos(Cementerio cementerio) {
+        try {
+            cementerioActual=cementerio;
+           
+            
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
     public void confirmaEliminarPatArchivo(PatenteArchivo file) {
         try {
 //            cementerioServicio.eliminarArchivo(file);
@@ -456,6 +491,22 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void setCiRuc(String ciRuc) {
         this.ciRuc = ciRuc;
+    }
+
+    public List<Cementerio> getListaOccisoInumado() {
+        return listaOccisoInumado;
+    }
+
+    public void setListaOccisoInumado(List<Cementerio> listaOccisoInumado) {
+        this.listaOccisoInumado = listaOccisoInumado;
+    }
+
+    public List<Cementerio> getListOccisoExumado() {
+        return listOccisoExumado;
+    }
+
+    public void setListOccisoExumado(List<Cementerio> listOccisoExumado) {
+        this.listOccisoExumado = listOccisoExumado;
     }
 
 }
