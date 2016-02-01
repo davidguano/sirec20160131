@@ -40,4 +40,14 @@ public class CementerioServicio {
         cementerioDao.editar(vCementerio);
         return "Se ha modificado el permiso" + vCementerio.getCemCodigo();
     }
+
+    public Cementerio buscarPorParroquiaNumNicho(int codParroquia, String numNicho) throws Exception {
+        return cementerioDao.buscarPor2Campos(ENTIDAD_CEMENTERIO, "catdetParroquia.catdetCodigo", codParroquia, "cemNumNicho", numNicho);
+    }
+     public List<Cementerio> listarOccisoInhumado() throws Exception {
+        return cementerioDao.listarPorCampoOrdenada(ENTIDAD_CEMENTERIO, "cemEstado", "I", "cemCodigo", "asc");
+    }
+      public List<Cementerio> listarOccisoExhumado() throws Exception {
+        return cementerioDao.listarPorCampoOrdenada(ENTIDAD_CEMENTERIO, "cemEstado", "E", "cemCodigo", "asc");
+    }
 }
