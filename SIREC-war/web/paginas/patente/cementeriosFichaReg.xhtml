@@ -208,9 +208,6 @@
                                             <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                             <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                                         </p:confirmDialog>
-
-
-
                                     </p:panel>
                                     <h:panelGrid id="tablaListaArchvosCargados">
                                         <p:panel style="width: 750px" header="Archivos Cargados" rendered="#{gestionCementeriosControlador.listadoArchivos.size()>0}">
@@ -235,10 +232,7 @@
                                 </h:panelGrid>
                             </center>
                         </p:panel>
-
-
                     </h:panelGrid>
-
                     <h:panelGrid columns="2">
                         <p:commandButton value="#{txt.btn_guardar}" 
                                          style="font-size: 12px"
@@ -262,7 +256,167 @@
                                          global="false"
                                          />
                     </h:panelGrid>    
+                </center>
+                <center>
+                    <p:panel>
+                        <h:panelGrid id="pnlContieneListados" columns="1">
+                            <h:panelGrid id="pnlConLisInhumado">
+                                <p:dataTable paginator="true" rows="10" id="tablaListaInumado" value="#{gestionCementeriosControlador.listaOccisoInumado}"  var="inuColumna"   
+                                             selectionMode="single" rowKey="#{inuColumna.cemCodigo}"
+                                             styleClass="pdataTable_font"
+                                             currentPageReportTemplate="{currentPage} de {totalPages}">  
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{txt.lbl_header_list_inumado}" style="font-size:15px;"/>
+                                    </f:facet>
+                                    <p:column filterBy="#{inuColumna.cemNombreOcciso}" headerText="#{txt.lbl_nom_occiso_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNombreOcciso}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column filterBy="#{inuColumna.cemRepresentante}" headerText="#{txt.lbl_nom_rep_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemRepresentante}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column    headerText="#{txt.lbl_num_papeleta_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNumPapeleta}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNumNicho}" style="font-size:12px;" />
+                                    </p:column>  
+                                    <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemFechaFallece}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_fec_fin_contrato}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemFechaFinContrato}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.btn_cambia_estado}" style="width:50px;text-align: center;font-size:12px;" >
+                                        <p:commandButton style="font-size:12px;" icon="ui-icon-pencil"  onclick="PF('dlgCambio').show();" action="#{gestionCementeriosControlador.recuperarCementerioCampos(inuColumna)}" 
+                                                         process="@this" update=" " async="true" global="false">
+                                        </p:commandButton>
+                                    </p:column>
+                                    <!--
+                                    <p:column headerText="#{txt.btn_eliminar_global}" style="width:50px;text-align: center;font-size:12px;" >
+                                        <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                         actionListener="#{gestionUsuarioControlador.confirmaEliminar(usuColumna)}" 
+                                                         process="@this" update=":frmGestionUsuario:panelConieneListas,:frmGestionUsuario:panelListaUsuarios,:frmGestionUsuario:message" async="true" global="false">
+                                            <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                    </p:column>
+                                    -->
+                                </p:dataTable>                       
+                            </h:panelGrid>
+                            <h:panelGrid id="pnlConLisExhumado">
+                                <p:dataTable paginator="true" rows="10" id="tablaListaExumado" value="#{gestionCementeriosControlador.listOccisoExumado}"  var="exuColumna"   
+                                             selectionMode="single" rowKey="#{exuColumna.cemCodigo}"
+                                             styleClass="pdataTable_font"
+                                             currentPageReportTemplate="{currentPage} de {totalPages}">  
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{txt.lbl_header_list_exumado}" style="font-size:15px;"/>
+                                    </f:facet>
+                                    <p:column filterBy="#{exuColumna.cemNombreOcciso}" headerText="#{txt.lbl_nom_occiso_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNombreOcciso}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column filterBy="#{exuColumna.cemRepresentante}" headerText="#{txt.lbl_nom_rep_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemRepresentante}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column    headerText="#{txt.lbl_num_papeleta_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNumPapeleta}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNumNicho}" style="font-size:12px;" />
+                                    </p:column>  
+                                    <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemFechaFallece}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_fec_fin_contrato}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemFechaFinContrato}" style="font-size:12px;" />
+                                    </p:column>                                    
+                                    <!--
+                                    <p:column headerText="#{txt.btn_eliminar_global}" style="width:50px;text-align: center;font-size:12px;" >
+                                        <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                         actionListener="#{gestionUsuarioControlador.confirmaEliminar(usuColumna)}" 
+                                                         process="@this" update=":frmGestionUsuario:panelConieneListas,:frmGestionUsuario:panelListaUsuarios,:frmGestionUsuario:message" async="true" global="false">
+                                            <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                    </p:column>
+                                    -->
+                                </p:dataTable>                       
 
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:dialog header="Cambio de estado" style="font-size: 12px" widgetVar="dlgCambio" width="700" height="300">
+                        <h:panelGrid id="panlCambioEstado">
+                            <h:panelGrid>
+                                <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_obserba}"/>
+                                <p:inputText id="txtDirN"  value=" " 
+                                             maxlength="1" size="40"/>
+                                <p:message for="txtDirN"/>
+                            </h:panelGrid>
+
+
+                            <p:panel header="Archivo" style="font-size: #{txt.font_size}">
+                                <center>
+                                    <h:panelGrid>
+                                        <p:panel header="Adjuntar Documentos" style="font-size: #{txt.font_size}">
+                                            <h:panelGrid columns="3">
+                                                <h:panelGrid width="150">
+                                                    <p:graphicImage value="/imagenes/subir.png" height="40px" width="40px"/>
+                                                </h:panelGrid>
+                                                <p:fileUpload fileUploadListener="#{gestionCementeriosControlador.handleFileUpload}"  
+                                                              mode="advanced"
+                                                              dragDropSupport="false"
+                                                              multiple="true"  
+                                                              update=":frmCementerios:msgs,:frmCementerios:infoCambioEstado"
+                                                              sizeLimit="1000000"
+                                                              allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
+                                                              invalidSizeMessage="El archivo debe ser maximo 1MB"
+                                                              label="Seleccione el archivo" 
+                                                              uploadLabel="Cargar"
+                                                              cancelLabel="Cancelar"
+                                                              process="@this,info"  >                                                                                             
+                                                    <f:attribute name="tipoArchivo" value="Capacitación teórica" />
+                                                </p:fileUpload>  
+                                                <h:panelGroup id="infoCambioEstado">
+                                                    <p:panel rendered="#{gestionCementeriosControlador.listaFiles.size()>0}">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Archivos:" />
+                                                        </f:facet>
+                                                        <p:dataGrid  columns="1" value="#{gestionCementeriosControlador.listaFiles}"  var="file" >
+                                                            <p:panel>
+                                                                <h:panelGrid columns="2">
+                                                                    <h:panelGrid columns="4">
+                                                                        <h:outputText value="Achivo:" />
+                                                                        <h:outputText value="#{file.name}" />  
+                                                                        <h:outputText value=" " />
+                                                                        <p:column headerText="#{txt.eliminar_btn}" style="width:50px;text-align: center;font-size:12px;" >
+                                                                            <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                                                             actionListener="#{gestionCementeriosControlador.confirmaEliminarArchivo(file)}" 
+                                                                                             process="@this" async="true" global="false" update=":frmCementerios,:frmCementerios:msgs">
+                                                                                <p:confirm header="Confirmación"  message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                                                            </p:commandButton>
+                                                                        </p:column>  
+                                                                    </h:panelGrid>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:dataGrid>
+                                                    </p:panel>
+                                                </h:panelGroup>
+                                            </h:panelGrid>   
+                                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                            </p:confirmDialog>
+                                        </p:panel>                                    
+                                    </h:panelGrid>
+                                </center>
+                            </p:panel>
+                            <h:panelGrid columns="2">
+                                <p:commandButton value="#{txt.btn_guardar}" process="@this" update=""
+                                                 action="{gestionPatenteControlador.habilitaCamposPropietario()}"/>
+                                <p:commandButton value="#{txt.btn_cancelar}"/>
+                            </h:panelGrid>
+
+                        </h:panelGrid> 
+                    </p:dialog>
                 </center>
             </h:form>
         </ui:define>
