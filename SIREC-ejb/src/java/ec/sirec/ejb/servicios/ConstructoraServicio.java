@@ -7,7 +7,6 @@ package ec.sirec.ejb.servicios;
 
 import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.Constructora;
-import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.facade.ConstructoraFacade;
 import ec.sirec.ejb.util.Utilitarios;
 import java.util.Calendar;
@@ -40,8 +39,9 @@ public class ConstructoraServicio {
         constructoraDao.editar(constructora);
     }
     
-    public void eliminarConstructora(Constructora constructora) throws Exception {
+    public String eliminarConstructora(Constructora constructora) throws Exception {
         constructoraDao.eliminar(constructora);
+         return "Se ha eliminado el registro!";
     }
     
      public List<CatalogoDetalle> listarCiudadesPorTexto(String texto) throws Exception {
