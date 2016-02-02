@@ -30,6 +30,7 @@
 	<parameter name="SUBREPORT_DIR2_1_b" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR2_1_i" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR2_1_h" class="java.lang.String"/>
+	<parameter name="imagen_predio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from sirec.catastro_predial where catpre_codigo=$P{catpre_codigo}]]>
 	</queryString>
@@ -178,6 +179,9 @@
 		<band height="1" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="1" width="595" height="0" uuid="f84b0145-5344-4233-a209-05e10991d7ae"/>
+				<subreportParameter name="imagen_predio">
+					<subreportParameterExpression><![CDATA[$P{imagen_predio}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR3_2">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR3_2}]]></subreportParameterExpression>
 				</subreportParameter>

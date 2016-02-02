@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fiCatSubRepPrt1_2_3Orden1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bb6fdcc6-b2c6-4135-9a15-393640f73a7a">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="182"/>
-	<property name="ireport.y" value="1415"/>
+	<property name="ireport.x" value="516"/>
+	<property name="ireport.y" value="861"/>
 	<parameter name="codigoCatPredial" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -1244,10 +1244,10 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR1_1}+"/subRepSuperAreas.jasper"]]></subreportExpression>
 			</subreport>
 			<rectangle>
-				<reportElement x="413" y="357" width="176" height="71" uuid="e9936622-cd67-48d2-afd4-eb8e0a9efc74"/>
+				<reportElement x="410" y="349" width="176" height="71" uuid="e9936622-cd67-48d2-afd4-eb8e0a9efc74"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="424" y="361" width="157" height="13" uuid="1bf3a44f-3022-4ef2-9115-c0197d6770dd"/>
+				<reportElement x="424" y="354" width="157" height="13" uuid="1bf3a44f-3022-4ef2-9115-c0197d6770dd"/>
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
