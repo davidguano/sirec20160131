@@ -172,6 +172,11 @@ public class NavegacionControlador extends BaseControlador {
             catalogoEdi.setIcon("ui-icon-person");
             catalogoEdi.setCommand("#{navegacionControlador.redireccionarAPagina('base','catalogo_edificaciones')}");
             subMenuPredios.addElement(catalogoEdi);
+            
+            DefaultMenuItem contratista = new DefaultMenuItem("Contratistas y Empresas Públicas");
+            contratista.setIcon("ui-icon-person");
+            contratista.setCommand("#{navegacionControlador.redireccionarAPagina('base','contratistas')}");
+            subMenuPredios.addElement(contratista);
 
             menu.addElement(subMenuPredios);
 
@@ -204,9 +209,14 @@ public class NavegacionControlador extends BaseControlador {
             cementerios.setIcon("ui-icon-person");
             cementerios.setCommand("#{navegacionControlador.redireccionarAPagina('patente','cementeriosFichaReg')}");
             subMenuImpuestos.addElement(cementerios);
+            
+            DefaultMenuItem contribucionMej = new DefaultMenuItem("Contribucion por Mejoras");
+            contribucionMej.setIcon("ui-icon-person");
+            contribucionMej.setCommand("#{navegacionControlador.redireccionarAPagina('base','gestionContribucionMejoras')}");
+            subMenuImpuestos.addElement(contribucionMej);
+            
             menu.addElement(subMenuImpuestos);
-
-            menu.addElement(subMenuImpuestos);
+        
 
             DefaultSubMenu subMenurecaudacion = new DefaultSubMenu("Recaudacion");
 
