@@ -42,8 +42,7 @@ public class Constructora implements Serializable {
     @Basic(optional = false)
     @Column(name = "con_codigo")
     private Integer conCodigo;
-    @Basic(optional = false)
-    @NotNull
+    @Basic(optional = false)    
     @Size(min = 1, max = 1)
     @Column(name = "con_tipo")
     private String conTipo;
@@ -88,6 +87,9 @@ public class Constructora implements Serializable {
     @JoinColumn(name = "catdet_ciudad", referencedColumnName = "catdet_codigo")
     @ManyToOne(optional = false)
     private CatalogoDetalle catdetCiudad;
+    @JoinColumn(name = "usu_identificacion", referencedColumnName = "usu_identificacion")
+    @ManyToOne(optional = false)
+    private SegUsuario usuIdentificacion;
 
     public Constructora() {
     }
@@ -223,6 +225,16 @@ public class Constructora implements Serializable {
         this.catdetCiudad = catdetCiudad;
     }
 
+    public SegUsuario getUsuIdentificacion() {
+        return usuIdentificacion;
+    }
+
+    public void setUsuIdentificacion(SegUsuario usuIdentificacion) {
+        this.usuIdentificacion = usuIdentificacion;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
