@@ -86,7 +86,7 @@ public class RecaudacionServicio {
                         this.recDetalleDao.crear(det);
                     }
                 }
-                recDetalleDao.actualizarEstadosValoracion(lstDets);
+                recDetalleDao.actualizarCuentasPorCobrar(lstDets);
             }
         }
     }

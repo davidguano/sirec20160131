@@ -13,15 +13,21 @@ import ec.sirec.ejb.entidades.CatastroPredialInfAnt;
 import ec.sirec.ejb.entidades.CatastroPredialInfraestructura;
 import ec.sirec.ejb.entidades.CatastroPredialUsosuelo;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
+import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.PropietarioPredio;
 import ec.sirec.ejb.servicios.CatastroPredialServicio;
+import ec.sirec.ejb.servicios.DatoGlobalServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
 import ec.sirec.web.util.OpcionesUsoSuelo;
 import ec.sirec.web.util.UtilitariosCod;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +50,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -64,6 +71,8 @@ public class CatastroControlador extends BaseControlador {
     private CatastroPredialServicio catastroServicio;
     @EJB
     private PredioArchivoServicio predioArchivoServicio;
+    @EJB
+    private DatoGlobalServicio datoGlobalServicio;
 
     private CatastroPredial catastroPredialActual;
     private String cedulaPropietarioBusqueda;
@@ -905,12 +914,14 @@ public class CatastroControlador extends BaseControlador {
         JasperReport jasperReport = null;
         Map parameters = new HashMap();
         try {
+            copiarImagenDePredio();
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
             ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
             session.removeAttribute("reporteInforme");
             parameters.put("catpre_codigo", catastroPredialActual.getCatpreCodigo());
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+            parameters.put("imagen_predio", servletContext.getRealPath("/imagenes/" + catastroPredialActual.getClaveCatastral() + ".jpg"));
             //-----------Sub reportes----------------
             String subrep1 = servletContext.getRealPath("/reportes/fichaCatastral");
             parameters.put("SUBREPORT_DIR1", subrep1);
@@ -973,6 +984,23 @@ public class CatastroControlador extends BaseControlador {
             }
         }
         return null;
+    }
+
+    public void copiarImagenDePredio() {
+        try {
+            DatoGlobal dg = datoGlobalServicio.obtenerDatoGlobal("CARPETA_FOTOS");
+            if (dg != null && catastroPredialActual.getCatpreCodigo() != null) {
+                String carpetaFotos = dg.getDatgloDescripcion();
+                InputStream is = new FileInputStream(new File(carpetaFotos, catastroPredialActual.getClaveCatastral()) + ".jpg");
+                File archivoDatos = new File(getRequest().getSession().getServletContext().getRealPath("/imagenes/" + catastroPredialActual.getClaveCatastral() + ".jpg"));
+                FileOutputStream out = new FileOutputStream(archivoDatos);
+                out.write(IOUtils.toByteArray(is));
+                out.close();
+            }
+
+        } catch (Exception ex) {
+             LOGGER.log(Level.INFO,"No existe foto con este codigo");
+        }
     }
 
     //GETTER AND SETTERS

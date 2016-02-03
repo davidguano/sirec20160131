@@ -41,12 +41,10 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         List<Object[]> resultado = new ArrayList<Object[]>();
         List<RecaudacionDet> lstDets = new ArrayList<RecaudacionDet>();
         try {
-            String sql1 = "select text 'PR',C.CATPRE_COD_NACIONAL||C.CATPRE_COD_LOCAL,v.catpreval_impuesto, v.catpreval_codigo\n"
-                    + "from sirec.propietario p,sirec.propietario_predio pp,  sirec.catastro_predial_valoracion v,sirec.catastro_predial c\n"
-                    + "where v.catpreval_activo is false and v.catpre_codigo=c.catpre_codigo and c.catpre_codigo=pp.catpre_codigo and pp.pro_ci=p.pro_ci and\n"
-                    + "p.pro_ci='"+vci+"' ";
+            String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref,* from sirec.cuenta_por_cobrar \n" +
+                        " where pro_ci='"+vci+"' ";
             if(vAnio!=null){
-                sql1=sql1+" and catpreval_anio="+vAnio;
+                sql1=sql1+" and cxc_anio="+vAnio;
             }
             Query q = getEntityManager().createNativeQuery(sql1);
             System.out.println(sql1);
@@ -67,19 +65,19 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         return lstDets;
     }
     
-    public void actualizarEstadosValoracion(List<RecaudacionDet> lstDets) throws Exception{
+    public void actualizarCuentasPorCobrar(List<RecaudacionDet> lstDets) throws Exception{
         try{
             if(!lstDets.isEmpty()){
                 for(RecaudacionDet det: lstDets){
-                    if(det.getRecdetTipo().equals("PR")){
-                        String sql="update sirec.catastro_predial_valoracion set catpreval_activo=true where catpreval_codigo="+det.getRecdetCodref();
+                        String sql="update sirec.cuenta_por_cobrar set cxc_saldo=0, cxc_estado='R'  where cxc_tipo=:tipo and cxc_cod_ref="+det.getRecdetCodref();
                         Query q = getEntityManager().createNativeQuery(sql);
+                        q.setParameter("tipo", det.getRecdetTipo());
                         q.executeUpdate();
-                    }
+                    
                 }
             }
         }catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "error en generacion de detalles", ex);
+            LOGGER.log(Level.SEVERE, "error en actualizacion", ex);
         }
     }
 

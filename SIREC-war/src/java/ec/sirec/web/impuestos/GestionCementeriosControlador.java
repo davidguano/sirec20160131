@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.Cementerio;
 import ec.sirec.ejb.entidades.CementerioArchivo;
+import ec.sirec.ejb.entidades.CementerioHistorialCambios;
 import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Patente;
 import ec.sirec.ejb.entidades.PatenteArchivo;
@@ -38,6 +39,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -73,7 +75,6 @@ public class GestionCementeriosControlador extends BaseControlador {
     private boolean habilitaEditar;
     private Date fechaFallece;
     private Date fehcaFinContrato;
-
     private DatoGlobal datoGlobalActual;
     private SegUsuario usuarioActual;
     private List<CatalogoDetalle> listGenero;
@@ -86,8 +87,15 @@ public class GestionCementeriosControlador extends BaseControlador {
     private List<CatalogoDetalle> listaCatDetParroquias;
     private List<Cementerio> listaOccisoInumado;
     private List<Cementerio> listOccisoExumado;
+    private List<Cementerio> listaNombreOccisos;
     private String ciRuc;
-
+    private String observacionesCambioHis;
+    private int verBuscaCementerio;
+    private String numNicho;
+    private int resulBusqueda;
+    private int busOpcion;
+    private int busxNicho;
+    private int busxOcciso;
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -109,6 +117,14 @@ public class GestionCementeriosControlador extends BaseControlador {
             habilitaEditar = false;
             listaFiles = new ArrayList<ParametrosFile>();
             ciRuc = "";
+            observacionesCambioHis = "";
+            listaNombreOccisos = new ArrayList<Cementerio>();
+            verBuscaCementerio = 0;
+            numNicho = "";
+            resulBusqueda = 0;
+            busOpcion = 0;
+            busxNicho = 0;
+            busxOcciso = 0;
             listarGeneroSexo();
             listarUbicacionAtaud();
             listarTipoNicho();
@@ -142,8 +158,9 @@ public class GestionCementeriosControlador extends BaseControlador {
     }
 
     public void guardarCementerios() {
+        System.out.println("Datos" + ciRuc);
         try {
-            if (habilitaEditar == false || validaNumeroNichoxParroquia()) {
+            if (habilitaEditar == false) {
                 if (existeRuc()) {
                     cargaObjetosBitacora();
                     CatalogoDetalle objCatDet = new CatalogoDetalle();
@@ -170,11 +187,9 @@ public class GestionCementeriosControlador extends BaseControlador {
                     cementerioActual = new Cementerio();
                     limpiarObjetosBitacora();
                     inicializar();
-
                 } else {
                     addWarningMessage("Cédula/Ruc no existe en la base de datos");
                 }
-
             } else {
             }
         } catch (Exception e) {
@@ -182,19 +197,100 @@ public class GestionCementeriosControlador extends BaseControlador {
         }
     }
 
+    public void buscaSelecciona() {
+        switch (busOpcion) {
+            case 1:
+                busxNicho = 1;
+                busxOcciso = 0;
+                break;
+            case 2:
+                busxNicho = 0;
+                busxOcciso = 1;
+                break;
+        }
+    }
+
+    public void guardarCementerioHistorial() {
+        try {
+            //---actualizo el estado de inhumado a exhumado
+//            cementerioActual.setCemEstado("E");
+//            cementerioServicio.editarCementerio(cementerioActual);
+            //---guardo historial
+            cargaObjetosBitacora();
+            CementerioHistorialCambios objCemHis = new CementerioHistorialCambios();
+            objCemHis.setCemCodigo(cementerioActual);
+            objCemHis.setObservacion(observacionesCambioHis);
+            objCemHis.setFechaModifica(java.util.Calendar.getInstance().getTime());
+            objCemHis.setUsuIdentificacion(usuarioActual);
+                       if (!listaFiles.isEmpty()) {
+                guardarArchivos();
+            }
+            cementerioServicio.crearCementerioHistorial(objCemHis);
+            addSuccessMessage("Guardado Exitosamente");
+            listarOccisoExumado();
+            listarOccisoInhumado();
+            limpiarObjetosBitacora();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public List<Cementerio> sugiereNombreOcciso(String nombre) {
+        cementerioActual.setCemNombreOcciso(nombre);
+        List<Cementerio> listNombres = new ArrayList<Cementerio>();
+        try {
+            listaNombreOccisos = cementerioServicio.listarOccisosPorNombre(cementerioActual.getCemNombreOcciso());
+            for (Cementerio cementerio : listaNombreOccisos) {
+                listNombres.add(cementerio);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listNombres;
+    }
+
+    public void onItemSelectCementerio(SelectEvent event) throws Exception {
+        Cementerio objCem = (Cementerio) event.getObject();
+        cementerioActual = cementerioServicio.buscarCementerioPorId(objCem.getCemCodigo());
+        if (cementerioActual == null) {
+            resulBusqueda = 1;
+        }
+    }
+
+    public void buscaNichoParroquia() {
+        try {
+            cementerioActual = cementerioServicio.buscarPorParroquiaNumNicho(catDetParroquia.getCatdetCodigo(), numNicho);
+            if (cementerioActual == null) {
+                resulBusqueda = 1;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
     public boolean validaNumeroNichoxParroquia() {
+        System.err.println("Ingresa a la validacion de nicho");
         boolean existeNicho = true;
         Cementerio objCemAux = new Cementerio();
         try {
             objCemAux = cementerioServicio.buscarPorParroquiaNumNicho(catDetParroquia.getCatdetCodigo(), cementerioActual.getCemNumNicho());
             if (objCemAux != null) {
                 existeNicho = false;
-                addErrorMessage("Nú de nicho ingresado existente en parroquia:" + catDetParroquia.getCatdetTexto());
+                addErrorMessage("Nº de nicho ingresado existente en parroquia:" + catDetParroquia.getCatdetTexto());
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
         return existeNicho;
+    }
+
+    public void buscarCementerio() {
+        try {
+            System.out.println("Entra al metodo buscar");
+            verBuscaCementerio = 1;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
     }
 
     public boolean existeRuc() {
@@ -320,15 +416,16 @@ public class GestionCementeriosControlador extends BaseControlador {
             addWarningMessage("No se puede eliminar el regitro");
         }
     }
- public void recuperarCementerioCampos(Cementerio cementerio) {
+
+    public void recuperarCementerioCampos(Cementerio cementerio) {
         try {
-            cementerioActual=cementerio;
-           
-            
+            cementerioActual = cementerio;
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
     }
+
     public void confirmaEliminarPatArchivo(PatenteArchivo file) {
         try {
 //            cementerioServicio.eliminarArchivo(file);
@@ -507,6 +604,62 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void setListOccisoExumado(List<Cementerio> listOccisoExumado) {
         this.listOccisoExumado = listOccisoExumado;
+    }
+
+    public String getObservacionesCambioHis() {
+        return observacionesCambioHis;
+    }
+
+    public void setObservacionesCambioHis(String observacionesCambioHis) {
+        this.observacionesCambioHis = observacionesCambioHis;
+    }
+
+    public int getVerBuscaCementerio() {
+        return verBuscaCementerio;
+    }
+
+    public void setVerBuscaCementerio(int verBuscaCementerio) {
+        this.verBuscaCementerio = verBuscaCementerio;
+    }
+
+    public String getNumNicho() {
+        return numNicho;
+    }
+
+    public void setNumNicho(String numNicho) {
+        this.numNicho = numNicho;
+    }
+
+    public int getResulBusqueda() {
+        return resulBusqueda;
+    }
+
+    public void setResulBusqueda(int resulBusqueda) {
+        this.resulBusqueda = resulBusqueda;
+    }
+
+    public int getBusOpcion() {
+        return busOpcion;
+    }
+
+    public void setBusOpcion(int busOpcion) {
+        this.busOpcion = busOpcion;
+    }
+
+    public int getBusxNicho() {
+        return busxNicho;
+    }
+
+    public void setBusxNicho(int busxNicho) {
+        this.busxNicho = busxNicho;
+    }
+
+    public int getBusxOcciso() {
+        return busxOcciso;
+    }
+
+    public void setBusxOcciso(int busxOcciso) {
+        this.busxOcciso = busxOcciso;
     }
 
 }

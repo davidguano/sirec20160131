@@ -30,6 +30,7 @@
 	<parameter name="SUBREPORT_DIR2_1_b" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR2_1_i" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR2_1_h" class="java.lang.String"/>
+	<parameter name="imagen_predio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from sirec.catastro_predial where catpre_codigo=$P{catpre_codigo}]]>
 	</queryString>
@@ -111,6 +112,9 @@
 		<band height="1" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="1" width="595" height="0" uuid="bba3295c-5fe1-4c41-bcfb-bc5d921fe854"/>
+				<subreportParameter name="imagen_predio">
+					<subreportParameterExpression><![CDATA[$P{imagen_predio}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="codigoCatPredial">
 					<subreportParameterExpression><![CDATA[$P{catpre_codigo}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -141,17 +145,8 @@
 				<subreportParameter name="SUBREPORT_DIR2_1_a">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1_a}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR2_1">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR2_1_d">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1_d}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="codigoCatPredial">
-					<subreportParameterExpression><![CDATA[$P{catpre_codigo}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="SUBREPORT_DIR2_2">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_2}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR2_1_c">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1_c}]]></subreportParameterExpression>
@@ -170,6 +165,15 @@
 				</subreportParameter>
 				<subreportParameter name="SUBREPORT_DIR2_1_g">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1_g}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR2_1">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="codigoCatPredial">
+					<subreportParameterExpression><![CDATA[$P{catpre_codigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR2_2">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR2_2}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR2}+"/fiCatSubRepPrtUsoSueloOrden2.jasper"]]></subreportExpression>
