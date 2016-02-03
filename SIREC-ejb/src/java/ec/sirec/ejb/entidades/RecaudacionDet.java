@@ -53,6 +53,10 @@ public class RecaudacionDet implements Serializable {
     private BigDecimal recdetValor;
     @Column(name = "recdet_codref")
     private Integer recdetCodref;
+    @Column(name = "recdet_valor_inicial")
+    private BigDecimal recdetValorInicial;
+    @Column(name = "recdet_porc_desc")
+    private Integer recdetPorDesc;
     @JoinColumn(name = "rec_codigo", referencedColumnName = "rec_codigo")
     @ManyToOne(optional = false)
     private RecaudacionCab recCodigo;
@@ -137,6 +141,22 @@ public class RecaudacionDet implements Serializable {
 
     public void setCxcCodigo(CuentaPorCobrar cxcCodigo) {
         this.cxcCodigo = cxcCodigo;
+    }
+
+    public BigDecimal getRecdetValorInicial() {
+        return recdetValorInicial;
+    }
+
+    public void setRecdetValorInicial(BigDecimal recdetValorInicial) {
+        this.recdetValorInicial = recdetValorInicial;
+    }
+
+    public Integer getRecdetPorDesc() {
+        return recdetPorDesc;
+    }
+
+    public void setRecdetPorDesc(Integer recdetPorDesc) {
+        this.recdetPorDesc = recdetPorDesc;
     }
     
     
