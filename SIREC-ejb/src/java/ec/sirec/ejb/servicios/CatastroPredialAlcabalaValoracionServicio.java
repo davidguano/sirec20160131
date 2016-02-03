@@ -37,5 +37,9 @@ public class CatastroPredialAlcabalaValoracionServicio {
         return "Se ha modificado la aplicación" + catastroPredialAlcabalaValoracion.getCatprealcvalCodigo();
     }
     
+    public CatastroPredialAlcabalaValoracion buscarCatastroPredialAlcabalaValoracion(Integer codigo) throws Exception {
+        return catastroPredialAlcabalaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_ALCABALA_VALORACION, "catprealcvalCodigo", codigo);         
+    }
+    
     
 }

@@ -40,5 +40,9 @@ public class CatastroPredialPlusvaliaValoracionServicio {
      public CatastroPredialPlusvaliaValoracion buscarPorCatastroPredial(CatastroPredial catastroPredial) throws Exception {
         return catastroPredialPlusvaliaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_PLUSVALIA_VALORACION, "catpreCodigo", catastroPredial);
     }
+     
+     public CatastroPredialPlusvaliaValoracion buscarCatastroPredialPlusvaliaValoracion(Integer codigo) throws Exception {
+        return catastroPredialPlusvaliaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_PLUSVALIA_VALORACION, "catprepluvalCodigo", codigo);         
+    }
     
 }
