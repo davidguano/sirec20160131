@@ -747,10 +747,18 @@ public class CatastroPredialServicio {
         return catastroPredialAlcabalaValoracionDao.buscarPorCampo("CatastroPredialAlcabalaValoracion", "catpreCodigo", catastroPredial);
     }
 
+    public CatastroPredialAlcabalaValoracion buscarAlcabalaPorCatastroPredialAnio(CatastroPredial catastroPredial, Integer anio) throws Exception {
+        return catastroPredialAlcabalaValoracionDao.buscarPor2Campos("CatastroPredialAlcabalaValoracion", "catpreCodigo", catastroPredial, "catprealcvalAnio", anio);
+    }
+    
     public CatastroPredialPlusvaliaValoracion buscarPlusvaliaPorCatastroPredial(CatastroPredial catastroPredial) throws Exception {
         return catastroPredialPlusvaliaValoracionDao.buscarPorCampo("CatastroPredialPlusvaliaValoracion", "catpreCodigo", catastroPredial);
     }
 
+    public CatastroPredialPlusvaliaValoracion buscarPlusvaliaPorCatastroPredialAnio(CatastroPredial catastroPredial, Integer anio) throws Exception {
+        return catastroPredialPlusvaliaValoracionDao.buscarPor2Campos("CatastroPredialPlusvaliaValoracion", "catpreCodigo", catastroPredial, "catprepluvalAnio", anio);
+    }
+    
     public ObraProyecto buscarMejoraXCatastro(CatastroPredial catastroPredial) throws Exception {
         ObraProyecto obraProyecto = obraProyectoDao.buscarValorMejora(catastroPredial);
         if (obraProyecto == null) {
