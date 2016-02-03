@@ -41,7 +41,7 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         List<Object[]> resultado = new ArrayList<Object[]>();
         List<RecaudacionDet> lstDets = new ArrayList<RecaudacionDet>();
         try {
-            String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref,* from sirec.cuenta_por_cobrar \n" +
+            String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref from sirec.cuenta_por_cobrar \n" +
                         " where pro_ci='"+vci+"' ";
             if(vAnio!=null){
                 sql1=sql1+" and cxc_anio="+vAnio;

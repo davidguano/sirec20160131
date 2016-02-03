@@ -158,7 +158,7 @@ public class CuentaPorCobrarServicio {
             cxc = buscarCxCPorTipoyClave("PL", impPlus.getCatprepluvalCodigo());
             if (cxc != null) {
                 if (cxc.getCxcEstado().equals("P")) {
-                    cxc.setCxcAnio(0);
+                    cxc.setCxcAnio(impPlus.getCatprepluvalAnio());
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
@@ -170,7 +170,7 @@ public class CuentaPorCobrarServicio {
             } else {
                 cxc = new CuentaPorCobrar();
                 cxc.setProCi(propietarioServicio.obtenerPropietarioPrincipalPredio(impPlus.getCatpreCodigo().getCatpreCodigo()));
-                cxc.setCxcAnio(0);
+                cxc.setCxcAnio(impPlus.getCatprepluvalAnio());
                 cxc.setCxcMes(0);
                 cxc.setCxcTipo("PL");
                 cxc.setCxcReferencia(impPlus.getCatpreCodigo().getClaveCatastral());
