@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -81,6 +82,10 @@ public class CatastroPredialPlusvaliaValoracion implements Serializable {
     private CatalogoDetalle catdetTipoTarifa;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "catprepluvalCodigo")
     private List<CpPlusvaliaValoracionExtras> cpPlusvaliaValoracionExtrasList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "catprepluval_anio")
+    private int catprepluvalAnio;
 
     public CatastroPredialPlusvaliaValoracion() {
     }
@@ -239,6 +244,14 @@ public class CatastroPredialPlusvaliaValoracion implements Serializable {
 
     public void setCatprepluvalActivo(Boolean catprepluvalActivo) {
         this.catprepluvalActivo = catprepluvalActivo;
+    }
+
+    public int getCatprepluvalAnio() {
+        return catprepluvalAnio;
+    }
+
+    public void setCatprepluvalAnio(int catprepluvalAnio) {
+        this.catprepluvalAnio = catprepluvalAnio;
     }
     
     
