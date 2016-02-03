@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fiCatSubRepPrt1_2_3Orden1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bb6fdcc6-b2c6-4135-9a15-393640f73a7a">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="516"/>
-	<property name="ireport.y" value="861"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="305"/>
 	<parameter name="codigoCatPredial" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -10,6 +10,7 @@
 	<parameter name="SUBREPORT_DIR1_1" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR1_2" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR1_3" class="java.lang.String"/>
+	<parameter name="imagen_predio" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[---------Clave Catastral----------------
 select cp.catpre_cod_nacional as codNacional,cp.catdet_parroquia as parroquia,
@@ -527,7 +528,7 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<reportElement x="7" y="145" width="583" height="1" uuid="dc26a653-4108-4fc3-8620-e1c11cb46618"/>
 			</line>
 			<line>
-				<reportElement x="5" y="298" width="585" height="1" uuid="6b31b245-51e9-4500-a719-9c48598086fc"/>
+				<reportElement x="5" y="298" width="407" height="1" uuid="6b31b245-51e9-4500-a719-9c48598086fc"/>
 			</line>
 			<staticText>
 				<reportElement x="12" y="302" width="186" height="15" uuid="1fe7ea42-a2a3-41ef-b9d7-def50e5f3149"/>
@@ -537,11 +538,14 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<text><![CDATA[4.PROPIETARIOS ANTERIORES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="210" y="302" width="223" height="13" uuid="f15b71ba-b6dd-403f-b42a-f87c41b7f151"/>
+				<reportElement x="198" y="305" width="183" height="13" uuid="f15b71ba-b6dd-403f-b42a-f87c41b7f151"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[APELLIDOS Y NOMBRES O RAZON SOCIAL]]></text>
 			</staticText>
 			<line>
-				<reportElement x="7" y="348" width="583" height="1" uuid="33fcb682-c555-4f0b-a230-1158230296d2"/>
+				<reportElement x="7" y="348" width="405" height="1" uuid="33fcb682-c555-4f0b-a230-1158230296d2"/>
 			</line>
 			<staticText>
 				<reportElement x="14" y="351" width="199" height="15" uuid="fc475fc8-9714-467e-b7bc-a28b2b448425"/>
@@ -626,7 +630,7 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<textFieldExpression><![CDATA[$F{longitud}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="5" y="428" width="585" height="1" uuid="36466d30-caa5-4d7c-9cda-9ef192935c5b"/>
+				<reportElement x="5" y="428" width="407" height="1" uuid="36466d30-caa5-4d7c-9cda-9ef192935c5b"/>
 			</line>
 			<staticText>
 				<reportElement x="12" y="433" width="198" height="15" uuid="c9b675f4-b357-4998-801c-69b00937b682"/>
@@ -637,34 +641,50 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 			</staticText>
 			<staticText>
 				<reportElement x="12" y="453" width="164" height="13" uuid="14eee4d0-6245-4bc8-a0d6-dcf6487b08c3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[AREA TOTAL DEL TERRENO (m2)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="179" y="453" width="82" height="13" uuid="09e87e7b-4f9e-4fb7-83d7-6a8be5c75184"/>
+				<reportElement x="195" y="453" width="65" height="13" uuid="09e87e7b-4f9e-4fb7-83d7-6a8be5c75184"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{supareatotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="12" y="467" width="116" height="13" uuid="7aeb59f9-35cf-4bec-b5d5-91fd1c02fd01"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[FRENTE PRINCIPAL (m)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="179" y="467" width="81" height="13" uuid="6d094d04-a451-429e-a8a3-77e5bb19aaee"/>
+				<reportElement x="195" y="467" width="65" height="13" uuid="6d094d04-a451-429e-a8a3-77e5bb19aaee"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{frenprincipal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="13" y="480" width="209" height="13" uuid="2fae395b-8ae6-4383-b3d3-06ce106cbb21"/>
+				<reportElement x="13" y="480" width="173" height="13" uuid="2fae395b-8ae6-4383-b3d3-06ce106cbb21"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[AREA TERRENO SEGUN ESCRITURAS(m2)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="224" y="480" width="100" height="13" uuid="5c782ee4-7914-4dc7-89e5-afa4870370ce"/>
+				<reportElement x="196" y="480" width="65" height="13" uuid="5c782ee4-7914-4dc7-89e5-afa4870370ce"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{areatotescrituras}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="224" y="494" width="100" height="13" uuid="81035abe-6b32-4496-93d9-289b3798aada"/>
+				<reportElement x="196" y="494" width="65" height="13" uuid="81035abe-6b32-4496-93d9-289b3798aada"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{areatotcons}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="13" y="494" width="207" height="13" uuid="f5c53fa4-bbc7-4a11-b2e7-8b535c919aa7"/>
+				<reportElement x="13" y="494" width="174" height="13" uuid="f5c53fa4-bbc7-4a11-b2e7-8b535c919aa7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[AREA TOTAL DE CONSTRUCCIÓN (m2)]]></text>
 			</staticText>
 			<line>
@@ -1236,23 +1256,13 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<reportElement x="5" y="724" width="584" height="1" uuid="f728f898-0d49-4d8f-bb52-6851eac2d981"/>
 			</line>
 			<subreport>
-				<reportElement x="337" y="429" width="199" height="93" uuid="97600200-763b-4602-8195-7b20aed40eb4"/>
+				<reportElement x="270" y="429" width="142" height="93" uuid="97600200-763b-4602-8195-7b20aed40eb4"/>
 				<subreportParameter name="catpreCodigo">
 					<subreportParameterExpression><![CDATA[$P{codigoCatPredial}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR1_1}+"/subRepSuperAreas.jasper"]]></subreportExpression>
 			</subreport>
-			<rectangle>
-				<reportElement x="410" y="349" width="176" height="71" uuid="e9936622-cd67-48d2-afd4-eb8e0a9efc74"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="424" y="354" width="157" height="13" uuid="1bf3a44f-3022-4ef2-9115-c0197d6770dd"/>
-				<textElement textAlignment="Center">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[6.EMPLAZAMIENTO DEL PREDIO]]></text>
-			</staticText>
 			<subreport>
 				<reportElement x="406" y="30" width="174" height="28" uuid="fdd67f1b-1047-4055-90e4-71c2cae8ff99"/>
 				<subreportParameter name="catpreCodigo">
@@ -1269,7 +1279,7 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 				<text><![CDATA[CODIGOS ANTERIORES]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="151" y="319" width="278" height="23" uuid="0bd202c9-6b1c-4149-9c79-44a86866983c"/>
+				<reportElement x="20" y="319" width="278" height="23" uuid="0bd202c9-6b1c-4149-9c79-44a86866983c"/>
 				<subreportParameter name="catpreCodigo">
 					<subreportParameterExpression><![CDATA[$P{codigoCatPredial}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -1338,6 +1348,10 @@ and cp.catpre_codigo=$P{codigoCatPredial}]]>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="420" y="282" width="161" height="225" uuid="6101b7d5-7e3b-434e-9317-c56d0084c243"/>
+				<imageExpression><![CDATA[$P{imagen_predio}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>
