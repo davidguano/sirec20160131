@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "sirec.cementerio")
 @NamedQueries({
     @NamedQuery(name = "Cementerio.findAll", query = "SELECT c FROM Cementerio c")})
-    public class Cementerio implements Serializable {
+public class Cementerio implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -110,6 +111,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @JoinColumn(name = "catdet_parroquia", referencedColumnName = "catdet_codigo")
     @ManyToOne(optional = false)
     private CatalogoDetalle catdetParroquia;
+    @OneToMany(mappedBy = "cemCodigo")
+    private List<CementerioHistorialCambios> cementerioHistorialCambiosList;
 
     public Cementerio() {
     }
@@ -261,6 +264,14 @@ import javax.xml.bind.annotation.XmlTransient;
         return cementerioArchivoList;
     }
 
+    public List<CementerioHistorialCambios> getCementerioHistorialCambiosList() {
+        return cementerioHistorialCambiosList;
+    }
+
+    public void setCementerioHistorialCambiosList(List<CementerioHistorialCambios> cementerioHistorialCambiosList) {
+        this.cementerioHistorialCambiosList = cementerioHistorialCambiosList;
+    }
+
     public void setCementerioArchivoList(List<CementerioArchivo> cementerioArchivoList) {
         this.cementerioArchivoList = cementerioArchivoList;
     }
@@ -313,5 +324,5 @@ import javax.xml.bind.annotation.XmlTransient;
     public String toString() {
         return "ec.sirec.ejb.entidades.Cementerio[ cemCodigo=" + cemCodigo + " ]";
     }
-    
+
 }
