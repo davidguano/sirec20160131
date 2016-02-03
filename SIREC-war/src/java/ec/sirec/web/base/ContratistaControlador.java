@@ -7,9 +7,7 @@ package ec.sirec.web.base;
 
 import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.Constructora;
-import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.servicios.ConstructoraServicio;
-import ec.sirec.ejb.servicios.PropietarioServicio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
