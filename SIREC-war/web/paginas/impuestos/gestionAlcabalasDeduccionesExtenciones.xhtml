@@ -45,7 +45,7 @@
                                                       mode="advanced"
                                                       dragDropSupport="false"
                                                       multiple="true"  
-                                                      update=":frmAlcabalas:msgs,:frmAlcabalas:tabAlca:pnllstArch"
+                                                      update=":frmAlcabalas:msgs,:frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch"
                                                       sizeLimit="10000000000"
                                                       allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
                                                       invalidSizeMessage="El archivo debe ser maximo 1MB"
@@ -62,7 +62,7 @@
                                                      action="#{gestionAlcabalasControlador.listarArchivos()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this" 
-                                                     update=":frmAlcabalas:tabAlca:pnllstArch,:frmAlcabalas:msgs"
+                                                     update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch,:frmAlcabalas:msgs"
                                                      async="true"
                                                      global="false"
                                                      />
@@ -89,7 +89,7 @@
                                         </p:column>                                           
                                         <p:column headerText="Eliminar" width="50">
                                             <p:commandButton icon="ui-icon-trash" action="#{gestionAlcabalasControlador.eliminarArchivo(archivo)}" 
-                                                             update=":frmAlcabalas:tabAlca:pnllstArch,:frmAlcabalas:msgs"
+                                                             update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch,:frmAlcabalas:msgs"
                                                              process="@this" global="false" async="true"  ajax="true" >
                                                 <p:confirm header="Confirmacion" message="Desea eliminar el Archivo?" icon="ui-icon-alert" />
                                             </p:commandButton>

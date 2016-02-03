@@ -110,7 +110,7 @@
                                 <p:inputText id="alPrec" value="#{gestionAlcabalasControlador.catastroPredialAlcabalaValoracion.catprealcvalPrecioventa}"
                                              onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: #{txt.precio_de_venta}"
                                              style="font-family: Arial; font-size: 15px;">
-                                    <p:ajax event="keyup" listener="#{gestionAlcabalasControlador.valorMayorBaseImponible}"  update=":frmAlcabalas:tabAlca:panelPlusvalia"
+                                    <p:ajax event="keyup" listener="#{gestionAlcabalasControlador.valorMayorBaseImponible}"  update=":frmAlcabalas:tabAlcaTodo:tabAlca:panelPlusvalia"
                                          process="@this" async="true" global="false"/>  
                                 </p:inputText>
                                 <p:message  for="alPrec" display="icon"/>
@@ -142,7 +142,7 @@
                                                      action="#{gestionAlcabalasControlador.calcularDeterminacion()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,panelIngreso" 
-                                                     update=":frmAlcabalas:msgs, :frmAlcabalas:tabAlca:pnlCalcular, :frmAlcabalas:tabAlca:panelIngreso"
+                                                     update=":frmAlcabalas:msgs, :frmAlcabalas:tabAlcaTodo:tabAlca:pnlCalcular, :frmAlcabalas:tabAlcaTodo:tabAlca:panelIngreso"
                                                      async="true"
                                                      global="false"                                                    
                                                      />
@@ -193,7 +193,7 @@
                                                      action="#{gestionAlcabalasControlador.guardarAlcabala()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,alAnio,alCom,alPrec,alConc,alBas,alImp,alConProv,alProc,alTotal,alObs, pnlCalcular" 
-                                                     update=":frmAlcabalas:msgs, :frmAlcabalas:tabAlca:pnlCalcular"
+                                                     update=":frmAlcabalas:msgs, :frmAlcabalas:tabAlcaTodo:tabAlca:pnlCalcular"
                                                      async="true"
                                                      global="false"
                                                      />    
