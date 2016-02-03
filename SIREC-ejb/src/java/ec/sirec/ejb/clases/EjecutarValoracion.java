@@ -51,6 +51,8 @@ public class EjecutarValoracion {
     private CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion;
     private CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion;
     
+    int Anio;
+    
     public EjecutarValoracion(){
         
     }
@@ -196,6 +198,14 @@ public class EjecutarValoracion {
 
     public void setCatastroPredialPlusvaliaValoracion(CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion) {
         this.catastroPredialPlusvaliaValoracion = catastroPredialPlusvaliaValoracion;
+    }
+
+    public int getAnio() {
+        return Anio;
+    }
+
+    public void setAnio(int Anio) {
+        this.Anio = Anio;
     }
                 
     }
