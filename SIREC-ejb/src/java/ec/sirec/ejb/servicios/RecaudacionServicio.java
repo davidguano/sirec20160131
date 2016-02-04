@@ -5,6 +5,7 @@
  */
 package ec.sirec.ejb.servicios;
 
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.RecaudacionCab;
 import ec.sirec.ejb.entidades.RecaudacionDet;
 import ec.sirec.ejb.facade.RecaudacionCabFacade;
@@ -30,6 +31,8 @@ public class RecaudacionServicio {
     private RecaudacionCabFacade recCabeceraDao;
     @EJB
     private RecaudacionDetFacade recDetalleDao;
+    @EJB
+    private CatalogoDetalleServicio catDetServicio;
 
     public void crearCabecera(RecaudacionCab vcabecera) throws Exception {
         recCabeceraDao.crear(vcabecera);
@@ -110,7 +113,20 @@ public class RecaudacionServicio {
             }
         }
     }
+    
+    public List<Integer> listaAnios() throws Exception{
+        List<Integer> lst=new ArrayList<Integer>();
+        List<CatalogoDetalle> lstCatDet=new ArrayList<CatalogoDetalle>();
+        lstCatDet=catDetServicio.listarPorNemonicoCatalogo("ANIOS");
+        if(!lstCatDet.isEmpty()){
+            for(CatalogoDetalle det: lstCatDet){
+                lst.add(Integer.valueOf(det.getCatdetTexto()));
+            }
+        }
+        return lst;
+    }
 
 }
+
 
 
