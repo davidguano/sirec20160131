@@ -230,6 +230,12 @@ public class NavegacionControlador extends BaseControlador {
             reportePatente.setIcon("ui-icon-person");
             reportePatente.setCommand("#{navegacionControlador.redireccionarAPagina('patente','repNegRangPatrimonio')}");
             subMenuReportes.addElement(reportePatente);
+                        
+            DefaultMenuItem reporteAlcabalas = new DefaultMenuItem("Reportes Alcabalas");
+            reporteAlcabalas.setIcon("ui-icon-person");
+            reporteAlcabalas.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','repAlcabalasEmitidas')}");
+            subMenuReportes.addElement(reporteAlcabalas);
+            
             menu.addElement(subMenuReportes);
 
             DefaultMenuItem itemInicio = new DefaultMenuItem("Inicio");
