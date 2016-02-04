@@ -13,6 +13,7 @@ import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
 import ec.sirec.ejb.entidades.CpAlcabalaValoracionExtras;
+import ec.sirec.ejb.entidades.ObraProyecto;
 import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.PropietarioPredio;
@@ -465,13 +466,17 @@ public class GestionAlcabalasControlador extends BaseControlador {
         }
     }
     
-    public void calularDiferenciaBruta() {        
+     public void calularDiferenciaBruta() {        
         try {
-            catastroPredialPlusvaliaValoracion.setCatprepluvalDifBruta(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventa().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventaAnt())); 
-            
-            // valor quemado para pruebas 
-            // extraer valor
-            catastroPredialPlusvaliaValoracion.setCatprepluvalValorContrmej(new BigDecimal(2000));             
+            catastroPredialPlusvaliaValoracion.setCatprepluvalDifBruta(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventa().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventaAnt()));                       
+            BigDecimal valorMejora;            
+             ObraProyecto obraProyecto = catastroPredialServicio.buscarMejoraXCatastro(catastroPredialActual);            
+             if(obraProyecto.getObrTotal()==null){
+                 valorMejora = BigDecimal.ZERO;  
+             }else{
+                 valorMejora = obraProyecto.getObrTotal();
+             }
+            catastroPredialPlusvaliaValoracion.setCatprepluvalValorContrmej(valorMejora);             
             calularDiferenciaNeta();
             
         } catch (Exception ex) {

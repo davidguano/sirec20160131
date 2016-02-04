@@ -14,6 +14,9 @@ import ec.sirec.ejb.entidades.PatenteValoracion;
 import ec.sirec.ejb.entidades.Servicios;
 import ec.sirec.ejb.facade.CuentaPorCobrarFacade;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -53,7 +56,7 @@ public class CuentaPorCobrarServicio {
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPre.getCatprevalAnio()));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -68,7 +71,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPre.getCatprevalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPre.getCatprevalCodigo());
                 cxc.setCxcActivo(true);
@@ -90,7 +93,7 @@ public class CuentaPorCobrarServicio {
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat.getPatvalAnio()));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -101,11 +104,11 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcAnio(impPat.getPatvalAnio());
                 cxc.setCxcMes(0);
                 cxc.setCxcTipo("PA");
-                cxc.setCxcReferencia("AE-MPM"+impPat.getPatCodigo().getPatCodigo());
+                cxc.setCxcReferencia("AE-MPM" + impPat.getPatCodigo().getPatCodigo());
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat.getPatvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPat.getPatvalCodigo());
                 cxc.setCxcActivo(true);
@@ -115,7 +118,7 @@ public class CuentaPorCobrarServicio {
     }
 
     public void crearCxcPorImpPatente15mil(Patente15xmilValoracion impPat15) throws Exception {
-         BigDecimal total = impPat15.getPat15valTotal();
+        BigDecimal total = impPat15.getPat15valTotal();
 
         if (total.compareTo(BigDecimal.ZERO) == 1) {
             CuentaPorCobrar cxc = new CuentaPorCobrar();
@@ -126,7 +129,7 @@ public class CuentaPorCobrarServicio {
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat15.getPat15valAnioDecla()));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -137,11 +140,11 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcAnio(impPat15.getPat15valAnioDecla());
                 cxc.setCxcMes(0);
                 cxc.setCxcTipo("PM");
-                cxc.setCxcReferencia("AE-MPM"+impPat15.getPatCodigo().getPatCodigo());
+                cxc.setCxcReferencia("AE-MPM" + impPat15.getPatCodigo().getPatCodigo());
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat15.getPat15valAnioDecla()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPat15.getPat15valCodigo());
                 cxc.setCxcActivo(true);
@@ -162,7 +165,7 @@ public class CuentaPorCobrarServicio {
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPlus.getCatprepluvalAnio()));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -177,7 +180,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPlus.getCatprepluvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPlus.getCatprepluvalCodigo());
                 cxc.setCxcActivo(true);
@@ -199,7 +202,7 @@ public class CuentaPorCobrarServicio {
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impAlc.getCatprealcvalAnio()));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -214,7 +217,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impAlc.getCatprealcvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impAlc.getCatprealcvalCodigo());
                 cxc.setCxcActivo(true);
@@ -232,11 +235,11 @@ public class CuentaPorCobrarServicio {
             cxc = buscarCxCPorTipoyClave("SE", ser.getSerCodigo());
             if (cxc != null) {
                 if (cxc.getCxcEstado().equals("P")) {
-                    cxc.setCxcAnio(java.util.Calendar.YEAR);
+                    cxc.setCxcAnio(java.util.Calendar.getInstance().getTime().getYear()+1900);
                     cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                     cxc.setCxcValorTotal(total);
                     cxc.setCxcSaldo(total);
-                    cxc.setCxcFechaVencimiento(null);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(java.util.Calendar.getInstance().getTime().getYear()+1900));
                     cxcDao.editar(cxc);
                 } else {
                     //ya hay pagos a esta cuenta, no se puede cambiar los valores
@@ -244,14 +247,14 @@ public class CuentaPorCobrarServicio {
             } else {
                 cxc = new CuentaPorCobrar();
                 cxc.setProCi(ser.getProCi());
-                cxc.setCxcAnio(java.util.Calendar.YEAR);
+                cxc.setCxcAnio(java.util.Calendar.getInstance().getTime().getYear()+1900);
                 cxc.setCxcMes(0);
                 cxc.setCxcTipo("SE");
                 cxc.setCxcReferencia(ser.getProCi().getProCi());
                 cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
                 cxc.setCxcValorTotal(total);
                 cxc.setCxcSaldo(total);
-                cxc.setCxcFechaVencimiento(null);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(java.util.Calendar.getInstance().getTime().getYear()+1900));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(ser.getSerCodigo());
                 cxc.setCxcActivo(true);
@@ -263,4 +266,11 @@ public class CuentaPorCobrarServicio {
     public CuentaPorCobrar buscarCxCPorTipoyClave(String tipo, Integer codRef) throws Exception {
         return cxcDao.buscarPor2Campos("CuentaPorCobrar", "cxcTipo", tipo, "cxcCodRef", codRef);
     }
+
+    public Date obtenerFechaFinAnio(int anio) throws Exception {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = formatter.parse("12/31/"+anio);
+        return date;
+    }
 }
+
