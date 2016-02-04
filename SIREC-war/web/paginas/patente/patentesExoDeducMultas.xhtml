@@ -25,7 +25,7 @@
                                                      action="#{gestionExoDedMulPatenteControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,ExoDedBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlConExoDedMulNumPat,pnlConValExuDedMul"
+                                                     update=":frmPat:tabPrin:pnlConExoDedMulNumPat,pnlConValExuDedMul,:frmPat:tabPrin:patExDedMulBotGuAct"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -46,7 +46,7 @@
                                                  action="#{gestionExoDedMulPatenteControlador.inicializar()}" 
                                                  icon="ui-icon-disk"  
                                                  process="@this,ExoDedBuscaPatente" 
-                                                 update=":frmPat,pnlConExoDedMulNumPat"
+                                                 update=":frmPat,pnlConExoDedMulNumPat,patExDedMulBotGuAct"
                                                  async="true"
                                                  global="false"
                                                  />                        
@@ -135,10 +135,11 @@
                                      maxlength="20" size="10"/>
                         <p:message for="porceIngreso" display="icon"/>
 
-                        <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_base_imponible_negativa}"/>
+                   <!--    <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_base_imponible_negativa}"/>
                         <p:inputText requiredMessage="#{txt.lbl_base_imponible_negativa} Se nesecita un valor"  id="baseImpNegativa"  value="#{gestionExoDedMulPatenteControlador.patValExActual.patenteBaseimpNegativa}" 
-                                     maxlength="20" size="10"/>
-                        <p:message for="baseImpNegativa" display="icon"/> </h:panelGrid>  
+                                     maxlength="20" size="10"/> 
+                        <p:message for="baseImpNegativa" display="icon"/> -->
+                    </h:panelGrid>  
                     <h:panelGrid columns="2" id="pnlConBotExoDeducMul">
                         <p:commandButton value="#{txt.btn_ver_documentos}" 
                                          id="btnVerDocu" 
@@ -252,8 +253,8 @@
 
                 </h:panelGrid>
 
-                <h:panelGrid columns="2">
-                    <p:commandButton value="#{txt.btn_guardar}" 
+                <h:panelGrid columns="2" id="patExDedMulBotGuAct">
+                    <p:commandButton rendered="#{gestionExoDedMulPatenteControlador.verGuarda==1}" value="#{txt.btn_guardar}" 
                                      id="btnGuardar2" 
                                      action="#{gestionExoDedMulPatenteControlador.guardaPatenteValExtra()}" 
                                      icon="ui-icon-disk"  
@@ -262,7 +263,7 @@
                                      async="true"
                                      global="false"
                                      />
-                    <p:commandButton value="#{txt.btn_actualizar}" 
+                    <p:commandButton rendered="#{gestionExoDedMulPatenteControlador.verActualiza==1}" value="#{txt.btn_actualizar}" 
                                      id="btnActualiza2" 
                                      action="#{gestionExoDedMulPatenteControlador.actualizaPatenteValExtra()}" 
                                      icon="ui-icon-disk"  

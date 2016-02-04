@@ -25,7 +25,7 @@
                                                      action="#{gestionExoDedMulUnoCincoPorMil.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,pnl15xMilExoBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlCon15xMilExoDedMulNumPat,pnlConValExuDedMul15PorMil"
+                                                     update=":frmPat:tabPrin:pnlCon15xMilExoDedMulNumPat,pnlConValExuDedMul15PorMil,:frmPat:tabPrin:pnl15xMilExoBtnGuAct"
                                                      async="true"
                                                      global="false"
                                                      />                                       
@@ -122,10 +122,10 @@
                                       maxlength="20" size="40"/>
                         <p:message for="porceIngresoMil" display="icon"/>
 
-                        <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_base_imponible_negativa}"/>
+                  <!--      <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_base_imponible_negativa}"/>
                         <p:inputText  id="baseImpNegativaMil"  value="#{gestionExoDedMulUnoCincoPorMil.patValEx15xMilActual.pat15valextBase}" 
                                       maxlength="20" size="40"/>
-                        <p:message for="baseImpNegativaMil" display="icon"/>
+                        <p:message for="baseImpNegativaMil" display="icon"/> -->
 
                         <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_mes_incumplimiento}"/>
                         <p:inputText requiredMessage="#{txt.lbl_mes_incumplimiento} Se nesecita un valor"  id="txt15MesIncumplimiento"  value="#{gestionExoDedMulUnoCincoPorMil.patValEx15xMilActual.pat15valNumMesesIncum}" 
@@ -268,10 +268,19 @@
                         </p:panel>
                     </h:panelGrid>
                 </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <p:commandButton value="#{txt.btn_guardar}" 
+                <h:panelGrid columns="2" id="pnl15xMilExoBtnGuAct">
+                    <p:commandButton rendered="#{gestionExoDedMulUnoCincoPorMil.verGuarda==1}" value="#{txt.btn_guardar}" 
                                      id="btnGuardar15xMilExoDed" 
                                      action="#{gestionExoDedMulUnoCincoPorMil.guardaPatente15xMilValExtra()}" 
+                                     icon="ui-icon-disk"  
+                                     process="@this,pnlCon15xMilExuDedMul" 
+                                     update=":frmPat,pnlCon15xMilExuDedMul,frmPat:msgs"
+                                     async="true"
+                                     global="false"
+                                     />
+                    <p:commandButton rendered="#{gestionExoDedMulUnoCincoPorMil.verActualiza==1}" value="#{txt.btn_actualizar}" 
+                                     id="btnActualizar15xMilExoDed" 
+                                     action="#{gestionExoDedMulUnoCincoPorMil.actualizaPatente15xMilValExtra()}" 
                                      icon="ui-icon-disk"  
                                      process="@this,pnlCon15xMilExuDedMul" 
                                      update=":frmPat,pnlCon15xMilExuDedMul,frmPat:msgs"

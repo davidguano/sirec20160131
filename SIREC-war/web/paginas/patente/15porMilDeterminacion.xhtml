@@ -26,7 +26,7 @@
                                                      action="#{gestionDetPatenteUnoCincoporMilControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,pnl15xMiDeterBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:"
+                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnl15xMilDetBtnGuAct"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -214,9 +214,18 @@
                                 <p:message for="txtTot" display="icon"/>
 
                             </h:panelGrid>
-                            <h:panelGrid columns="2">
-                                <p:commandButton value="#{txt.btn_guardar}" 
+                            <h:panelGrid columns="2" id="pnl15xMilDetBtnGuAct">
+                                <p:commandButton rendered="#{gestionDetPatenteUnoCincoporMilControlador.verGuardar==1}" value="#{txt.btn_guardar}" 
                                                  id="btnGuardarPag4" 
+                                                 action="#{gestionDetPatenteUnoCincoporMilControlador.guardaPatenteDet15xMil()}" 
+                                                 icon="ui-icon-disk"  
+                                                 process="@this,pnlConPatPorMil" 
+                                                 update=":frmPat:tabPrin:pnlConPatPorMil,frmPat:msgs"
+                                                 async="true"
+                                                 global="false"
+                                                 />
+                                <p:commandButton rendered="#{gestionDetPatenteUnoCincoporMilControlador.verActualiza==1}" value="#{txt.btn_actualizar}" 
+                                                 id="btnActualizaPag4" 
                                                  action="#{gestionDetPatenteUnoCincoporMilControlador.guardaPatenteDet15xMil()}" 
                                                  icon="ui-icon-disk"  
                                                  process="@this,pnlConPatPorMil" 

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <!--REPORTES DE PATENTE-->
+            <h:form id="frmPat">   
+                <p:growl id="msgs" showSummary="true" sticky="true" showDetail="false"   /> 
+                <center>
+                    <p:panel header="Reportes Patente:" >
+                        <h:panelGrid id="pnlReporPat1">
+                            <p:panel header="Reporte de negocios por rango de patrimonio:" style="font-size: 12px">
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel value="Ingrese el valor inicial: " style="font-size: 12px"/> <p:inputText value="#{gestionRepPatenteControlador.valorInicial}"></p:inputText>
+                                    <p:outputLabel value="Ingrese el valor final: " style="font-size: 12px"/> <p:inputText value="#{gestionRepPatenteControlador.valorFinal}"></p:inputText>
+                                    <p:commandButton style="font-size: 12px" id="btnReporte1" value="Generar Reporte"
+                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlReporPat1" 
+                                                     />
+                                    <p:column></p:column>
+                                </h:panelGrid>
+                            </p:panel>
+                        </h:panelGrid>
+                    </p:panel>
+                </center>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
