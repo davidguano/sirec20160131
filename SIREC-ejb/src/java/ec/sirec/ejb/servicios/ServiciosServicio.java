@@ -22,6 +22,8 @@ public class ServiciosServicio {
     @EJB
     private ServiciosFacade serviciosDao;
     private String ENTIDAD_SERVICIOS = "Servicios";
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
 
     public String crearServicios(Servicios servicios) throws Exception {
         serviciosDao.crear(servicios);
@@ -30,6 +32,7 @@ public class ServiciosServicio {
 
     public String editarTasa(Servicios servicios) throws Exception {
         serviciosDao.editar(servicios);
+       cxcServicio.crearCxcPorServicios(servicios);
         return "Se ha modificado el servicio " + servicios.getSerCodigo();
     }
     

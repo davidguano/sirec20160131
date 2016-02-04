@@ -26,7 +26,8 @@ public class CatastroPredialPlusvaliaValoracionServicio {
     @EJB
     private CatastroPredialPlusvaliaValoracionFacade catastroPredialPlusvaliaValoracionDao;
     private final String ENTIDAD_CATASTRO_PREDIAL_PLUSVALIA_VALORACION="CatastroPredialPlusvaliaValoracion";
-    
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
     public String crearCatastroPredialPlusvaliaValoracion(CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion) throws Exception {
         catastroPredialPlusvaliaValoracionDao.crear(catastroPredialPlusvaliaValoracion);
         return "Se ha creado la aplicación" + catastroPredialPlusvaliaValoracion.getCatprepluvalCodigo();
@@ -34,6 +35,7 @@ public class CatastroPredialPlusvaliaValoracionServicio {
 
     public String editarCatastroPredialPlusvaliaValoracion(CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion) throws Exception {
         catastroPredialPlusvaliaValoracionDao.editar(catastroPredialPlusvaliaValoracion);
+        cxcServicio.crearCxcPorImpPlusvalia(catastroPredialPlusvaliaValoracion);
         return "Se ha modificado la aplicación" + catastroPredialPlusvaliaValoracion.getCatprepluvalCodigo();
     }
     

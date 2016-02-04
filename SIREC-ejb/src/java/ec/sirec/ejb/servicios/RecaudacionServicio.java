@@ -10,6 +10,7 @@ import ec.sirec.ejb.entidades.RecaudacionDet;
 import ec.sirec.ejb.facade.RecaudacionCabFacade;
 import ec.sirec.ejb.facade.RecaudacionDetFacade;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -62,8 +63,10 @@ public class RecaudacionServicio {
         BigDecimal t = BigDecimal.ZERO;
         if (!lstDets.isEmpty()) {
             for (RecaudacionDet det : lstDets) {
-                if (det.getRecdetValor() != null) {
-                    t = t.add(det.getRecdetValor());
+                if (det.getActivo()) {
+                    if (det.getRecdetValor() != null) {
+                        t = t.add(det.getRecdetValor());
+                    }
                 }
             }
         }
@@ -77,6 +80,7 @@ public class RecaudacionServicio {
         if (vcabecera.getRecTotal() != BigDecimal.ZERO) {
             this.crearCabecera(vcabecera);
             if (!lstDets.isEmpty()) {
+                List<RecaudacionDet> lstActivos = new ArrayList<RecaudacionDet>();
                 for (RecaudacionDet det : lstDets) {
                     if (det.getActivo()) {
                         det.setRecCodigo(vcabecera);
@@ -84,9 +88,10 @@ public class RecaudacionServicio {
                             det.setRecdetValor(BigDecimal.ZERO);
                         }
                         this.recDetalleDao.crear(det);
+                        lstActivos.add(det);
                     }
                 }
-                recDetalleDao.actualizarCuentasPorCobrar(lstDets);
+                recDetalleDao.actualizarCuentasPorCobrar(lstActivos);
             }
         }
     }
@@ -107,3 +112,5 @@ public class RecaudacionServicio {
     }
 
 }
+
+

@@ -39,6 +39,8 @@ public class PatenteServicio {
     private DatoGlobalFacade datoGlobalDao;
     @EJB
     private PatenteFacade patenteDao;
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
 
     private String ENTIDAD_PATENTE = "Patente";
     private String ENTIDAD_DATO_GLOBAL = "DatoGlobal";
@@ -129,6 +131,7 @@ public class PatenteServicio {
 
     public String editarPatenteValoracion(PatenteValoracion patvalCodgo) throws Exception {
         patenteValoracionDao.editar(patvalCodgo);
+        cxcServicio.crearCxcPorImpPatente(patvalCodgo);
         return "se ha modificado la patente valoraciont" + patvalCodgo;
     }
 

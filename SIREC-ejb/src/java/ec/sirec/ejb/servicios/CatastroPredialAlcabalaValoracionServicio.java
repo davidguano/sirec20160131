@@ -26,6 +26,8 @@ public class CatastroPredialAlcabalaValoracionServicio {
     @EJB
     private CatastroPredialAlcabalaValoracionFacade catastroPredialAlcabalaValoracionDao;
     private final String ENTIDAD_CATASTRO_PREDIAL_ALCABALA_VALORACION="CatastroPredialAlcabalaValoracion";
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
     
     public String crearCatastroPredialAlcabalaValoracion(CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion) throws Exception {
         catastroPredialAlcabalaValoracionDao.crear(catastroPredialAlcabalaValoracion);
@@ -34,6 +36,7 @@ public class CatastroPredialAlcabalaValoracionServicio {
 
     public String editarCatastroPredialAlcabalaValoracion(CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion) throws Exception {
         catastroPredialAlcabalaValoracionDao.editar(catastroPredialAlcabalaValoracion);
+        cxcServicio.crearCxcPorImpAlcabala(catastroPredialAlcabalaValoracion);
         return "Se ha modificado la aplicación" + catastroPredialAlcabalaValoracion.getCatprealcvalCodigo();
     }
     
