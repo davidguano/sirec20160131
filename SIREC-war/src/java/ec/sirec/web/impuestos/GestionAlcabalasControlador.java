@@ -213,7 +213,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
         try {
 
             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(catastroPredialActual.getCatpreCodigo());
-            catastroPredialActual.setCatpreAreaTotal(catastroPredialActual.getCatpreAreaTotalEsc() + catastroPredialActual.getCatpreAreaTotalCons());
+            catastroPredialActual.setCatpreAreaTotal(catastroPredialActual.getCatpreAreaTotal());
 
             propietario = new Propietario();
             propietario = catastroPredialServicio.obtenerPropietarioPrincipalPredio(catastroPredialActual.getCatpreCodigo());
