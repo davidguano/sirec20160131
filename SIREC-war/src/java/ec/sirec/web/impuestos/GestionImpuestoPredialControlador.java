@@ -24,6 +24,7 @@ import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
 import ec.sirec.ejb.servicios.CatastroPredialServicio;
 import ec.sirec.ejb.servicios.CatastroPredialValoracionServicio;
 import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
+import ec.sirec.ejb.servicios.CuentaPorCobrarServicio;
 import ec.sirec.ejb.servicios.DatoGlobalServicio;
 import ec.sirec.ejb.servicios.FittoCorviniServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
@@ -129,11 +130,9 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
     @EJB
     private FittoCorviniServicio fittoCorviniServicio;
     @EJB
-    private RecaudacionCabServicio recaudacionCabServicio;
-    @EJB
-    private RecaudacionDetServicio recaudacionDetServicio;
-    @EJB
     private DatoGlobalServicio datoGlobalServicio;
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
 
     @PostConstruct
     public void inicializar() {
@@ -917,22 +916,9 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
     public void emision() {
         try {
              for (int i = 0; i < listaEjecutarValoracion.size(); i++) {
-                 recaudacioCab = new RecaudacionCab();
+                 
                  EjecutarValoracion eje = listaEjecutarValoracion.get(i);
-                 recaudacioCab.setProCi(eje.getProCi()); 
-                 recaudacioCab.setRecFecha(new Date()); 
-                 recaudacioCab.setRecTotal(eje.getTotalRegistro());
-                 recaudacioCab.setRecEstado("A");
-                 recaudacioCab.setUsuIdentificacion(usuarioActual);                  
-                 recaudacionCabServicio.crearRecaudacionCab(recaudacioCab);
-                 
-                 recaudacionDet = new RecaudacionDet();
-                 recaudacionDet.setRecCodigo(recaudacioCab); 
-                 recaudacionDet.setRecdetTipo("PR"); 
-                 recaudacionDet.setRecdetReferencia("OK");
-                 recaudacionDet.setRecdetValor(eje.getTotalRegistro());                  
-                 recaudacionDetServicio.crearRecaudacionDet(recaudacionDet);
-                 
+                 cxcServicio.crearCxcPorImpPredial(eje.getCatastroPredialValoracion());
                  addSuccessMessage("Emisión Realizada"); 
                  
              }
