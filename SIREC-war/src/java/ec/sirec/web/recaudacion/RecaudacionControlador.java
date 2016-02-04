@@ -110,6 +110,7 @@ public class RecaudacionControlador extends BaseControlador{
                 listaRecaudacionCabActual=new ArrayList<RecaudacionCab>();
                 listaRecaudacionCabActual=recaudacionServicio.listaRecaudacionesPorPropietario(propietarioBusqueda.getProCi());
                 listaRecaudacionDetalleActual=new ArrayList<RecaudacionDet>();
+                recaudacionCabeceraActual=new RecaudacionCab();
                 recaudacionCabeceraActual.setProCi(propietarioServicio.buscarPropietario(propietarioBusqueda.getProCi()));
                 listaRecaudacionDetalleActual = recaudacionServicio.listaDetallesARecaudarPorCiAnio(recaudacionCabeceraActual.getProCi().getProCi(), null);
             }
@@ -220,3 +221,5 @@ public class RecaudacionControlador extends BaseControlador{
     
 
 }
+
+
