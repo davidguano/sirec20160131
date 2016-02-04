@@ -5,6 +5,7 @@
  */
 package ec.sirec.web.recaudacion;
 
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.RecaudacionCab;
 import ec.sirec.ejb.entidades.RecaudacionDet;
@@ -52,6 +53,10 @@ public class RecaudacionControlador extends BaseControlador{
     private Propietario propietarioBusqueda;
     private List<RecaudacionDet> listaRecaudacionDetalleActual;
     private List<RecaudacionCab> listaRecaudacionCabActual;
+    
+    
+    private List<Integer> listaAnios;
+    private Integer anio;
 
     /**
      * Creates a new instance of RecaudacionControlador
@@ -66,6 +71,8 @@ public class RecaudacionControlador extends BaseControlador{
             recaudacionCabeceraActual = new RecaudacionCab();
             listaRecaudacionDetalleActual = new ArrayList<RecaudacionDet>();
             listaRecaudacionCabActual = new ArrayList<RecaudacionCab>();
+            listaAnios=new ArrayList<Integer>();
+            listaAnios=recaudacionServicio.listaAnios();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -112,7 +119,7 @@ public class RecaudacionControlador extends BaseControlador{
                 listaRecaudacionDetalleActual=new ArrayList<RecaudacionDet>();
                 recaudacionCabeceraActual=new RecaudacionCab();
                 recaudacionCabeceraActual.setProCi(propietarioServicio.buscarPropietario(propietarioBusqueda.getProCi()));
-                listaRecaudacionDetalleActual = recaudacionServicio.listaDetallesARecaudarPorCiAnio(recaudacionCabeceraActual.getProCi().getProCi(), null);
+                listaRecaudacionDetalleActual = recaudacionServicio.listaDetallesARecaudarPorCiAnio(recaudacionCabeceraActual.getProCi().getProCi(), anio);
             }
 
         } catch (Exception ex) {
@@ -217,9 +224,26 @@ public class RecaudacionControlador extends BaseControlador{
     public void setListaRecaudacionCabActual(List<RecaudacionCab> listaRecaudacionCabActual) {
         this.listaRecaudacionCabActual = listaRecaudacionCabActual;
     }
+
+    public List<Integer> getListaAnios() {
+        return listaAnios;
+    }
+
+    public void setListaAnios(List<Integer> listaAnios) {
+        this.listaAnios = listaAnios;
+    }
+
+    public Integer getAnio() {
+        return anio;
+    }
+
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
     
     
 
 }
+
 
 

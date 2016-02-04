@@ -11,10 +11,10 @@
             <center>
                 <h:form id="frmRec" style="font-size: 12px;">         
                     <p:growl id="msgs" showDetail="true"/>
-                    <p:panel header="Busqueda">
-                        <h:panelGrid columns="3">
-                            <h:panelGrid columns="3" width="75%">
-                                <h:outputLabel value="CI/RUC:" for="recProCi" />
+                    <p:panel header="Contribuyente">
+                        <h:panelGrid columns="2">
+                            <h:panelGrid columns="3" width="400">
+                                <h:outputLabel value="Buscar por CI/RUC:" for="recProCi" />
                                 <p:autoComplete id="recProCi" value="#{recaudacionControlador.propietarioBusqueda}" 
                                                 completeMethod="#{recaudacionControlador.obtenerPropietarioPorCedula}" 
                                                 converter="#{propietarioConverter}"
@@ -30,7 +30,7 @@
                                 </p:autoComplete>
                                 <p:message for="recProCi"/>
 
-                                <h:outputLabel value="Apellidos:" for="recProApe" />
+                                <h:outputLabel value="Buscar por Apellidos:" for="recProApe" />
                                 <p:autoComplete id="recProApe" value="#{recaudacionControlador.propietarioBusqueda}" 
                                                 completeMethod="#{recaudacionControlador.obtenerPropietarioPorApellidos}" 
                                                 converter="#{propietarioConverter}"
@@ -46,7 +46,7 @@
                                             async="true" global="false"/>
                                 </p:autoComplete>
                                 <p:message for="recProApe"/>
-                                <h:outputLabel value="Nombres:" for="recProNom" />
+                                <h:outputLabel value="Buscar por Nombres:" for="recProNom" />
                                 <p:autoComplete id="recProNom" value="#{recaudacionControlador.propietarioBusqueda}" 
                                                 completeMethod="#{recaudacionControlador.obtenerPropietarioPorNombres}" 
                                                 converter="#{propietarioConverter}"
@@ -63,26 +63,37 @@
                                 </p:autoComplete>
                                 <p:message for="recProNom"/>
                             </h:panelGrid>
-                            <p:commandButton id="btnConsultarRubros" value="Consultar"
+                            <h:panelGrid>
+                            <p:outputLabel value="Año"/>
+                                <p:selectOneMenu id="anio" value="#{recaudacionControlador.anio}">
+                                    <f:selectItems value="#{recaudacionControlador.listaAnios}"/>
+                                </p:selectOneMenu>
+                            <p:commandButton id="btnConsultarRubros" value="Consultar Pendientes"
                                              action="#{recaudacionControlador.listarRubrosARecaudar}"
                                              async="true" global="false"
                                              update="pnlRecaudacion,pnlListaRecaudaciones,pnlListaRecaudacionDetalle">
                             </p:commandButton>
-
-                            <h:panelGrid id="pnlRecaudacion" columns="4">
-                                <p:outputLabel value="CI/RUC:"/>
-                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proCi}"/>
-                                <f:verbatim/>
-                                <f:verbatim/>
-                                <p:outputLabel value="Apellidos:"/>
-                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proNombres}"/>
-                                <p:outputLabel value="Nombres:"/>
-                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proApellidos}"/>
                             </h:panelGrid>
                         </h:panelGrid>
                     </p:panel>
                     <br/>
                     <p:panel header="Recaudacion">
+                        
+                            <h:panelGrid id="pnlRecaudacion" columns="6">
+                                <p:outputLabel value="CI/RUC:"/>
+                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proCi}"/>
+                                <p:outputLabel value="Apellidos:"/>
+                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proNombres}"/>
+                                <p:outputLabel value="Nombres:"/>
+                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proApellidos}"/>
+                                <p:outputLabel value="Razón Social:"/>
+                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proRazonSocial}"/>
+                                <p:outputLabel value="Discapacidad:"/>
+                                <p:selectBooleanCheckbox value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.proDiscapacidad}"
+                                                         disabled="true"/>
+                                <p:outputLabel value="Ciudad:"/>
+                                <p:outputLabel value="#{recaudacionControlador.recaudacionCabeceraActual.proCi.catdetCiudad.catdetTexto}"/>
+                            </h:panelGrid>
                         <h:panelGrid columns="2">
                             <h:panelGrid width="400">
                                 <h:panelGrid id="pnlListaRecaudaciones">
@@ -144,7 +155,7 @@
                                         </p:column>
                                     </p:dataTable>
                                 </h:panelGrid>
-                                <p:commandButton id="btnGuardarRec" value="Guardar"
+                                <p:commandButton id="btnGuardarRec" value="Guardar Recaudación"
                                                  action="#{recaudacionControlador.guardarRecaudacion}"
                                                  async="true" global="false" process="@this,pnlListaRecaudacionDetalle" update=":frmRec:msgs">
                                      <p:confirm header="Confirmación" message="¿Está seguro de registrar esta recaudación?" icon="ui-icon-alert" />
@@ -166,6 +177,7 @@
         </ui:define>
     </ui:composition>
 </html>
+
 
 
 
