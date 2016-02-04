@@ -27,6 +27,7 @@ public class ServiciosServicio {
 
     public String crearServicios(Servicios servicios) throws Exception {
         serviciosDao.crear(servicios);
+         cxcServicio.crearCxcPorServicios(servicios);
         return "Se ha creado el servicio " + servicios.getSerCodigo();
     }
 
