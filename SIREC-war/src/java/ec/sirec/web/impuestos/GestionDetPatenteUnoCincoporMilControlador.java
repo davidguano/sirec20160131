@@ -59,6 +59,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     private CatalogoDetalle catDetAnioBalance;
     private CatalogoDetalle catDetAnioDeclara;
     private List<CatalogoDetalle> listAnios;
+    private int verGuardar;
+    private int verActualiza;
 
     private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
 
@@ -68,6 +70,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     @PostConstruct
     public void inicializar() {
         try {
+            verGuardar = 0;
+            verActualiza = 0;
             numPatente = "";
             verBuscaPatente = 0;
             buscNumPat = "";
@@ -121,9 +125,14 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                     catDetAnioDeclara = objCatDetAux;
                     objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(patente15milValActual.getPat15valAnioBalance() + "", "A" + patente15milValActual.getPat15valAnioBalance());
                     catDetAnioBalance = objCatDetAux;
+                    verActualiza = 1;
+                    verGuardar = 0;
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
+                    patente15milValActual = new Patente15xmilValoracion();
+                    verGuardar = 1;
+                    verActualiza = 0;
                 }
             }
         } catch (Exception e) {
@@ -458,6 +467,22 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void setListAnios(List<CatalogoDetalle> listAnios) {
         this.listAnios = listAnios;
+    }
+
+    public int getVerGuardar() {
+        return verGuardar;
+    }
+
+    public void setVerGuardar(int verGuardar) {
+        this.verGuardar = verGuardar;
+    }
+
+    public int getVerActualiza() {
+        return verActualiza;
+    }
+
+    public void setVerActualiza(int verActualiza) {
+        this.verActualiza = verActualiza;
     }
 
 }

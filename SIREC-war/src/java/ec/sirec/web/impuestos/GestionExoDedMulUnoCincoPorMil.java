@@ -74,6 +74,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     private String buscNumPat;
     private int verBuscaPatente;
     private int verResultado;
+    private int verGuarda;
+    private int verActualiza;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -96,6 +98,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             listadoArchivos = new ArrayList<PatenteArchivo>();
             patenteArchivoActual = new PatenteArchivo();
             listarAdicionalDeductivo();
+            verGuarda=0;
+            verActualiza=0;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -134,6 +138,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
                     adiDeductivoActual.setAdidedCodigo(patValEx15xMilActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
+                    verActualiza=1;
+                    verGuarda=0;
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente();//"AE-MPM-" + patenteActual.getPatCodigo();
@@ -144,6 +150,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
                     patValEx15xMilActual.setPat15valextBase(BigDecimal.ZERO);
                     patValEx15xMilActual.setPat15valEvaluaDatFalsos(0);
                     adiDeductivoActual = new AdicionalesDeductivos();
+                    verGuarda=1;
+                    verActualiza=0;
                 }
 
             }
@@ -207,7 +215,25 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, e);
         }
     }
+public void actualizaPatente15xMilValExtra() {
+        try {
+            if (habilitaEdicion == false) {
+                AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
+                objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
+                patValEx15xMilActual.setAdidedCodigo(objAdiDec);
+                patValEx15xMilActual.setPat15valCodigo(patValo15xMilActal);
+                unoPCinoPorMilServicio.editarPatenteValoracion15xMilExtra(patValEx15xMilActual);
+                addSuccessMessage("Actualizado Exitosamente", "Patente Valoración Extra Guardado");
+                patValEx15xMilActual = new Patente15xmilValoracionExtras();
+                cargaObjetosBitacora();
+                guardarArchivos();
+                inicializar();
+            }
 
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
     public void guardaPatenteValoracion15PorMil() {
         BigDecimal valTemporal;
         valTemporal = BigDecimal.valueOf(0.00);
@@ -448,6 +474,22 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void setVerResultado(int verResultado) {
         this.verResultado = verResultado;
+    }
+
+    public int getVerGuarda() {
+        return verGuarda;
+    }
+
+    public void setVerGuarda(int verGuarda) {
+        this.verGuarda = verGuarda;
+    }
+
+    public int getVerActualiza() {
+        return verActualiza;
+    }
+
+    public void setVerActualiza(int verActualiza) {
+        this.verActualiza = verActualiza;
     }
 
 }

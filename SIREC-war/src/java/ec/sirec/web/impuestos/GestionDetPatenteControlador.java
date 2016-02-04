@@ -52,6 +52,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
     private BigDecimal valTotal;
     private BigDecimal valTasaProc;
     private BigDecimal valDeduciones;
+    private BigDecimal valBaseImpNegativa;
+    private int activaBaseImponible;
     private CatalogoDetalle catDetAnio;
     private List<CatalogoDetalle> listAnios;
     private boolean habilitaEdicion;
@@ -60,6 +62,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
     private String buscNumPat;
     private int verBuscaPatente;
     private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteControlador.class.getName());
+    private int verguarda;
+    private int verActualiza;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -67,6 +71,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            activaBaseImponible = 0;
             verBuscaPatente = 0;
             inicializarValCalcula();
             datoGlobalActual = new DatoGlobal();
@@ -77,6 +82,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
             numPatente = "";
             buscNumPat = "";
             catDetAnio = new CatalogoDetalle();
+            verguarda = 0;
+            verActualiza = 0;
             listarAnios();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -120,7 +127,12 @@ public class GestionDetPatenteControlador extends BaseControlador {
             valPatrimonio = patenteValoracionActal.getPatvalActivos().subtract(patenteValoracionActal.getPatvalPasivos());
             valPatrimonio = valPatrimonio.setScale(2, RoundingMode.HALF_UP);
             patenteValoracionActal.setPatvalPatrimonio(valPatrimonio);
-            calculaImpuestoPatente();
+            if (valPatrimonio.compareTo(BigDecimal.ZERO) < 0) {
+                activaBaseImponible = 1;
+            } else {
+                calculaImpuestoPatente();
+            }
+
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -358,9 +370,14 @@ public class GestionDetPatenteControlador extends BaseControlador {
                     CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                     objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(patenteValoracionActal.getPatvalAnio() + "", "A" + patenteValoracionActal.getPatvalAnio());
                     catDetAnio = objCatDetAux;
+                    verguarda = 0;
+                    verActualiza = 1;
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente();//"AE-MPM-" + patenteActual.getPatCodigo();
+                    patenteValoracionActal = new PatenteValoracion();
+                    verguarda = 1;
+                    verActualiza = 0;
 
                 }
             }
@@ -500,6 +517,38 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void setListAnios(List<CatalogoDetalle> listAnios) {
         this.listAnios = listAnios;
+    }
+
+    public int getVerguarda() {
+        return verguarda;
+    }
+
+    public void setVerguarda(int verguarda) {
+        this.verguarda = verguarda;
+    }
+
+    public int getVerActualiza() {
+        return verActualiza;
+    }
+
+    public void setVerActualiza(int verActualiza) {
+        this.verActualiza = verActualiza;
+    }
+
+    public int getActivaBaseImponible() {
+        return activaBaseImponible;
+    }
+
+    public void setActivaBaseImponible(int activaBaseImponible) {
+        this.activaBaseImponible = activaBaseImponible;
+    }
+
+    public BigDecimal getValBaseImpNegativa() {
+        return valBaseImpNegativa;
+    }
+
+    public void setValBaseImpNegativa(BigDecimal valBaseImpNegativa) {
+        this.valBaseImpNegativa = valBaseImpNegativa;
     }
 
 }

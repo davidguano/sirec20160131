@@ -65,6 +65,8 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     private SegUsuario usuarioActual;
     private PatenteArchivo patenteArchivoActual;
     private String buscNumPat;
+    private int verActualiza;
+    private int verGuarda;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -74,6 +76,8 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
         try {
             buscNumPat = "";
             numPatente = "";
+            verActualiza=0;
+            verGuarda=0;
             patenteArchivoActual = new PatenteArchivo();
             adiDeductivoActual = new AdicionalesDeductivos();
             patenteActual = new Patente();
@@ -183,6 +187,10 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
                     adiDeductivoActual.setAdidedCodigo(patValExActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //  "AE-MPM-" + patenteActual.getPatCodigo();
+                    verActualiza=1;
+                    verGuarda=0;
+                    System.out.println("Guarda" + verGuarda);
+                    System.out.println("Actualiza" + verActualiza);
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente();// "AE-MPM-" + patenteActual.getPatCodigo();
@@ -192,6 +200,10 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
                     patValExActual.setPatentePorcIngreso(Double.valueOf(100));
                     patValExActual.setPatenteBaseimpNegativa(BigDecimal.ZERO);
                     adiDeductivoActual = new AdicionalesDeductivos();
+                    verGuarda=1;
+                    verActualiza=0;
+                     System.out.println("Guarda" + verGuarda);
+                    System.out.println("Actualiza" + verActualiza);
                 }
 
             }
@@ -442,6 +454,22 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     public void setBuscNumPat(String buscNumPat) {
         this.buscNumPat = buscNumPat;
+    }
+
+    public int getVerActualiza() {
+        return verActualiza;
+    }
+
+    public void setVerActualiza(int verActualiza) {
+        this.verActualiza = verActualiza;
+    }
+
+    public int getVerGuarda() {
+        return verGuarda;
+    }
+
+    public void setVerGuarda(int verGuarda) {
+        this.verGuarda = verGuarda;
     }
 
 }
