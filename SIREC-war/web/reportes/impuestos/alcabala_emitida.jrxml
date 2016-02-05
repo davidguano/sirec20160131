@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
-	<property name="ireport.zoom" value="0.8918617681448637"/>
+	<property name="ireport.zoom" value="1.737986278420135"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="49"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.Integer"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
@@ -65,13 +65,13 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="88" splitType="Stretch">
 			<image>
 				<reportElement x="23" y="26" width="100" height="50" uuid="9472a441-fee0-4b7b-8f6c-d29b9de6ba15"/>
 				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="330" y="46" width="118" height="20" uuid="1a572aab-09a2-485a-a051-eed551db3c7a"/>
+				<reportElement x="350" y="46" width="118" height="20" uuid="1a572aab-09a2-485a-a051-eed551db3c7a"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
@@ -92,23 +92,30 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="448" y="46" width="65" height="20" uuid="89414fc2-c187-4614-8206-e52c142d0771"/>
+				<reportElement x="404" y="66" width="65" height="20" uuid="89414fc2-c187-4614-8206-e52c142d0771"/>
 				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="495" y="61" width="206" height="15" uuid="c722f916-1031-4349-a954-b0eea4b06664"/>
-				<textElement>
+				<reportElement x="593" y="54" width="206" height="15" uuid="c722f916-1031-4349-a954-b0eea4b06664"/>
+				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement x="696" y="61" width="103" height="15" uuid="339ab833-1065-48dd-8d54-46c4bd78daed"/>
-				<textElement>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="696" y="69" width="103" height="15" uuid="339ab833-1065-48dd-8d54-46c4bd78daed"/>
+				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="346" y="66" width="58" height="20" uuid="6575e204-c052-4e51-8dd9-e8eed5d8c186"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -116,6 +123,9 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="2" y="1" width="800" height="19" backcolor="#CAF4E9" uuid="8433ccbc-65c5-4fff-9fe9-3251a3f66d71"/>
+			</rectangle>
 			<staticText>
 				<reportElement x="0" y="0" width="69" height="20" uuid="e1cb9a6f-b9c9-4781-9ef3-84ff83006364"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -274,14 +284,14 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 		<band height="24" splitType="Stretch">
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="69" height="24" isPrintWhenDetailOverflows="true" uuid="4a32d6ef-95bb-41a1-945a-851a5647118d"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clave_catastral}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToBandHeight" x="69" y="0" width="21" height="24" isPrintWhenDetailOverflows="true" uuid="103ee054-a359-4e93-a3c3-b8f871d7caa2"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_anio}]]></textFieldExpression>
