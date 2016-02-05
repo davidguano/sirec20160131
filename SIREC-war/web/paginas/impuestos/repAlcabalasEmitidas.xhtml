@@ -12,9 +12,9 @@
             <h:form id="frmAlcaEmi">   
                 <p:growl id="msgs" showSummary="true" sticky="true" showDetail="false"   /> 
                 <center>
-                    <p:panel header="Reportes Alcabalas" >
+                    <p:panel header="Reportes Alcabalas Y Plusvarias" >
                         <h:panelGrid id="pnlReporAlca">
-                            <p:panel header="Reporte de Alcabalas Emitidas por año" style="font-size: 12px">
+                            <p:panel id="pnlAlcaAnio" header="Reporte de Alcabalas Emitidas por año" style="font-size: 12px">
                                 <h:panelGrid columns="4">
                                     <p:outputLabel value="Año:" style="font-size: 12px"/>
                                     
@@ -32,17 +32,76 @@
                                         </p:column> 
                                     </p:selectOneMenu> 
                                                                                                        
-                                    <p:commandButton style="font-size: 12px" id="btnReporte1" value="Generar Reporte"
+                                    <p:commandButton style="font-size: 12px" id="btnReporteAL" value="Generar Reporte"
                                                      action="#{gestionRepAlcabalasEmitidasControlador.reporteAlcabalaEmitidas()}"
                                                      oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      async="true"
                                                      global="false"
-                                                     process="@this,pnlReporAlca" 
+                                                     process="@this,pnlAlcaAnio" 
                                                      />
                                     <p:column></p:column>
                                 </h:panelGrid>
                             </p:panel>
+                            <p:panel id="pnlPlusAnio" header="Reporte de Plusvalia Emitidas por año" style="font-size: 12px">
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel value="Año:" style="font-size: 12px"/>
+                                    
+                                     <p:selectOneMenu id="cmbEmiPlusAnio" 
+                                                     value="#{gestionRepAlcabalasEmitidasControlador.catDetAnioPL}" style="width:250px"
+                                                     converter="#{catalogoDetalleConverter}" var="t"
+                                                     requiredMessage="Se necesita un valor Año:"  required="true" >
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listAnios}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu> 
+                                                                                                       
+                                    <p:commandButton style="font-size: 12px" id="btnReportePL" value="Generar Reporte"
+                                                     action="#{gestionRepAlcabalasEmitidasControlador.reportePlusvaliaEmitidas()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlPlusAnio" 
+                                                     />
+                                    <p:column></p:column>
+                                </h:panelGrid>
+                            </p:panel>
+                            
+                            
+                            <p:panel id="pnlPlusTipoTarif" header="Reporte de Plusvalia Emitidas por Tipo de Tarifa" style="font-size: 12px">
+                                <h:panelGrid columns="4">
+                                   <p:outputLabel value="#{txt.TIPO_TARIFA}"/>
+                                    
+                                   <p:selectOneMenu id="pComTT" value="#{gestionRepAlcabalasEmitidasControlador.catDetTipoTarifa}" style="width:180px;font-weight: bold;background: green;"
+                                                         converter="#{catalogoDetalleConverter}" var="t" required="true" requiredMessage="Se nesecita un valor: #{txt.TIPO_TARIFA}">
+                                            <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionRepAlcabalasEmitidasControlador.listaTipoDeTarifa}" 
+                                                           itemLabel="#{tipo.catdetTexto}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column>                                                                             
+                                        </p:selectOneMenu> 
+                                                                                                       
+                                    <p:commandButton style="font-size: 12px" id="btnReportePLTarif" value="Generar Reporte"
+                                                     action="#{gestionRepAlcabalasEmitidasControlador.reportePlusvaliaXTipoTarifa()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlPlusTipoTarif" 
+                                                     />
+                                    <p:column></p:column>
+                                </h:panelGrid>
+                            </p:panel>
+                            
                         </h:panelGrid>
                     </p:panel>
                 </center>
