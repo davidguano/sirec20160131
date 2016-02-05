@@ -212,7 +212,7 @@ public class NavegacionControlador extends BaseControlador {
 
             DefaultMenuItem contribucionMej = new DefaultMenuItem("Contribucion por Mejoras");
             contribucionMej.setIcon("ui-icon-person");
-            contribucionMej.setCommand("#{navegacionControlador.redireccionarAPagina('base','gestionContribucionMejoras')}");
+            contribucionMej.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','gestionContribucionMejoras')}");
             subMenuImpuestos.addElement(contribucionMej);
 
             menu.addElement(subMenuImpuestos);
@@ -231,7 +231,7 @@ public class NavegacionControlador extends BaseControlador {
             reportePatente.setCommand("#{navegacionControlador.redireccionarAPagina('patente','repNegRangPatrimonio')}");
             subMenuReportes.addElement(reportePatente);
                         
-            DefaultMenuItem reporteAlcabalas = new DefaultMenuItem("Reportes Alcabalas");
+            DefaultMenuItem reporteAlcabalas = new DefaultMenuItem("Alcabalas Y Plusvalias");
             reporteAlcabalas.setIcon("ui-icon-person");
             reporteAlcabalas.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','repAlcabalasEmitidas')}");
             subMenuReportes.addElement(reporteAlcabalas);
