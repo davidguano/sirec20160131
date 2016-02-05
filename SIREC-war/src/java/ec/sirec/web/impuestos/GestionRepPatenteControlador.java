@@ -10,6 +10,8 @@ import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.UtilitariosCod;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
     private BigDecimal valorFinal;
     private SegUsuario usuarioActual;
     private Date fechaActual;
+    private Date fechaInicial;
+    private Date fechaFinal;
 
     @PostConstruct
     public void inicializar() {
@@ -81,9 +85,48 @@ public class GestionRepPatenteControlador extends BaseControlador {
             parameters.put("valor_inicial", valorInicial);
             parameters.put("valor_final", valorFinal);
             parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
-            parameters.put("fecha_genera", fechaActual);
+            parameters.put("fecha_genera", fechaActual.getDay() + "-"+fechaActual.getMonth()+"-"+fechaActual.getYear());
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
             jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
+            fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+            session.setAttribute("reporteInforme", fichero);
+            usuarioActual = new SegUsuario();
+        } catch (JRException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        } finally {
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+        return null;
+    }
+
+    public String reporteEmisionPatentes() throws Exception {
+        Calendar fecha1 = Calendar.getInstance();
+        fechaActual = fecha1.getTime();
+        //Conexion con local datasource
+        usuarioActual = new SegUsuario();
+        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+        Timestamp fec1 = new Timestamp(fechaInicial.getTime());
+        Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+        UtilitariosCod util = new UtilitariosCod();
+        Connection conexion = util.getConexion();
+        byte[] fichero = null;
+        JasperReport jasperReport = null;
+        Map parameters = new HashMap();
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            session.removeAttribute("reporteInforme");
+            parameters.put("fecha_inicial", fec1);
+            parameters.put("fecha_final", fec2);
+            parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+            parameters.put("fecha_genera", fechaActual.getDay() + "-"+fechaActual.getMonth()+"-"+fechaActual.getYear());
+            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptEmisionInicial.jasper"));
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
             session.setAttribute("reporteInforme", fichero);
             usuarioActual = new SegUsuario();
@@ -113,6 +156,22 @@ public class GestionRepPatenteControlador extends BaseControlador {
 
     public void setValorFinal(BigDecimal valorFinal) {
         this.valorFinal = valorFinal;
+    }
+
+    public Date getFechaInicial() {
+        return fechaInicial;
+    }
+
+    public void setFechaInicial(Date fechaInicial) {
+        this.fechaInicial = fechaInicial;
+    }
+
+    public Date getFechaFinal() {
+        return fechaFinal;
+    }
+
+    public void setFechaFinal(Date fechaFinal) {
+        this.fechaFinal = fechaFinal;
     }
 
 }
