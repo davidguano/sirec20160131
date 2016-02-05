@@ -13,7 +13,7 @@
                     <p:growl id="msgs" showDetail="true"/>
                     <p:panel  header="Registro de Contratistas y Empresas Públicas" style="background: #8BBAC9;">
                         <h:panelGrid id="pnlIng" columns="6">
-                            <h:outputLabel value="Tipo:" for="conTipoPersona" />
+                            <h:outputLabel value="Persona:" for="conTipoPersona" />
                             <p:selectOneMenu id="conTipoPersona" value="#{contratistaControlador.constructoraActual.conTipoPersona}"
                                              style="width:150px">
                                 <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
@@ -24,7 +24,17 @@
                                         process="@this"
                                         update="pnlProCi,proApellidos,proNombres,proFechaNacimiento,proRazonSocial"/>
                             </p:selectOneMenu>
-                            <p:message for="conTipoPersona"/>                                                     
+                            <p:message for="conTipoPersona"/>    
+                            
+                             <h:outputLabel value="Tipo:" for="proTipoPerJur" />
+                             <p:selectOneMenu id="proTipoPerJur" value="#{contratistaControlador.constructoraActual.conTipo}"
+                                             style="width:150px">
+                                <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                                   <f:selectItem itemLabel="CONTRATISTA" itemValue="C" />
+                                   <f:selectItem itemLabel="EMPRESA PÚBLICA" itemValue="E" />
+                               
+                            </p:selectOneMenu>
+                            <p:message for="proTipoPerJur"/>
                                                         
                             <h:outputLabel value="Cédula/RUC:"/>
                             <h:panelGrid id="pnlProCi">
@@ -161,10 +171,16 @@
                                 <p:column headerText="Cédula/RUC" filterBy="#{item.conIdentificacion}" filterMatchMode="contains">
                                     <h:outputText value="#{item.conIdentificacion}"/>
                                 </p:column>
-                                <p:column headerText="Tipo">
+                                <p:column headerText="Persona">
                                     <h:outputText value="Natural" rendered="#{item.conTipoPersona=='N'}"/>
                                     <h:outputText value="Juridica" rendered="#{item.conTipoPersona=='J'}"/>
                                 </p:column>
+                                
+                                 <p:column headerText="Tipo">
+                                    <h:outputText value="CONTRATISTA" rendered="#{item.conTipo=='C'}"/>
+                                    <h:outputText value="EMPRESA PÚBLICA" rendered="#{item.conTipo=='E'}"/>
+                                </p:column>
+                                
                                 <p:column headerText="Apellidos" filterBy="#{item.conApellidos}" filterMatchMode="contains">
                                     <h:outputText value="#{item.conApellidos}"/>
                                 </p:column>
@@ -197,7 +213,7 @@
                                 <p:column headerText="Observaciones">
                                     <h:outputText value="#{item.conObservaciones}"/>
                                 </p:column>
-                                <p:column headerText="">
+                                <p:column headerText="Editar">
                                     <p:commandButton id="btnSelProp"
                                                      action="#{contratistaControlador.seleccionarPropietario(item)}"
                                                      process="@this"
@@ -208,7 +224,7 @@
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
 
                                 </p:column>
-                                <p:column headerText="">
+                                <p:column headerText="Eliminar">
                                     <p:commandButton id="btnEliProp"
                                                      action="#{contratistaControlador.eliminarPropietario(item)}"
                                                      process="@this"
