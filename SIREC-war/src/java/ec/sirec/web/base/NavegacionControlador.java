@@ -226,7 +226,7 @@ public class NavegacionControlador extends BaseControlador {
             menu.addElement(subMenurecaudacion);
 
             DefaultSubMenu subMenuReportes = new DefaultSubMenu("Reportes");
-            DefaultMenuItem reportePatente = new DefaultMenuItem("Reportes Patente");
+            DefaultMenuItem reportePatente = new DefaultMenuItem("Patentes y 1.5 por mil");
             reportePatente.setIcon("ui-icon-person");
             reportePatente.setCommand("#{navegacionControlador.redireccionarAPagina('patente','repNegRangPatrimonio')}");
             subMenuReportes.addElement(reportePatente);
