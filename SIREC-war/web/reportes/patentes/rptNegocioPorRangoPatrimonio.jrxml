@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptNegocioPorRangoPatrimonio" language="groovy" pageWidth="1050" pageHeight="595" orientation="Landscape" columnWidth="1050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
-	<property name="ireport.zoom" value="1.948717100000025"/>
-	<property name="ireport.x" value="1342"/>
+	<property name="ireport.zoom" value="2.3579476910000374"/>
+	<property name="ireport.x" value="767"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="valor_inicial" class="java.math.BigDecimal"/>
@@ -69,43 +69,60 @@ and pa.pat_codigo=pv.pat_codigo
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="51" splitType="Stretch">
+		<band height="56" splitType="Stretch">
 			<image>
-				<reportElement x="9" y="1" width="100" height="50" uuid="ca1e179b-a32a-4a9c-b5ac-2c64853d5ff4"/>
+				<reportElement x="9" y="1" width="100" height="55" uuid="ca1e179b-a32a-4a9c-b5ac-2c64853d5ff4"/>
 				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="366" y="2" width="252" height="20" uuid="8bb5b337-e808-477d-9d60-811bb9f8f8d9"/>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="366" y="22" width="251" height="20" uuid="0b68be57-4e73-4152-9a2e-afcf513e9683"/>
+				<reportElement x="309" y="22" width="384" height="20" uuid="0b68be57-4e73-4152-9a2e-afcf513e9683"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Reporte de negocios por rango de patrimonio]]></text>
+				<text><![CDATA[Patentes y 1.5 por mil - Reporte de negocios por rango de patrimonio]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="733" y="1" width="206" height="15" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
+				<reportElement x="833" y="4" width="206" height="13" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement x="733" y="16" width="206" height="15" uuid="39968d79-0b5d-4f59-9e90-b726dd8d11b8"/>
+				<reportElement x="865" y="17" width="147" height="13" uuid="39968d79-0b5d-4f59-9e90-b726dd8d11b8"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="733" y="31" width="306" height="15" uuid="09200e5b-b04a-48ad-8671-31ce5d3b7f27"/>
-				<textFieldExpression><![CDATA["Patrimonio: valor inicial: "+$P{valor_inicial}+ " valor final:  " + $P{valor_final}]]></textFieldExpression>
+				<reportElement x="833" y="30" width="206" height="13" uuid="09200e5b-b04a-48ad-8671-31ce5d3b7f27"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Patrimonio: valor inicial: " +$P{valor_inicial}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="833" y="43" width="206" height="13" uuid="eae05b95-0c51-4b96-925f-dfb062659361"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Patrimonio: valor final: " +$P{valor_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="833" y="17" width="31" height="13" uuid="7683b9a3-aa9c-4e36-b468-b1dae4a97a9b"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -114,7 +131,7 @@ and pa.pat_codigo=pv.pat_codigo
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<rectangle>
-				<reportElement x="9" y="0" width="1034" height="18" forecolor="#FFFFFF" backcolor="#CCFAFF" uuid="951ad778-7d0a-4b50-a40d-78844e9bb3a5"/>
+				<reportElement x="9" y="0" width="1034" height="18" forecolor="#FFFFFF" backcolor="#CCF4E9" uuid="951ad778-7d0a-4b50-a40d-78844e9bb3a5"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="233" y="2" width="132" height="15" uuid="d91a651c-60ef-4b87-9c59-3ab23c2d7a9c"/>
@@ -305,13 +322,13 @@ and pa.pat_codigo=pv.pat_codigo
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="16">
+		<band height="13">
 			<textField>
-				<reportElement x="486" y="0" width="100" height="16" uuid="ccc637bf-8636-4f3d-8c2e-a1fbb3150abc"/>
+				<reportElement x="486" y="0" width="100" height="13" uuid="ccc637bf-8636-4f3d-8c2e-a1fbb3150abc"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Pag."+$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Pág."+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
