@@ -12,7 +12,7 @@
             <h:form id="frmPat">   
                 <p:growl id="msgs" showSummary="true" sticky="true" showDetail="false"   /> 
                 <center>
-                    <p:panel header="Reportes Patente:" >
+                    <p:panel header="Reportes Patentes y 1.5 por mil:" >
                         <h:panelGrid id="pnlReporPat1">
                             <p:panel header="Reporte de negocios por rango de patrimonio:" style="font-size: 12px">
                                 <h:panelGrid columns="4">
@@ -27,6 +27,31 @@
                                                      process="@this,pnlReporPat1" 
                                                      />
                                     <p:column></p:column>
+                                </h:panelGrid>
+                            </p:panel>
+                        </h:panelGrid>
+                        <h:panelGrid id="pnlReporPat2">
+                            <p:panel header="Reporte de emisión inicial:" style="font-size: 12px">
+                                <h:panelGrid columns="2">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2" display="icon"/>
+                                    </h:panelGrid>
+
+                                    <p:commandButton style="font-size: 12px" id="btnReporte2" value="Generar Reporte"
+                                                     action="#{gestionRepPatenteControlador.reporteEmisionPatentes()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlReporPat2" 
+                                                     />                                    
                                 </h:panelGrid>
                             </p:panel>
                         </h:panelGrid>
