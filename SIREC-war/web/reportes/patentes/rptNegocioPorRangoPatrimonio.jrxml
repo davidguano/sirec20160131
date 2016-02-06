@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptNegocioPorRangoPatrimonio" language="groovy" pageWidth="1050" pageHeight="595" orientation="Landscape" columnWidth="1050" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
 	<property name="ireport.zoom" value="2.3579476910000374"/>
-	<property name="ireport.x" value="767"/>
+	<property name="ireport.x" value="987"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="valor_inicial" class="java.math.BigDecimal"/>
 	<parameter name="valor_final" class="java.math.BigDecimal"/>
 	<parameter name="usuario_genera" class="java.lang.String"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
+	<parameter name="rango_parametros" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select distinct( pa.pat_codigo) as clavePatente,
 CASE
@@ -19,7 +20,7 @@ END as estado
 p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,pa.pat_contador as contador,pa.pat_ruc_contador as rucContador,
 tes.catdet_texto as tipoEstablecimiento, tem.catdet_texto as tipoEmpresa,tlo.catdet_texto as tipoLocal,pa.pat_area_local as areaLocal,pa.pat_local_aforo as aforo,
 tae.catdet_texto as actividadEconomica,
-pa.pat_desc_act_eco as desActividadEconomica, pa.pat_inicio_act_eco inicioActEconomica,
+pa.pat_desc_act_eco as desActividadEconomica, pa.pat_inicio_act_eco as inicioActEconomica,
 CASE
 WHEN  pa.pat_artesano_calificado =TRUE THEN 'SI'
 WHEN  pa.pat_artesano_calificado =FALSE THEN 'NO'
@@ -44,7 +45,9 @@ and pa.pat_codigo=pv.pat_codigo
  and pa.catdet_tipo_empresa=tem.catdet_codigo
  and pa.catdet_tipo_local=tlo.catdet_codigo
  and pa.catdet_tipo_act_eco=tae.catdet_codigo
- and pv.patval_patrimonio between  $P{valor_inicial}  and  $P{valor_final} order by 1]]>
+ and pv.patval_patrimonio between  $P{valor_inicial}  and  $P{valor_final}
+and pa.pat_codigo in($P!{rango_parametros})
+ order by 1]]>
 	</queryString>
 	<field name="clavepatente" class="java.lang.Integer"/>
 	<field name="estado" class="java.lang.String"/>
