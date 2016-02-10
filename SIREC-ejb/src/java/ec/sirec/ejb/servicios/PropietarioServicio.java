@@ -201,4 +201,10 @@ public class PropietarioServicio {
     public List<Propietario> listarPorNombresContiene(String vNombres) throws Exception {
         return propietarioDao.listarPorCamposContieneOrdenada(ENTIDAD_PROPIETARIO, "proNombres", vNombres.toUpperCase(), "proApellidos", "asc");
     }
+    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception{
+        return propietarioDao.listarPropietariosPorClaveCatastralContiene(vclave);
+    }
+    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception{
+        return propietarioDao.listarPropietariosPorClavePatenteContiene(vclave);
+    }
 }
