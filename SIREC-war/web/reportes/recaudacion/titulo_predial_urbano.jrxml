@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="titulo_predial_urbano" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="366"/>
+	<property name="ireport.y" value="122"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="cod_valoracion" class="java.lang.Integer"/>
 	<queryString>
@@ -29,7 +29,15 @@
        catpreval_bomberos as bombero,
        catpreval_solar_noedificado as solarni,
        catpreval_tasa_adm as tasaadm,
-       CASE WHEN catpreval_activo is true THEN 'RECAUDADO'  WHEN  catpreval_activo is false then 'PENDIENTE' END as estado
+       CASE WHEN catpreval_activo is true THEN 'RECAUDADO'  WHEN  catpreval_activo is false then 'PENDIENTE' END as estado,
+      (select cpvalext_valor from sirec.cp_valoracion_extras where adided_codigo=132  and catpreval_codigo=$P{cod_valoracion}) as inmueble_no_edif,
+      (select cpvalext_valor from sirec.cp_valoracion_extras where adided_codigo=134  and catpreval_codigo=$P{cod_valoracion}) as rebaja_hipotecaria,
+      (select cpvalext_valor from sirec.cp_valoracion_extras where adided_codigo=133  and catpreval_codigo=$P{cod_valoracion}) as construccion_obsoleta,
+      (select cpvalext_valor from sirec.cp_valoracion_extras where adided_codigo=135  and catpreval_codigo=$P{cod_valoracion}) as rebaja_3ra_edad,
+      recdet_valor_inicial as subtotal,
+      CASE WHEN recdet_porc_desc > 0 THEN 0  WHEN  recdet_porc_desc < 0 then recdet_porc_desc*recdet_valor_inicial*0.01 END as descuento,
+      CASE WHEN recdet_porc_desc > 0 THEN recdet_porc_desc*recdet_valor_inicial*0.01  WHEN  recdet_porc_desc < 0 then 0 END as recargo,
+      recdet_valor as total
   FROM sirec.catastro_predial_valoracion v, sirec.catastro_predial c, sirec.propietario_predio pp, sirec.propietario p,
        sirec.catalogo_detalle parr,sirec.catalogo_detalle sec, sirec.recaudacion_cab rec, sirec.recaudacion_det recdet
   where c.catpre_codigo=v.catpre_codigo and c.catpre_codigo=pp.catpre_codigo and pp.pro_ci=p.pro_ci
@@ -60,6 +68,14 @@
 	<field name="solarni" class="java.math.BigDecimal"/>
 	<field name="tasaadm" class="java.math.BigDecimal"/>
 	<field name="estado" class="java.lang.String"/>
+	<field name="inmueble_no_edif" class="java.math.BigDecimal"/>
+	<field name="rebaja_hipotecaria" class="java.math.BigDecimal"/>
+	<field name="construccion_obsoleta" class="java.math.BigDecimal"/>
+	<field name="rebaja_3ra_edad" class="java.math.BigDecimal"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<field name="descuento" class="java.math.BigDecimal"/>
+	<field name="recargo" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -341,12 +357,12 @@
 				<reportElement x="327" y="267" width="126" height="20" uuid="48d4088a-225f-40a3-a7f0-08177e080163"/>
 				<text><![CDATA[Servicios Administrativos]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="478" y="245" width="70" height="20" uuid="944e1848-298f-4f54-9d9c-770a7ef3446f"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{impuesto}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="478" y="267" width="71" height="20" uuid="a146cbb5-bf27-4692-9a44-6389f60b2d7b"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{tasaadm}]]></textFieldExpression>
@@ -355,7 +371,7 @@
 				<reportElement x="328" y="291" width="122" height="20" uuid="2554062f-a509-4fd0-9b0d-0a69e88618d7"/>
 				<text><![CDATA[Impuesto Solar No Ident.]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="476" y="290" width="72" height="20" uuid="8a0b3596-c8be-404d-aab4-6b20463712f8"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{solarni}]]></textFieldExpression>
@@ -372,7 +388,7 @@
 				<reportElement x="327" y="354" width="100" height="20" uuid="9ff34527-2757-464c-bfd7-a03b657ec170"/>
 				<text><![CDATA[Bomberos:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="478" y="353" width="70" height="20" uuid="128d8be3-015f-410c-b879-7a2df66ec86b"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{bombero}]]></textFieldExpression>
@@ -414,6 +430,47 @@
 				</textElement>
 				<text><![CDATA[TOTAL A PAGAR:]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="476" y="311" width="72" height="20" uuid="76617cdf-e87e-4342-b905-e92da7b68e8d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{rebaja_hipotecaria}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="477" y="332" width="72" height="20" uuid="4e06ec5e-2dd7-4eec-9117-ef140af8e135"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{construccion_obsoleta}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="477" y="374" width="72" height="20" uuid="686d0dc8-382f-4ed7-a0e4-14d9c23c7e93"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{rebaja_3ra_edad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="425" width="72" height="20" uuid="78adb236-3059-4f16-b058-e83858088b51"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="474" y="446" width="72" height="20" uuid="851c16db-f013-4b0d-8100-a6b23104149b"/>
+				<textElement textAlignment="Right">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="474" y="466" width="72" height="20" uuid="89b83b5e-2993-4699-a58f-ec1b237f5047"/>
+				<textElement textAlignment="Right">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{recargo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="473" y="510" width="72" height="20" uuid="fa079229-920b-4495-8871-62153211f49a"/>
+				<textElement textAlignment="Right">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
