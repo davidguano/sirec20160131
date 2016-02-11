@@ -4,9 +4,9 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
-	<parameter name="tipo_tarifa" class="java.lang.Integer"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
 	<parameter name="usuario_genera" class="java.lang.String"/>
+	<parameter name="codigos" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT  concat(cp.catpre_cod_nacional, cp.catpre_cod_local) clave_catastral,
 	a.catprepluval_anio,
@@ -37,10 +37,10 @@
        a.catprepluval_tasaproc,
        a.catprepluval_impuesto
   FROM sirec.catastro_predial_plusvalia_valoracion a, sirec.catastro_predial cp
-WHERE 	a.catprepluval_activo=true and
+WHERE a.catprepluval_activo=true and
 a.catpre_codigo=cp.catpre_codigo and
-a.catdet_tipo_tarifa=$P{tipo_tarifa}
-order by a.catprepluval_anio, nombre_propietario, a.catdet_tipo_tarifa asc]]>
+a.catprepluval_codigo in($P!{codigos})
+order by a.catprepluval_anio, nombre_propietario asc]]>
 	</queryString>
 	<field name="clave_catastral" class="java.lang.String"/>
 	<field name="catprepluval_anio" class="java.lang.Integer"/>
