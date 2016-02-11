@@ -109,17 +109,52 @@ public class RecaudacionControlador extends BaseControlador{
         }
         return lstPro;
     }
-
     
-     public void listarRubrosARecaudar() {
+    public List<Propietario> obtenerPropietarioPorClaveCatastro(String textoBusqueda) {
+        List<Propietario> lstPro = new ArrayList<Propietario>();
         try {
+            lstPro = propietarioServicio.listarPropietariosPorClaveCatastralContiene(textoBusqueda);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return lstPro;
+    }
+    public List<Propietario> obtenerPropietarioPorClavePatente(String textoBusqueda) {
+        List<Propietario> lstPro = new ArrayList<Propietario>();
+        try {
+            lstPro = propietarioServicio.listarPropietariosPorClavePatenteContiene(textoBusqueda);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return lstPro;
+    }
+
+    public void seleccionarPropietario(){
+        try{
             if (propietarioBusqueda != null) {
-                listaRecaudacionCabActual=new ArrayList<RecaudacionCab>();
-                listaRecaudacionCabActual=recaudacionServicio.listaRecaudacionesPorPropietario(propietarioBusqueda.getProCi());
-                listaRecaudacionDetalleActual=new ArrayList<RecaudacionDet>();
                 recaudacionCabeceraActual=new RecaudacionCab();
                 recaudacionCabeceraActual.setProCi(propietarioServicio.buscarPropietario(propietarioBusqueda.getProCi()));
+            }else{
+                addWarningMessage("Seleccione primero un propietario");
+            }
+        }catch(Exception ex){
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+     public void listarRubrosARecaudar() {
+        try {
+            if (recaudacionCabeceraActual.getProCi() != null) {
+                Propietario p=recaudacionCabeceraActual.getProCi();
+                recaudacionCabeceraActual=new RecaudacionCab();
+                recaudacionCabeceraActual.setProCi(p);
+                listaRecaudacionCabActual=new ArrayList<RecaudacionCab>();
+                listaRecaudacionCabActual=recaudacionServicio.listaRecaudacionesPorPropietario(recaudacionCabeceraActual.getProCi().getProCi());
+                listaRecaudacionDetalleActual=new ArrayList<RecaudacionDet>();
                 listaRecaudacionDetalleActual = recaudacionServicio.listaDetallesARecaudarPorCiAnio(recaudacionCabeceraActual.getProCi().getProCi(), anio);
+            }else{
+                addWarningMessage("Seleccione primero un propietario");
             }
 
         } catch (Exception ex) {
@@ -133,6 +168,7 @@ public class RecaudacionControlador extends BaseControlador{
                recaudacionCabeceraActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
                recaudacionServicio.guardarRecaudacion(recaudacionCabeceraActual, listaRecaudacionDetalleActual);
                addSuccessMessage("Recaudacion creada correctamente");
+               listarRubrosARecaudar();
            }else{
                recaudacionCabeceraActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
                recaudacionServicio.editarRecaudacion(recaudacionCabeceraActual, listaRecaudacionDetalleActual);
@@ -153,15 +189,20 @@ public class RecaudacionControlador extends BaseControlador{
             LOGGER.log(Level.SEVERE, null, ex);
         }
      }
-     public void generarTituloPredialUrbanoDesdeDetalle(RecaudacionDet det) {
+     public void generarTituloDesdeDetalle(RecaudacionDet det) {
          try{
-             generarTituloPredialUrbano(det.getRecdetCodref());
+             if(!det.getRecdetTipo().equals("PM")){
+                 generarTituloPorTipo(det.getRecdetCodref(),det.getRecdetTipo());
+             }else{
+                 //titulo se genera desde el registro de patente.
+             }
+             
          }catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
      }
      
-     public String generarTituloPredialUrbano(Integer vcodValoracion) throws Exception {
+     public String generarTituloPorTipo(Integer vcodValoracion, String tipo) throws Exception {
         //Conexion con local datasource
         UtilitariosCod util = new UtilitariosCod();
         Connection conexion = util.getConexion();
@@ -176,8 +217,22 @@ public class RecaudacionControlador extends BaseControlador{
             parameters.put("cod_valoracion", vcodValoracion);
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
             
-
-            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_predial_urbano.jasper"));
+            if(tipo.equals("PR")){
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_predial_urbano.jasper"));
+            
+            }else if(tipo.equals("PA")){
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_patente.jasper"));
+            
+            }else if(tipo.equals("AL")){
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_alcabala.jasper"));
+            
+            }else if(tipo.equals("PL")){
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_plusvalia.jasper"));
+            
+            }else if(tipo.equals("SE")){
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/recaudacion/titulo_tasa_servicio.jasper"));
+            
+            }
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
             session.setAttribute("reporteInforme", fichero);
 

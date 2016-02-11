@@ -6,6 +6,7 @@
 package ec.sirec.ejb.facade;
 
 import ec.sirec.ejb.entidades.Propietario;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -66,5 +67,21 @@ public class PropietarioFacade extends AbstractFacade<Propietario> {
             String rs = String.valueOf(q.getSingleResult());
             return "9999999E" + ((Long.valueOf(rs.substring(8, 13))) + 1);
         }
+    }
+    
+    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception{
+         String sql = "select pp.proCi from PropietarioPredio pp "
+                + " where CONCAT(pp.catpreCodigo.catpreCodNacional,pp.catpreCodigo.catpreCodLocal) like :vclave";
+        Query q = em.createQuery(sql);
+        q.setParameter("vclave", "%"+vclave+"%");
+        return q.getResultList();
+    }
+    
+    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception{
+         String sql = "select pp.proCi from PropietarioPredio pp, CatastroPredial cp, Patente p "
+                + " where pp.catpreCodigo=cp and cp=p.catpreCodigo and CONCAT('AE-MPM',p.patCodigo) like :vclave";
+        Query q = em.createQuery(sql);
+        q.setParameter("vclave", "%"+vclave+"%");
+        return q.getResultList();
     }
 }

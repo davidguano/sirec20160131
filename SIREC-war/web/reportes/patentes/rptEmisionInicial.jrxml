@@ -8,6 +8,7 @@
 	<parameter name="fecha_final" class="java.sql.Timestamp"/>
 	<parameter name="usuario_genera" class="java.lang.String"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
+	<parameter name="rango_parametros" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,
 p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,
@@ -25,6 +26,7 @@ and pa.pat_codigo=pv.pat_codigo
 and pa.pat_codigo=pvmil.pat_codigo
 and cp.catdet_parroquia=cdp.catdet_codigo
 and pa.ultacc_marcatiempo between  $P{fecha_inicial} and  $P{fecha_final}
+and pa.pat_codigo in($P!{rango_parametros})
 order by 1,pv.patval_anio]]>
 	</queryString>
 	<field name="clavepatente" class="java.lang.Integer"/>

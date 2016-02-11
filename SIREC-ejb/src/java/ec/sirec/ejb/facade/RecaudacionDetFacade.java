@@ -45,7 +45,7 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         try {
             String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref, cxc_codigo from sirec.cuenta_por_cobrar \n"
                     + " where cxc_estado='P' and pro_ci='" + vci + "' ";
-            if (vAnio != null) {
+            if (vAnio != null && vAnio>0) {
                 sql1 = sql1 + " and cxc_anio=" + vAnio;
             }
             Query q = getEntityManager().createNativeQuery(sql1);
