@@ -135,7 +135,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             } else {
                 if (cargarExistePatVal15PorMilExtra()) {
                     patValEx15xMilActual = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patValo15xMilActal.getPat15valCodigo());
-                    adiDeductivoActual.setAdidedCodigo(patValEx15xMilActual.getAdidedCodigo().getAdidedCodigo());
+                   // adiDeductivoActual.setAdidedCodigo(patValEx15xMilActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
                     verActualiza=1;

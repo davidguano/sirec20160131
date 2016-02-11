@@ -309,11 +309,11 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     }
 
     public void calculaTotalSubtotal() {
-        valSubTotal = BigDecimal.valueOf(valTasaProc.doubleValue() + valImpuesto15xMil.doubleValue());
+        valSubTotal = valTasaProc.add(valImpuesto15xMil);
         valSubTotal.setScale(2, RoundingMode.HALF_UP);
         System.out.println("Valor del subtotal" + valSubTotal);
         patente15milValActual.setPat15valSubtotal(valSubTotal);
-        valTotal = BigDecimal.valueOf(valSubTotal.doubleValue() + valRecargos.doubleValue());
+        valTotal = valSubTotal.add(valRecargos);
         valTotal.setScale(2, RoundingMode.HALF_UP);
         System.out.println("Valor del total" + valTotal);
         patente15milValActual.setPat15valTotal(valTotal);

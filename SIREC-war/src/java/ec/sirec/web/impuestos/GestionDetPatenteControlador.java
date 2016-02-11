@@ -130,6 +130,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
             if (valPatrimonio.compareTo(BigDecimal.ZERO) < 0) {
                 activaBaseImponible = 1;
             } else {
+                activaBaseImponible = 0;
+                valBaseImpNegativa = BigDecimal.ZERO;
                 calculaImpuestoPatente();
             }
 
@@ -138,29 +140,77 @@ public class GestionDetPatenteControlador extends BaseControlador {
         }
     }
 
+    public void calcularValorBaseImponible() {
+        try {
+            activaBaseImponible = 0;
+            valPatrimonio = valBaseImpNegativa;
+            valPatrimonio = valPatrimonio.setScale(2, RoundingMode.HALF_UP);
+            patenteValoracionActal.setPatvalPatrimonio(valPatrimonio);
+            calculaImpuestoPatente();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void calculaImpuestoPatente() {
         BigDecimal impFracBasica = BigDecimal.ZERO;
         BigDecimal impExcede = BigDecimal.ZERO;
+        //***************Validacion del impuesto de patente segun tabla 1 Art.18*************
         if (valPatrimonio.doubleValue() >= 0 && valPatrimonio.doubleValue() <= 50000) {
             impFracBasica = BigDecimal.valueOf(10);
-            impExcede = BigDecimal.valueOf((0.25 / 100));
+            impExcede = BigDecimal.valueOf((0.25 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(50000)));
+            System.err.println("Opcion Rango 1");
         }
-        if (valPatrimonio.doubleValue() >= 50000.01 && valPatrimonio.doubleValue() <= 10000000) {
+        if (valPatrimonio.doubleValue() >= 50000.01 && valPatrimonio.doubleValue() <= 100000) {
             impFracBasica = BigDecimal.valueOf(135);
-            impExcede = BigDecimal.valueOf((0.50 / 100));
+            impExcede = BigDecimal.valueOf((0.50 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(100000)));;
+            System.err.println("Opcion Rango 2");
         }
         if (valPatrimonio.doubleValue() >= 100000.01 && valPatrimonio.doubleValue() <= 250000) {
             impFracBasica = BigDecimal.valueOf(385);
-            impExcede = BigDecimal.valueOf((double) 1 / 100);
+            impExcede = BigDecimal.valueOf((double) 1 / 100).multiply(valPatrimonio.subtract(BigDecimal.valueOf(250000)));
+            System.err.println("Opcion Rango 3");
 
         }
         if (valPatrimonio.doubleValue() >= 250000.01) {
             impFracBasica = BigDecimal.valueOf(1885);
-            impExcede = BigDecimal.valueOf((1.30 / 100));
+            impExcede = BigDecimal.valueOf((1.30 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(250000)));;
+            System.err.println("Opcion Rango 4");
         }
-        valImpPatente = (valPatrimonio.subtract(impFracBasica)).multiply(impExcede);
+        valImpPatente = impFracBasica.add(impExcede);
         valImpPatente = valImpPatente.setScale(2, RoundingMode.HALF_UP);
         System.out.println("Valor impuesto patente total: " + valImpPatente);
+        //***************Validacion de impuesto de patente segun tabla 2 Art.18 *************
+        if (valPatrimonio.doubleValue() >= 250000.01 && valPatrimonio.doubleValue() <= 500000) {
+            if (valImpPatente.doubleValue() >= 2500.00) {
+                valImpPatente = BigDecimal.valueOf(2500.00);
+                System.out.println("Valor impuesto tabla 2 opt1: " + valImpPatente);
+            }
+        }
+        if (valPatrimonio.doubleValue() >= 500000.01 && valPatrimonio.doubleValue() <= 1000000) {
+            if (valImpPatente.doubleValue() >= 5000.00) {
+                valImpPatente = BigDecimal.valueOf(5000.00);
+                System.out.println("Valor impuesto tabla 2 opt2: " + valImpPatente);
+            }
+        }
+        if (valPatrimonio.doubleValue() >= 1000000.01 && valPatrimonio.doubleValue() <= 5000000) {
+            if (valImpPatente.doubleValue() >= 7000.00) {
+                valImpPatente = BigDecimal.valueOf(7000.00);
+                System.out.println("Valor impuesto tabla 2 opt3: " + valImpPatente);
+            }
+        }
+        if (valPatrimonio.doubleValue() >= 5000000.01 && valPatrimonio.doubleValue() <= 10000000) {
+            if (valImpPatente.doubleValue() >= 8000.00) {
+                valImpPatente = BigDecimal.valueOf(8000.00);
+                System.out.println("Valor impuesto tabla 2 opt4: " + valImpPatente);
+            }
+        }
+        if (valPatrimonio.doubleValue() >= 10000000.01) {
+            if (valImpPatente.doubleValue() >= 10000.00) {
+                valImpPatente = BigDecimal.valueOf(10000.00);
+                System.out.println("Valor impuesto tabla 2 opt5: " + valImpPatente);
+            }
+        }
         patenteValoracionActal.setPatvalImpuesto(valImpPatente);
         calculaimpBomberos();
     }
@@ -171,9 +221,17 @@ public class GestionDetPatenteControlador extends BaseControlador {
             DatoGlobal objDatglobAux = new DatoGlobal();
             objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_cuantia_bomberos");
             valCuantia = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
+            DatoGlobal objDatglobSueldoBasico = new DatoGlobal();
+            objDatglobSueldoBasico = patenteServicio.cargarObjDatGloPorNombre("Val_sueldo_basico");
+            BigDecimal valSueldoBasico = BigDecimal.valueOf(Double.parseDouble(objDatglobSueldoBasico.getDatgloValor()));
             valImpBomberos = valImpPatente.multiply(valCuantia);
             valImpBomberos = valImpBomberos.setScale(2, RoundingMode.HALF_UP);
+            BigDecimal valExedeValSalarioBasico = BigDecimal.valueOf(0.3).multiply(valSueldoBasico);
             System.out.println("Valor imp bomberos: " + valImpBomberos);
+            if (valImpBomberos.doubleValue() > valExedeValSalarioBasico.doubleValue()) {
+                valImpBomberos = valExedeValSalarioBasico;
+            }
+            System.out.println("Valor imp bomberos validado: " + valImpBomberos);
             patenteValoracionActal.setPatvalTasaBomb(valImpBomberos);
             valSubTotal = valImpPatente.add(valImpBomberos);
             valSubTotal = valSubTotal.setScale(2, RoundingMode.HALF_UP);

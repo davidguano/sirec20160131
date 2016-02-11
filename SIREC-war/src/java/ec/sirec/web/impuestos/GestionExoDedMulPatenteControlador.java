@@ -184,7 +184,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             } else {
                 if (cargarExistePatValExtra()) {
                     patValExActual = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
-                    adiDeductivoActual.setAdidedCodigo(patValExActual.getAdidedCodigo().getAdidedCodigo());
+                  //  adiDeductivoActual.setAdidedCodigo(patValExActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //  "AE-MPM-" + patenteActual.getPatCodigo();
                     verActualiza=1;
