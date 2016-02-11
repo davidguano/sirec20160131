@@ -8,6 +8,8 @@ package ec.sirec.web.impuestos;
 import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
+import ec.sirec.ejb.servicios.CatastroPredialAlcabalaValoracionServicio;
+import ec.sirec.ejb.servicios.CatastroPredialPlusvaliaValoracionServicio;
 import ec.sirec.ejb.servicios.CatastroPredialServicio;
 import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.UtilitariosCod;
@@ -41,13 +43,12 @@ import net.sf.jasperreports.engine.util.JRLoader;
 @ViewScoped
 public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
 
-    /**
-     * Creates a new instance of GestionPatenteControlador
-     */
+    
     private static final Logger LOGGER = Logger.getLogger(GestionRepAlcabalasEmitidasControlador.class.getName());
     private SegUsuario usuarioActual;
     private Date fechaActual;
     private String fechaActualString;
+    private String criterio;
 
      private List<CatalogoDetalle> listAnios;
      private CatalogoDetalle catDetAnio;
@@ -55,11 +56,21 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
      private CatalogoDetalle catDetTipoTarifa;
      
       private List<CatalogoDetalle> listaTipoDeTarifa;
+      
+      private List<Object[]> listaAlcabalasEmitidas;
+      private List<Object[]> listaAlcabalasEmitidasSeleccion;
+      private List<Object[]> listaPlusvaliaEmitidas;
+      private List<Object[]> listaPlusvaliaEmitidasSeleccion;
      
      @EJB
     private CatalogoDetalleServicio catalogoDetalleServicio;
     @EJB
     private CatastroPredialServicio catastroPredialServicio;
+    @EJB
+    private CatastroPredialAlcabalaValoracionServicio catastroPredialAlcabalaValoracionServicio;
+    @EJB
+    private CatastroPredialPlusvaliaValoracionServicio catastroPredialPlusvaliaValoracionServicio;
+    
     
     @PostConstruct
     public void inicializar() {
@@ -68,7 +79,12 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             catDetAnio= new CatalogoDetalle(); 
             catDetAnioPL= new CatalogoDetalle(); 
             catDetTipoTarifa = new CatalogoDetalle();
-            
+             listaAlcabalasEmitidas = new ArrayList<Object[]>();
+             listaAlcabalasEmitidasSeleccion = new ArrayList<Object[]>();
+             listaPlusvaliaEmitidas = new ArrayList<Object[]>();
+             listaPlusvaliaEmitidasSeleccion = new ArrayList<Object[]>();
+            criterio ="";
+             
             listarTipoTarifa();            
             listarAnios();
             obtenerFechaCadena();
@@ -105,7 +121,26 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         listAnios = catalogoDetalleServicio.listarPorNemonicoCatalogo("ANIOS");
     }
     
-    public String reporteAlcabalaEmitidas() throws Exception {
+    
+    public String obtenerCodigos(List<Object[]> listaSeleccion) {        
+        String codigos="";
+        try {                  
+         for (int i = 0; i <= listaSeleccion.size()-1; i++) {             
+             Object[]  xcs = listaSeleccion.get(i);    
+             codigos = codigos + xcs[0];
+                    if (i < listaSeleccion.size() - 1) {
+                        codigos = codigos + ",";
+                    }              
+         } 
+         System.out.println("codigos: " +codigos);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return codigos;
+    }
+    
+    public String reporteAlcabalaEmitidas() throws Exception {                                    
+        
         //Conexion con local datasource
         usuarioActual = new SegUsuario();
         usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");        
@@ -122,7 +157,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             session.removeAttribute("reporteInforme");
             parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
             parameters.put("fecha_genera", fechaActualString);
-            parameters.put("anio", catDetAnio.getCatdetValor());            
+            parameters.put("codigos", obtenerCodigos(listaAlcabalasEmitidasSeleccion));            
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));            
                 jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_emitida.jasper"));
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
@@ -145,7 +180,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         usuarioActual = new SegUsuario();
         usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
         
-            catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
+            catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
            
         UtilitariosCod util = new UtilitariosCod();
         Connection conexion = util.getConexion();
@@ -158,10 +193,23 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
             session.removeAttribute("reporteInforme");
             parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
-            parameters.put("fecha_genera", fechaActualString);
-            parameters.put("anio", catDetAnio.getCatdetValor());            
-            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));            
-                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
+            parameters.put("fecha_genera", fechaActualString);            
+            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+            parameters.put("codigos", obtenerCodigos(listaPlusvaliaEmitidasSeleccion)); 
+             if (criterio.equals("F")) {
+                  System.out.println("FFF ");
+                  // parameters.put("tipo_tarifa", catDetTipoTarifa.getCatdetCodigo()); 
+                 jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_tipo_tarifa.jasper"));
+             }else{
+               if (criterio.equals("A")) {
+                   
+                   jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
+                   
+               }
+             }
+            
+            
+             //   jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
             session.setAttribute("reporteInforme", fichero);
             usuarioActual = new SegUsuario();
@@ -217,6 +265,34 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     }
     
     
+     public void listarAlcabalaEmitidas() throws Exception {
+         try {
+              catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo()); 
+            listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXAño(catDetAnio.getCatdetValor());                               
+             
+         }catch(Exception ex){
+          LOGGER.log(Level.SEVERE, null, ex);
+         }
+     }
+            
+    
+     public void listarPlusvaliaEmitidas() throws Exception {
+         try {
+             if (criterio.equals("A")) {
+                 catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
+                 listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXAño(catDetAnioPL.getCatdetValor());
+             } else {
+                 if (criterio.equals("F")) {                     
+                     listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXTipoTarifa(catDetTipoTarifa);
+                 }
+             }
+                            
+             
+         }catch(Exception ex){
+          LOGGER.log(Level.SEVERE, null, ex);
+         }
+     }
+     
      public CatalogoDetalle getCatDetAnio() {
         return catDetAnio;
     }
@@ -257,5 +333,44 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         this.catDetTipoTarifa = catDetTipoTarifa;
     }
 
-    
+    public List<Object[]> getListaAlcabalasEmitidas() {
+        return listaAlcabalasEmitidas;
+    }
+
+    public void setListaAlcabalasEmitidas(List<Object[]> listaAlcabalasEmitidas) {
+        this.listaAlcabalasEmitidas = listaAlcabalasEmitidas;
+    }
+
+    public List<Object[]> getListaAlcabalasEmitidasSeleccion() {
+        return listaAlcabalasEmitidasSeleccion;
+    }
+
+    public void setListaAlcabalasEmitidasSeleccion(List<Object[]> listaAlcabalasEmitidasSeleccion) {
+        this.listaAlcabalasEmitidasSeleccion = listaAlcabalasEmitidasSeleccion;
+    }
+
+    public List<Object[]> getListaPlusvaliaEmitidas() {
+        return listaPlusvaliaEmitidas;
+    }
+
+    public void setListaPlusvaliaEmitidas(List<Object[]> listaPlusvaliaEmitidas) {
+        this.listaPlusvaliaEmitidas = listaPlusvaliaEmitidas;
+    }
+
+    public List<Object[]> getListaPlusvaliaEmitidasSeleccion() {
+        return listaPlusvaliaEmitidasSeleccion;
+    }
+
+    public void setListaPlusvaliaEmitidasSeleccion(List<Object[]> listaPlusvaliaEmitidasSeleccion) {
+        this.listaPlusvaliaEmitidasSeleccion = listaPlusvaliaEmitidasSeleccion;
+    }
+
+    public String getCriterio() {
+        return criterio;
+    }
+
+    public void setCriterio(String criterio) {
+        this.criterio = criterio;
+    }
+   
 }
