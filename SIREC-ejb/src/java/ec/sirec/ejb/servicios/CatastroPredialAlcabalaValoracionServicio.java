@@ -9,6 +9,7 @@ package ec.sirec.ejb.servicios;
 import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.facade.CatastroPredialAlcabalaValoracionFacade;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -44,5 +45,7 @@ public class CatastroPredialAlcabalaValoracionServicio {
         return catastroPredialAlcabalaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_ALCABALA_VALORACION, "catprealcvalCodigo", codigo);         
     }
     
-    
+    public List<Object[]> listarAlcabalaEmitidaXAño(int anio) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidas(anio);
+    }
 }

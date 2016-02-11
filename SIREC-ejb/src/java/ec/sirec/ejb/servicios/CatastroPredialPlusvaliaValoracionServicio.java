@@ -6,9 +6,11 @@
 
 package ec.sirec.ejb.servicios;
 
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
 import ec.sirec.ejb.facade.CatastroPredialPlusvaliaValoracionFacade;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -47,4 +49,11 @@ public class CatastroPredialPlusvaliaValoracionServicio {
         return catastroPredialPlusvaliaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_PLUSVALIA_VALORACION, "catprepluvalCodigo", codigo);         
     }
     
+     public List<Object[]> listarPlusvaliaEmitidaXAño(int anio) {
+        return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaEmitidas(anio);
+    }
+     
+    public List<Object[]> listarPlusvaliaEmitidaXTipoTarifa(CatalogoDetalle catastroDetalle) {
+        return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaXTipoTarifa(catastroDetalle);
+    }
 }
