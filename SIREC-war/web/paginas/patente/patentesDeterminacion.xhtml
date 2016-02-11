@@ -26,7 +26,7 @@
                                                      action="#{gestionDetPatenteControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,DedPatBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat,tabPrin,detPatenBtnGuAct"
+                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat:tabPrin:detPatenBtnGuAct"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -123,9 +123,18 @@
                                 <p:message for="txtPasivos" display="icon"/>
                             </h:panelGrid>  
                             <h:panelGrid columns="2">
-                                <p:commandButton value="#{txt.btn_calcula}" 
+                                <p:commandButton rendered="#{gestionDetPatenteControlador.activaBaseImponible==0}" value="#{txt.btn_calcula}" 
                                                  id="btnCalcula" 
                                                  action="#{gestionDetPatenteControlador.calcularValorPatrimonio()}" 
+                                                 icon="ui-icon-disk"  
+                                                 process="@this,pnlConDetPatente" 
+                                                 update=":frmPat:tabPrin:pnlConDetPatente,:frmPat:msgs"
+                                                 async="true"
+                                                 global="false"
+                                                 />
+                                <p:commandButton rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}" value="#{txt.btn_calcula}" 
+                                                 id="btnCalculaConBaseImp" 
+                                                 action="#{gestionDetPatenteControlador.calcularValorBaseImponible()}" 
                                                  icon="ui-icon-disk"  
                                                  process="@this,pnlConDetPatente" 
                                                  update=":frmPat:tabPrin:pnlConDetPatente,:frmPat:msgs"
@@ -141,7 +150,7 @@
                                     <p:message for="txtPatrimonio" display="icon"/>
 
                                     <p:outputLabel id="lblBaseImpDetPat" rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_base_imponible}"/>
-                                    <p:inputText id="txtBaseImpDetPat"  rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}" requiredMessage="#{txt.lbl_base_imponible} Se nesecita un valor"  value="#{gestionDetPatenteControlador.valBaseImpNegativa}" 
+                                    <p:inputText style="background: lightcoral;color:black;font-weight: bold" id="txtBaseImpDetPat"  rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}" requiredMessage="#{txt.lbl_base_imponible} Se nesecita un valor"  value="#{gestionDetPatenteControlador.valBaseImpNegativa}" 
                                                  maxlength="20" size="40"/>
                                     <p:message id="msjBaseImpDetPat" rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}" for="txtBaseImp" display="icon"/>
 
@@ -162,7 +171,9 @@
                                 </h:panelGrid>
                                 <psirec:panelInformativo  rendered="#{gestionDetPatenteControlador.activaBaseImponible==1}" id="infBaseImponible" background="#042B69" ancho="220" icono="fa-exclamation-triangle"
                                                           titulo="Determinación de Patentes" tamanioTitulo="15" colorTitulo="white"
-                                                          texto="Valor patrimonio (-) Ingrese el valor en el campo: Base imponible y vuelva a calcular" tamanioTexto="12" colorTexto="white"/>
+                                                          texto="Valor patrimonio (-) Ingrese el valor en el campo:Base imponible y vuelva a calcular;este valor reemplazara al patrimonio." tamanioTexto="12" colorTexto="white"
+                                                           
+                                                          />
                             </h:panelGrid>
                             <h:panelGrid id="panelDetalleImp1">
                                 <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_deduc}"/>
