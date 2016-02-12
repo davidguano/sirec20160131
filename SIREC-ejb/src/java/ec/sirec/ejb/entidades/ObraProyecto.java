@@ -81,7 +81,9 @@ public class ObraProyecto implements Serializable {
     private CatalogoDetalle catdetParroquia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "obrCodigo")
     private List<Mejora> mejoraList;
-
+    @Column(name = "obr_num_contrato")
+    private Integer obrNumContrato;
+    
     public ObraProyecto() {
     }
 
@@ -214,6 +216,15 @@ public class ObraProyecto implements Serializable {
         this.mejoraList = mejoraList;
     }
 
+    public Integer getObrNumContrato() {
+        return obrNumContrato;
+    }
+
+    public void setObrNumContrato(Integer obrNumContrato) {
+        this.obrNumContrato = obrNumContrato;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 0;
