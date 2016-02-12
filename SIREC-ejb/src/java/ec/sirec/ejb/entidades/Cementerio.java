@@ -91,6 +91,10 @@ public class Cementerio implements Serializable {
     @Size(max = 100)
     @Column(name = "cem_representante")
     private String cemRepresentante;
+     @Size(max = 20)
+    @Column(name = "occiso_ci")
+    private String occisoCi;
+   
     @Size(max = 2147483647)
     @Column(name = "cem_direc_representante")
     private String cemDirecRepresentante;
@@ -257,6 +261,14 @@ public class Cementerio implements Serializable {
 
     public void setUltaccMarcatiempo(Date ultaccMarcatiempo) {
         this.ultaccMarcatiempo = ultaccMarcatiempo;
+    }
+
+    public String getOccisoCi() {
+        return occisoCi;
+    }
+
+    public void setOccisoCi(String occisoCi) {
+        this.occisoCi = occisoCi;
     }
 
     @XmlTransient
