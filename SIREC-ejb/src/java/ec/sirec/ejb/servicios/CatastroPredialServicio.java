@@ -820,4 +820,11 @@ public class CatastroPredialServicio {
         }                               
     }
     
+     public List<CatalogoDetalle> listaCatEstadoObr() throws Exception {
+        return catalogoDetalleServicio.listarPorNemonicoCatalogo("EST_OBRA");
+    }
+     
+      public List<CatalogoDetalle> listaCatEjecicion() throws Exception {
+        return catalogoDetalleServicio.listarPorNemonicoCatalogo("EJE_OBRA");
+    }
 } 

@@ -97,4 +97,8 @@ public class ConstructoraServicio {
      public List<Constructora> listarConstructoraTodos() throws Exception {
         return constructoraDao.listarOrdenada(ENTIDAD_CONSTRUCTORA, "conApellidos", "asc");
     }
+     
+     public List<Constructora> listarConstructoraXTipo(String tipo) throws Exception {
+        return constructoraDao.listarPorCampoOrdenada(ENTIDAD_CONSTRUCTORA, "conTipo", tipo , "conApellidos", "asc");
+    }
 }
