@@ -158,6 +158,7 @@ public class GestionContribucionControlador extends BaseControlador {
     private List<Constructora> listaConstructora;
     private String codEje;
     private String etiquedaEje;
+    private List<ObraProyecto> listaObraProyecto;
     
     @EJB
     private ConstructoraServicio constructoraServicio;
@@ -187,7 +188,7 @@ public class GestionContribucionControlador extends BaseControlador {
             listarParroquias();
             listarEstados();
             listarEjecucion();
-                   
+            listarObraProyectos();       
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -262,7 +263,17 @@ public class GestionContribucionControlador extends BaseControlador {
             addSuccessMessage(mensaje,mensaje);
            
            inicializar();
+            listarObraProyectos();
            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+       
+        public void listarObraProyectos() {
+        try {
+            listaObraProyecto = new ArrayList<ObraProyecto>();
+            listaObraProyecto = obraProyectoServicio.listarObrasProyectos();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -322,6 +333,14 @@ public class GestionContribucionControlador extends BaseControlador {
 
     public void setEtiquedaEje(String etiquedaEje) {
         this.etiquedaEje = etiquedaEje;
+    }
+
+    public List<ObraProyecto> getListaObraProyecto() {
+        return listaObraProyecto;
+    }
+
+    public void setListaObraProyecto(List<ObraProyecto> listaObraProyecto) {
+        this.listaObraProyecto = listaObraProyecto;
     }
     
     
