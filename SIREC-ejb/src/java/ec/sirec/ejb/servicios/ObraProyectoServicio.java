@@ -8,6 +8,7 @@ package ec.sirec.ejb.servicios;
 
 import ec.sirec.ejb.entidades.ObraProyecto;
 import ec.sirec.ejb.facade.ObraProyectoFacade;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -37,6 +38,10 @@ public class ObraProyectoServicio {
     public String eliminarObraProyecto(ObraProyecto obraProyecto) throws Exception {
         obraProyectoDao.eliminar(obraProyecto);
          return "Se ha eliminado el registro!";
+    }
+    
+    public List<ObraProyecto> listarObrasProyectos() throws Exception {
+        return obraProyectoDao.listarTodos();
     }
          
 }
