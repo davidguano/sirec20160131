@@ -31,6 +31,7 @@ import ec.sirec.ejb.servicios.ConstructoraServicio;
 import ec.sirec.ejb.servicios.CpAlcabalaValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.DatoGlobalServicio;
+import ec.sirec.ejb.servicios.ObraProyectoServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
 import ec.sirec.ejb.servicios.RecaudacionCabServicio;
 import ec.sirec.ejb.servicios.RecaudacionDetServicio;
@@ -38,6 +39,7 @@ import ec.sirec.web.base.BaseControlador;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
@@ -159,6 +161,8 @@ public class GestionContribucionControlador extends BaseControlador {
     
     @EJB
     private ConstructoraServicio constructoraServicio;
+    @EJB
+    private ObraProyectoServicio obraProyectoServicio;
     
 
     @PostConstruct
@@ -172,37 +176,18 @@ public class GestionContribucionControlador extends BaseControlador {
             listaConstructora = new ArrayList<Constructora>();
             codEje = "";
             etiquedaEje ="";
+            
+            obraProyectoActual.setObrViales(BigDecimal.ZERO);
+            obraProyectoActual.setObrAcerasBordillos(BigDecimal.ZERO);
+            obraProyectoActual.setObrServicio(BigDecimal.ZERO);
+            obraProyectoActual.setObrInfUrbana(BigDecimal.ZERO);
+            obraProyectoActual.setObrDesecacionRellenos(BigDecimal.ZERO);
+            obraProyectoActual.setObrTotal(BigDecimal.ZERO); 
              
             listarParroquias();
             listarEstados();
             listarEjecucion();
-            
-//            catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();
-//            catastroPredialActual = new CatastroPredial();
-//            catalogoDetalleConcepto = new CatalogoDetalle();
-//            listaAlcabalasArchivo = new ArrayList<PredioArchivo>();
-//            predioArchivo = new PredioArchivo();
-//            anio = 0;
-//            //listarCatastroPredial();
-//            obtenerUsuario();
-//            listarConceptos();
-//            listarCatalogosDetalle();
-            
-            
-            // INICIALIZAR PLUSVALIA
-            catastroPredialPlusvaliaValoracion = new CatastroPredialPlusvaliaValoracion();
-            
-           // listarTipoTarifa();
-            
-            // EMISION ALCABALA PLUSVALIA          
-            
-            ejecutarValoracionSeleccion = new EjecutarValoracion(); 
-            listAnios = new  ArrayList<CatalogoDetalle>();
-            catDetAnio= new CatalogoDetalle();
-            listaCatastroPredialTablaValoracionSeleccion = new ArrayList<EjecutarValoracion>();
-            //listarAnios();
-            
-            //ejecutarValoracion();
+                   
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -252,11 +237,31 @@ public class GestionContribucionControlador extends BaseControlador {
                if(codEje.equals("C")){
                     etiquedaEje="Contratista:"; 
                }
-           }
-                      
+           }                      
            listaConstructora = constructoraServicio.listarConstructoraXTipo(codEje);
            
             System.out.println("tama "+ listaConstructora.size());
+           
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+     public void sumarDistribucion() {
+        try {                        
+            obraProyectoActual.setObrTotal(obraProyectoActual.getObrViales().add(obraProyectoActual.getObrAcerasBordillos()).
+                    add(obraProyectoActual.getObrServicio()).add(obraProyectoActual.getObrInfUrbana()).add(obraProyectoActual.getObrDesecacionRellenos()));
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+     
+       public void guardarObraProyecto() {
+        try {                     
+            String mensaje = obraProyectoServicio.crearObraProyecto(obraProyectoActual);            
+            addSuccessMessage(mensaje,mensaje);
+           
+           inicializar();
            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
