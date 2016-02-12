@@ -12,8 +12,91 @@
                             <p:panel  style="background: #C4D770;" header="OBRA - PROYECTO" >   
                                 <center>
                                     <h:panelGrid id="panelIngreso" columns="3">
+
+                                        <p:outputLabel value="Descripción"/>
+                                        <p:inputTextarea id="obDes" value="#{gestionContribucionControlador.obraProyectoActual.obrDescripcion}"   
+                                                     rows="3" required="true" requiredMessage="Se nesecita un valor: Descripcion"
+                                                     onkeyup="value = value.toUpperCase();"
+                                                     style="width:300px ; font-family: Arial; font-size: 15px;"/>                                                                                                               
                                         
+                                        <p:message  for="obDes" display="icon"/>
+
+                                        <p:outputLabel value="#{txt.parroquia}"/>
+
+                                        <p:selectOneMenu id="obParroq" value="#{gestionContribucionControlador.obraProyectoActual.catdetParroquia}" 
+                                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                                            <f:selectItem itemLabel="Seleccione Parroquia..." itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionContribucionControlador.listaParroquias}" 
+                                                           itemLabel="#{tipo.catdetTexto}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column>                                            
+                                        </p:selectOneMenu>
+                                        <p:message  for="obParroq" display="icon"/>
                                         
+                                        <p:outputLabel value="Estado:"/>
+
+                                        <p:selectOneMenu id="obEst" value="#{gestionContribucionControlador.obraProyectoActual.catdetEstado}" 
+                                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                                            <f:selectItem itemLabel="Seleccione... " itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionContribucionControlador.listaEstado}" 
+                                                           itemLabel="#{tipo.catdetTexto}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column>                                            
+                                        </p:selectOneMenu>
+                                        <p:message  for="obEst" display="icon"/>
+                                        
+                                        <p:outputLabel value="Ejecución:"/>
+                                        <p:selectOneMenu id="obEje" value="#{gestionContribucionControlador.obraProyectoActual.catdetEjecucion}" 
+                                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px"
+                                                         >
+                                            <f:selectItem itemLabel="Seleccione... " itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionContribucionControlador.listaEjecucion}" 
+                                                           itemLabel="#{tipo.catdetTexto}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column>
+                                             <p:ajax event="change" listener="#{gestionContribucionControlador.listarContratistas()}"
+                                                         process="@this" update=":frmContribucion:tabContribucion:panelIngreso2" async="true" global="false" />  
+                                        </p:selectOneMenu>                                       
+                                         <p:message  for="obEje" display="icon"/>
+                                         
+                                           </h:panelGrid>  
+                                    
+                                        <h:panelGrid id="panelIngreso2" columns="3"> 
+                                         <p:outputLabel id="obEtiEje" value="#{gestionContribucionControlador.etiquedaEje}" 
+                                                        rendered="#{gestionContribucionControlador.codEje=='E' or gestionContribucionControlador.codEje=='C'}" />
+                                         
+                                         <p:selectOneMenu id="obEmp" value="#{gestionContribucionControlador.obraProyectoActual.conCodigo}" 
+                                                         panelStyle="width:180px" converter="#{constructoraConverter}" var="t" style="width:220px"
+                                                         rendered="#{gestionContribucionControlador.codEje=='E' or gestionContribucionControlador.codEje=='C'}"                                                         
+                                                         >
+                                            <f:selectItem itemLabel="Seleccione... " itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionContribucionControlador.listaConstructora}" 
+                                                           itemLabel="#{tipo.conApellidos} #{tipo.conNombres}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.conApellidos} #{t.conNombres}" style="font-size: 10px"/> 
+                                            </p:column>                                            
+                                         </p:selectOneMenu>
+                                         <p:message  for="obEmp" display="icon"/>
+
+                                         <p:outputLabel id="nCont" value="No. de contrato" rendered="#{gestionContribucionControlador.codEje=='C'}"/>                                                                                                                                                                                                          
+                                         <p:inputText id="obNum" value="#{gestionContribucionControlador.obraProyectoActual.obrNumContrato}"
+                                                      onkeypress="return isNumberKey(event)" required="true" requiredMessage="Se nesecita un valor: No. de contrato"
+                                                      style="font-family: Arial; font-size: 15px;"
+                                                      rendered="#{gestionContribucionControlador.codEje=='C'}" >                                             
+                                         </p:inputText>
+                                         <p:message  for="obNum" display="icon"/>
+
                                     </h:panelGrid>                                                                                                       
                                
                                     </center>
