@@ -96,6 +96,8 @@ public class GestionCementeriosControlador extends BaseControlador {
     private int busOpcion;
     private int busxNicho;
     private int busxOcciso;
+    private int verNicho;
+    private int verSuelo;
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -105,6 +107,8 @@ public class GestionCementeriosControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            verNicho = 0;
+            verSuelo = 0;
             cementerioActual = new Cementerio();
             propietarioActual = new Propietario();
             numPatente = generaNumPatente();
@@ -210,6 +214,23 @@ public class GestionCementeriosControlador extends BaseControlador {
         }
     }
 
+    public void activaNichoSuelo() {
+        CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+        try {
+            objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod("NICHO", "N");
+            if (catDetUbicAtaud.getCatdetCodigo() == objCatDetAux.getCatdetCodigo()) {
+                verNicho = 1;
+                verSuelo = 0;
+            } else {
+                verSuelo = 1;
+                verNicho = 0;
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public void guardarCementerioHistorial() {
         try {
             //---actualizo el estado de inhumado a exhumado
@@ -222,7 +243,7 @@ public class GestionCementeriosControlador extends BaseControlador {
             objCemHis.setObservacion(observacionesCambioHis);
             objCemHis.setFechaModifica(java.util.Calendar.getInstance().getTime());
             objCemHis.setUsuIdentificacion(usuarioActual);
-                       if (!listaFiles.isEmpty()) {
+            if (!listaFiles.isEmpty()) {
                 guardarArchivos();
             }
             cementerioServicio.crearCementerioHistorial(objCemHis);
@@ -660,6 +681,22 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void setBusxOcciso(int busxOcciso) {
         this.busxOcciso = busxOcciso;
+    }
+
+    public int getVerNicho() {
+        return verNicho;
+    }
+
+    public void setVerNicho(int verNicho) {
+        this.verNicho = verNicho;
+    }
+
+    public int getVerSuelo() {
+        return verSuelo;
+    }
+
+    public void setVerSuelo(int verSuelo) {
+        this.verSuelo = verSuelo;
     }
 
 }

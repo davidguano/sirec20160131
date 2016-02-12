@@ -130,7 +130,7 @@
                         <p:panel   header="#{txt.lbl_header_cementerios}" style="width: 99% !important; font-size: 12px !important;">
                             <h:panelGrid columns="1" id="pnlDatosCementerio">
                                 <p:panel>
-                                    <h:panelGrid  columns="6">
+                                    <h:panelGrid  columns="3">
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_parroquia}"/>
                                         <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"    required="true" id="cmbPropParroquia" 
                                                          value="#{gestionCementeriosControlador.catDetParroquia}" style="width:250px"
@@ -144,15 +144,14 @@
                                                 <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
                                             </p:column> 
                                         </p:selectOneMenu>   
-                                        <p:message for="cmbPropParroquia" display="icon"/> 
-
-                                        <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_direc_representante}"/>
-                                        <p:inputTextarea style="width: 200px"  requiredMessage="#{txt.lbl_direc_representante} Se necesita un valor"  id="compPnl1_5"  value="#{gestionCementeriosControlador.cementerioActual.cemDirecRepresentante}" 
-                                                         />
-                                        <p:message for="compPnl1_5" display="icon"/> 
+                                        <p:message for="cmbPropParroquia" display="icon"/>                                      
                                     </h:panelGrid>   
 
-                                    <h:panelGrid columns="3">
+                                    <h:panelGrid columns="6">
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ced_occico}"/>
+                                        <p:inputText  requiredMessage="#{txt.lbl_ced_occico} Se necesita un valor" id="compPnl1_7_1"  value="#{gestionCementeriosControlador.cementerioActual.occisoCi}" 
+                                                      size="40"/>
+                                        <p:message for="compPnl1_7" display="icon"/>
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_occioso}"/>
                                         <p:inputText  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.cementerioActual.cemNombreOcciso}" 
                                                       size="40"/>
@@ -160,16 +159,21 @@
                                     </h:panelGrid> 
 
                                     <h:panelGrid columns="6">
+                                        <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_ced_rep}"/>
+                                        <p:inputText requiredMessage="#{txt.lbl_ced_rep} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionCementeriosControlador.ciRuc}" 
+                                                     maxlength="50" size="40"/>
+                                        <p:message for="compPnl1_10" display="icon"/>
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_representante}"/>
                                         <p:inputText   requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.cementerioActual.cemRepresentante}" 
                                                        size="40"/>
-                                        <p:message for="compPnl1_8" display="icon"/>
-
-                                        <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_cedula}"/>
-                                        <p:inputText requiredMessage="#{txt.lbl_cedula} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionCementeriosControlador.ciRuc}" 
-                                                     maxlength="50" size="40"/>
-                                        <p:message for="compPnl1_10" display="icon"/>
+                                        <p:message for="compPnl1_8" display="icon"/>                                   
                                     </h:panelGrid> 
+                                    <h:panelGrid columns="3">
+                                        <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_direc_representante}"/>
+                                        <p:inputTextarea style="width: 200px"  requiredMessage="#{txt.lbl_direc_representante} Se necesita un valor"  id="compPnl1_5"  value="#{gestionCementeriosControlador.cementerioActual.cemDirecRepresentante}" 
+                                                         />
+                                        <p:message for="compPnl1_5" display="icon"/>
+                                    </h:panelGrid>
                                 </p:panel>
                                 <h:panelGrid columns="9">
                                     <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_num_papeleta}"/>
@@ -214,6 +218,7 @@
                                         <p:column width="200" style="white-space: normal">  
                                             <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
                                         </p:column> 
+                                        <p:ajax update="pnlConNichoSuelo" listener="#{gestionCementeriosControlador.activaNichoSuelo()}" process="@this" ></p:ajax>
                                     </p:selectOneMenu>                               
                                     <p:message for="cmbTipEmpresa" display="icon"/>
 
@@ -234,13 +239,7 @@
 
 
                                 </h:panelGrid> 
-                                <h:panelGrid columns="6">
-                                    <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_num_nicho}"/>
-                                    <p:inputText required="true" requiredMessage="#{txt.lbl_num_nicho} Se necesita un valor"  id="compPnl1_24" value="#{gestionCementeriosControlador.cementerioActual.cemNumNicho}"  
-                                                 size="40"   />
-                                    <p:message for="compPnl1_24" display="icon"/>  
-
-
+                                <h:panelGrid columns="3">
                                     <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_tipo}"/>
                                     <p:selectOneMenu  requiredMessage="#{txt.lbl_tipo} Se necesita un valor"  required="true" id="cmbTipActividadEco" 
                                                       value="#{gestionCementeriosControlador.catDetTipNicho}" style="width:250px"
@@ -253,15 +252,19 @@
                                         <p:column width="200" style="white-space: normal">  
                                             <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
                                         </p:column> 
-
                                     </p:selectOneMenu>                               
                                     <p:message for="cmbTipActividadEco" display="icon"/> 
                                 </h:panelGrid>
-                                <h:panelGrid columns="3">
-                                    <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_num_suelo}"/>
-                                    <p:inputText requiredMessage="#{txt.lbl_num_suelo} Se necesita un valor"  id="compPnl1_26"  value="#{gestionCementeriosControlador.cementerioActual.cemNumSuelo}" 
+                                <h:panelGrid columns="3" id="pnlConNichoSuelo">
+                                    <p:outputLabel rendered="#{gestionCementeriosControlador.verNicho==1}" style="font-size: #{txt.font_size}" value="#{txt.lbl_num_nicho}"/>
+                                    <p:inputText rendered="#{gestionCementeriosControlador.verNicho==1}" required="true" requiredMessage="#{txt.lbl_num_nicho} Se necesita un valor"  id="compPnl1_24" value="#{gestionCementeriosControlador.cementerioActual.cemNumNicho}"  
+                                                 size="40"   />
+                                    <p:message rendered="#{gestionCementeriosControlador.verNicho==1}" for="compPnl1_24" display="icon"/>  
+
+                                    <p:outputLabel rendered="#{gestionCementeriosControlador.verSuelo==1}" style="font-size: #{txt.font_size}" value="#{txt.lbl_num_suelo}"/>
+                                    <p:inputText rendered="#{gestionCementeriosControlador.verSuelo==1}" requiredMessage="#{txt.lbl_num_suelo} Se necesita un valor"  id="compPnl1_26"  value="#{gestionCementeriosControlador.cementerioActual.cemNumSuelo}" 
                                                  maxlength="20" size="40"/>
-                                    <p:message for="compPnl1_26" display="icon"/> 
+                                    <p:message rendered="#{gestionCementeriosControlador.verSuelo==1}" for="compPnl1_26" display="icon"/> 
 
                                     <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_obserba}"/>
                                     <p:inputTextarea requiredMessage="#{txt.lbl_obserba} Se necesita un valor" style="width: 200px" id="compPnl1_29"  value="#{gestionCementeriosControlador.cementerioActual.cemObservacion}" 
