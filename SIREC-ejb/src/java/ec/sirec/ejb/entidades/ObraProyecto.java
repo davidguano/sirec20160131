@@ -83,6 +83,12 @@ public class ObraProyecto implements Serializable {
     private List<Mejora> mejoraList;
     @Column(name = "obr_num_contrato")
     private Integer obrNumContrato;
+    @JoinColumn(name = "catdet_tipo_obra", referencedColumnName = "catdet_codigo")
+    @ManyToOne(optional = false)
+    private CatalogoDetalle catdetTipoObra;
+    @Size(max = 20)
+    @Column(name = "obr_num_decreto")
+    private String obrNumDecreto;
     
     public ObraProyecto() {
     }
@@ -224,6 +230,23 @@ public class ObraProyecto implements Serializable {
         this.obrNumContrato = obrNumContrato;
     }
 
+    public CatalogoDetalle getCatdetTipoObra() {
+        return catdetTipoObra;
+    }
+
+    public void setCatdetTipoObra(CatalogoDetalle catdetTipoObra) {
+        this.catdetTipoObra = catdetTipoObra;
+    }
+
+    public String getObrNumDecreto() {
+        return obrNumDecreto;
+    }
+
+    public void setObrNumDecreto(String obrNumDecreto) {
+        this.obrNumDecreto = obrNumDecreto;
+    }
+
+    
     
     @Override
     public int hashCode() {
