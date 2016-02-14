@@ -189,7 +189,14 @@
                                      />
                     <h:panelGrid id="panelLstObra" columns="1">
 
-                        <p:dataTable id="lstObra" value="#{gestionContribucionControlador.listaObraProyecto}"  var="obra"  >
+                        <p:dataTable id="lstObra" value="#{gestionContribucionControlador.listaObraProyecto}"  var="obra"
+                                     selectionMode="single"  rowKey="#{obra.obrCodigo}" 
+                                     rows="7"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     emptyMessage="No se han encontrado registros"                                                 
+                                     styleClass="pdataTable_font"
+                                     currentPageReportTemplate="{currentPage} de {totalPages}"> 
                             <f:facet name="header">
                                 <p:outputLabel value="Lista de Obra/Proyecto" style="font-size:12px;"/>
                             </f:facet>
@@ -224,8 +231,67 @@
                             <p:column headerText="Total" width="20" filterBy="#{obra.obrTotal}" filterMatchMode="contains">
                                 <h:outputText value="#{obra.obrTotal}" style="font-size:12px;" />
                             </p:column> 
-
+                            <p:column headerText="Tipo de obra" width="20" filterBy="#{obra.catdetTipoObra.catdetTexto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catdetTipoObra.catdetTexto}" style="font-size:12px;" />
+                            </p:column> 
+                            <p:column headerText="No. de decreto" width="20" filterBy="##{obra.obrNumDecreto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrNumDecreto}" style="font-size:12px;" />
+                            </p:column>                                                                                     
+                            <p:column headerText="Determinación" style="width:45px;text-align: center">
+                                <p:commandButton icon="ui-icon-mail-closed" action="#{gestionContribucionControlador.determinar(obra)}"
+                                                 onclick="PF('dlg2').show();" process="@this" update=":frmContribucion:tabContribucion:carDetail" async="true" global="false">
+                                </p:commandButton>
+                            </p:column>
                         </p:dataTable>
+
+                        <p:dialog header="Determinación de la Zona de beneficio o influencia" widgetVar="dlg2" modal="true" height="200" width="500" style="text-align:center; font-size:12px;"
+                                  position="center" >   
+
+                            <center>                                                                                                                                
+                                <p:panelGrid  id="carDetail" columns="2" style="text-align:center;">
+                                    <h:outputText value="Tipo de obra:"/>
+                                    <p:selectOneMenu id="obTip" value="#{gestionContribucionControlador.obraProyectoActual.catdetTipoObra}" 
+                                                     panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionContribucionControlador.listaTipoObra}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>                                            
+                                    </p:selectOneMenu>                                                       
+                                    <h:outputText value="Número de decreto:"/>
+                                    <p:inputText id="obDec" value="#{gestionContribucionControlador.obraProyectoActual.obrNumDecreto}"
+                                                 onkeypress="return isNumberKey(event)" required="true" requiredMessage="Se nesecita un valor: Número de decreto"
+                                                 style="font-family: Arial; font-size: 15px;"
+                                                 >
+                                    </p:inputText>                                                      
+                                </p:panelGrid>
+
+                                <br></br>
+
+                                <h:panelGrid columns="2" style="text-align:center;">                                                                                                                                                                                      
+                                    <p:commandButton style="font-size:13px;" value="Aceptar" 
+                                                     id="btnAceptar" 
+                                                     action="#{gestionContribucionControlador.aceptarDeterminacion()}" 
+                                                     icon="ui-icon-check"  
+                                                     process="@this,carDetail" 
+                                                     update=":frmContribucion:tabContribucion:panelLstObra"
+                                                     async="true"
+                                                     global="false"
+                                                     />
+                                    <p:commandButton style="font-size:13px;" value="Cancelar" 
+                                                     id="btnCancelar"                                                                     
+                                                     icon="ui-icon-closethick"  
+                                                     process="@this" 
+                                                     update=":frmContribucion:tabContribucion:panelLstObra"
+                                                     async="true"
+                                                     global="false"
+                                                     />                                                                                 
+                                </h:panelGrid>
+                            </center>
+                        </p:dialog> 
 
 
                     </h:panelGrid>      
