@@ -827,4 +827,8 @@ public class CatastroPredialServicio {
       public List<CatalogoDetalle> listaCatEjecicion() throws Exception {
         return catalogoDetalleServicio.listarPorNemonicoCatalogo("EJE_OBRA");
     }
+      
+       public List<CatalogoDetalle> listaCatTipoObra() throws Exception {
+        return catalogoDetalleServicio.listarPorNemonicoCatalogo("TIPO_OBRA");
+    }
 } 
