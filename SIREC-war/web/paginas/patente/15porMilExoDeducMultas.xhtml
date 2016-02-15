@@ -264,6 +264,16 @@
                                         </p:commandButton>
                                     </center>
                                 </p:column>
+                                
+                                <p:column headerText="#{txt.lbl_eliminar}" style="width:50px;text-align: center;font-size:12px;" >
+                                    <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                     actionListener="#{gestionExoDedMulUnoCincoPorMil.confirmaEliminarArchivoCargado(archivoColumna)}" 
+                                                     process="@this" update=":frmPat:tabPrin:panLisArchCargadosxMil,:frmPat:msgs"
+                                                     async="true" global="false">
+                                        <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                </p:column>
+                                
                             </p:dataTable>     
                         </p:panel>
                     </h:panelGrid>

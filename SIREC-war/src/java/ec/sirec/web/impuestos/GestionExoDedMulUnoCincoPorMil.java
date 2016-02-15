@@ -42,6 +42,7 @@ import org.primefaces.event.FileUploadEvent;
 @ManagedBean
 @ViewScoped
 public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
+
     @EJB
     private AdicionalesDeductivosServicio adicionalesDeductivosServicio1;
 
@@ -98,8 +99,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             listadoArchivos = new ArrayList<PatenteArchivo>();
             patenteArchivoActual = new PatenteArchivo();
             listarAdicionalDeductivo();
-            verGuarda=0;
-            verActualiza=0;
+            verGuarda = 0;
+            verActualiza = 0;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -135,11 +136,11 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             } else {
                 if (cargarExistePatVal15PorMilExtra()) {
                     patValEx15xMilActual = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patValo15xMilActal.getPat15valCodigo());
-                   // adiDeductivoActual.setAdidedCodigo(patValEx15xMilActual.getAdidedCodigo().getAdidedCodigo());
+                    // adiDeductivoActual.setAdidedCodigo(patValEx15xMilActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
-                    verActualiza=1;
-                    verGuarda=0;
+                    verActualiza = 1;
+                    verGuarda = 0;
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente();//"AE-MPM-" + patenteActual.getPatCodigo();
@@ -150,8 +151,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
                     patValEx15xMilActual.setPat15valextBase(BigDecimal.ZERO);
                     patValEx15xMilActual.setPat15valEvaluaDatFalsos(0);
                     adiDeductivoActual = new AdicionalesDeductivos();
-                    verGuarda=1;
-                    verActualiza=0;
+                    verGuarda = 1;
+                    verActualiza = 0;
                 }
 
             }
@@ -199,8 +200,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
         try {
             if (habilitaEdicion == false) {
                 guardaPatenteValoracion15PorMil();
-                AdicionalesDeductivos objAdiDec=new AdicionalesDeductivos();
-                objAdiDec=adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
+                AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
+                objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
                 patValEx15xMilActual.setAdidedCodigo(objAdiDec);
                 patValEx15xMilActual.setPat15valCodigo(patValo15xMilActal);
                 unoPCinoPorMilServicio.crearPatenteValoracion15xMilExtra(patValEx15xMilActual);
@@ -215,7 +216,8 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, e);
         }
     }
-public void actualizaPatente15xMilValExtra() {
+
+    public void actualizaPatente15xMilValExtra() {
         try {
             if (habilitaEdicion == false) {
                 AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
@@ -234,6 +236,7 @@ public void actualizaPatente15xMilValExtra() {
             LOGGER.log(Level.SEVERE, null, e);
         }
     }
+
     public void guardaPatenteValoracion15PorMil() {
         BigDecimal valTemporal;
         valTemporal = BigDecimal.valueOf(0.00);
@@ -321,6 +324,19 @@ public void actualizaPatente15xMilValExtra() {
         try {
             patenteArchivoServicio.eliminarArchivo(file);
             addSuccessMessage("Registro Eliminado");
+            listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+            addWarningMessage("No se puede eliminar el regitro");
+        }
+    }
+
+    public void confirmaEliminarArchivoCargado(PatenteArchivo patArchivo) {
+        try {
+            patenteArchivoActual = patArchivo;
+            patenteArchivoServicio.eliminarArchivo(patenteArchivoActual);
+            addSuccessMessage("Registro Eliminado", "Registro Eliminado");
             listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
 
         } catch (Exception e) {
