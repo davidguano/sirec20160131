@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -214,11 +215,10 @@ public class GestionAlcabalasControlador extends BaseControlador {
         try {
 
             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(catastroPredialActual.getCatpreCodigo());
-            catastroPredialActual.setCatpreAreaTotal(catastroPredialActual.getCatpreAreaTotal());
             
             //Double d = new Double("0.2").;
             
-            catastroPredialActual.setCatpreAreaTotalCons(1.2);
+          //  catastroPredialActual.setCatpreAreaTotalCons(1.2);
 
             propietario = new Propietario();
             propietario = catastroPredialServicio.obtenerPropietarioPrincipalPredio(catastroPredialActual.getCatpreCodigo());
@@ -266,11 +266,11 @@ public class GestionAlcabalasControlador extends BaseControlador {
             BigDecimal conProv = baseImponible.multiply(new BigDecimal(0.01)).divide(new BigDecimal(100));
            //conProv = conProv.setScale(2, RoundingMode.CEILING);
 
-            catastroPredialAlcabalaValoracion.setCatprealcvalBaseimp(baseImponible.setScale(2, RoundingMode.CEILING));
-            catastroPredialAlcabalaValoracion.setCatprealcvalImpuesto(impuesto.setScale(2, RoundingMode.CEILING));
-            catastroPredialAlcabalaValoracion.setCatprealcvalConsejoProv(conProv.setScale(2, RoundingMode.CEILING));
-            catastroPredialAlcabalaValoracion.setCatprealcvalTasaProc(new BigDecimal(2).setScale(2, RoundingMode.CEILING));
-            catastroPredialAlcabalaValoracion.setCatprealcvalTotal(impuesto.add(conProv).add(catastroPredialAlcabalaValoracion.getCatprealcvalTasaProc()).setScale(2, RoundingMode.CEILING));
+            catastroPredialAlcabalaValoracion.setCatprealcvalBaseimp(baseImponible.setScale(2, RoundingMode.HALF_UP));
+            catastroPredialAlcabalaValoracion.setCatprealcvalImpuesto(impuesto.setScale(2, RoundingMode.HALF_UP));
+            catastroPredialAlcabalaValoracion.setCatprealcvalConsejoProv(conProv.setScale(2, RoundingMode.HALF_UP));
+            catastroPredialAlcabalaValoracion.setCatprealcvalTasaProc(new BigDecimal(2).setScale(2, RoundingMode.HALF_UP));
+            catastroPredialAlcabalaValoracion.setCatprealcvalTotal(impuesto.add(conProv).add(catastroPredialAlcabalaValoracion.getCatprealcvalTasaProc()).setScale(2, RoundingMode.HALF_UP));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
