@@ -14,6 +14,7 @@ import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
 import ec.sirec.ejb.entidades.Constructora;
 import ec.sirec.ejb.entidades.CpAlcabalaValoracionExtras;
+import ec.sirec.ejb.entidades.Mejora;
 import ec.sirec.ejb.entidades.ObraProyecto;
 import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.Propietario;
@@ -31,34 +32,20 @@ import ec.sirec.ejb.servicios.ConstructoraServicio;
 import ec.sirec.ejb.servicios.CpAlcabalaValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.DatoGlobalServicio;
+import ec.sirec.ejb.servicios.ObraProyectoServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
 import ec.sirec.ejb.servicios.RecaudacionCabServicio;
 import ec.sirec.ejb.servicios.RecaudacionDetServicio;
 import ec.sirec.web.base.BaseControlador;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -77,28 +64,28 @@ public class GestionContribucionControlador extends BaseControlador {
     private static final Logger LOGGER = Logger.getLogger(GestionContribucionControlador.class.getName());
     // VARIABLES Y ATRIBUTOS
 
-    private SegUsuario usuarioActual;
-    private CatastroPredial catastroPredialActual;
-    private CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion;
-    private CatalogoDetalle catalogoDetalleConcepto;
-
-    private List<CatastroPredial> listaCatastroPredial;
-    private List<CatalogoDetalle> listaCatalogoDetalleConcepto;
-    private CatastroPredialValoracion catastroPredialValoracionActual;
-
-    private List<AdicionalesDeductivos> listaAdicionalesDeductivosDeducciones;
-    private List<String> listaAdicionalesDeductivosDeduccionesSeleccion;
-    private List<AdicionalesDeductivos> listaAdicionalesDeductivosExcenciones;
-    private List<String> listaAdicionalesDeductivosExcencionesSeleccion;
-
-    private AdicionalesDeductivos adicionalesDeductivosActual;
-    private CpAlcabalaValoracionExtras cpAlcabalaValoracionExtrasActual;
-    private StreamedContent archivo;
-    private Propietario propietario;
-    private List<PredioArchivo> listaAlcabalasArchivo;
-    private PredioArchivo predioArchivo;
-    private PropietarioPredio propietarioPredioBusqueda;
-    private int anio;
+//    private SegUsuario usuarioActual;
+//    private CatastroPredial catastroPredialActual;
+//    private CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion;
+//    private CatalogoDetalle catalogoDetalleConcepto;
+//
+//    private List<CatastroPredial> listaCatastroPredial;
+//    private List<CatalogoDetalle> listaCatalogoDetalleConcepto;
+//    private CatastroPredialValoracion catastroPredialValoracionActual;
+//
+//    private List<AdicionalesDeductivos> listaAdicionalesDeductivosDeducciones;
+//    private List<String> listaAdicionalesDeductivosDeduccionesSeleccion;
+//    private List<AdicionalesDeductivos> listaAdicionalesDeductivosExcenciones;
+//    private List<String> listaAdicionalesDeductivosExcencionesSeleccion;
+//
+//    private AdicionalesDeductivos adicionalesDeductivosActual;
+//    private CpAlcabalaValoracionExtras cpAlcabalaValoracionExtrasActual;
+//    private StreamedContent archivo;
+//    private Propietario propietario;
+//    private List<PredioArchivo> listaAlcabalasArchivo;
+//    private PredioArchivo predioArchivo;
+//    private PropietarioPredio propietarioPredioBusqueda;
+//    private int anio;
     
     /// ATRIBUTOS PLUSVALIA
     
@@ -139,85 +126,87 @@ public class GestionContribucionControlador extends BaseControlador {
     private PredioArchivoServicio predioArchivoServicio;
     @EJB
     private DatoGlobalServicio datoGlobalServicio;
-    
+
     /// SERVICIOS PLUSVALIA
-    
     @EJB
     private CatastroPredialPlusvaliaValoracionServicio catastroPredialPlusvaliaValoracionServicio;
-    
-    
-    
-    /// contratista
-    
-    private ObraProyecto  obraProyectoActual;
+
+    /// OBRA O PROYECTO
+    private ObraProyecto obraProyectoActual;
     private List<CatalogoDetalle> listaParroquias;
     private List<CatalogoDetalle> listaEstado;
     private List<CatalogoDetalle> listaEjecucion;
+    private List<CatalogoDetalle> listaTipoObra;
     private List<Constructora> listaConstructora;
     private String codEje;
     private String etiquedaEje;
+    private List<ObraProyecto> listaObraProyecto;
+    private Mejora mejoraActual;
+    
+    
+    //  ASIGNACIOM DE PREDIO
+    
+    private CatastroPredial catastroPredialActual;
+    private PropietarioPredio propietarioPredioBusqueda;
+
+    
     
     @EJB
     private ConstructoraServicio constructoraServicio;
-    
+    @EJB
+    private ObraProyectoServicio obraProyectoServicio;
 
     @PostConstruct
     public void inicializar() {
         try {
-                        
+
             obraProyectoActual = new ObraProyecto();
             listaParroquias = new ArrayList<CatalogoDetalle>();
             listaEstado = new ArrayList<CatalogoDetalle>();
             listaEjecucion = new ArrayList<CatalogoDetalle>();
+            listaTipoObra = new ArrayList<CatalogoDetalle>();
             listaConstructora = new ArrayList<Constructora>();
             codEje = "";
-            etiquedaEje ="";
-             
+            etiquedaEje = "";
+
+            obraProyectoActual.setObrViales(BigDecimal.ZERO);
+            obraProyectoActual.setObrAcerasBordillos(BigDecimal.ZERO);
+            obraProyectoActual.setObrServicio(BigDecimal.ZERO);
+            obraProyectoActual.setObrInfUrbana(BigDecimal.ZERO);
+            obraProyectoActual.setObrDesecacionRellenos(BigDecimal.ZERO);
+            obraProyectoActual.setObrTotal(BigDecimal.ZERO);
+
             listarParroquias();
             listarEstados();
             listarEjecucion();
+            listarObraProyectos();
+            listarTipoObra();
             
-//            catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();
-//            catastroPredialActual = new CatastroPredial();
-//            catalogoDetalleConcepto = new CatalogoDetalle();
-//            listaAlcabalasArchivo = new ArrayList<PredioArchivo>();
-//            predioArchivo = new PredioArchivo();
-//            anio = 0;
-//            //listarCatastroPredial();
-//            obtenerUsuario();
-//            listarConceptos();
-//            listarCatalogosDetalle();
-            
-            
-            // INICIALIZAR PLUSVALIA
-            catastroPredialPlusvaliaValoracion = new CatastroPredialPlusvaliaValoracion();
-            
-           // listarTipoTarifa();
-            
-            // EMISION ALCABALA PLUSVALIA          
-            
-            ejecutarValoracionSeleccion = new EjecutarValoracion(); 
-            listAnios = new  ArrayList<CatalogoDetalle>();
-            catDetAnio= new CatalogoDetalle();
-            listaCatastroPredialTablaValoracionSeleccion = new ArrayList<EjecutarValoracion>();
-            //listarAnios();
-            
-            //ejecutarValoracion();
-
+            inicializar2();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
 
-    public void obtenerUsuario() {
-        usuarioActual = new SegUsuario();
-        usuarioActual = (SegUsuario) getSession().getAttribute("usuario");
-        //System.out.println(usuarioActual.getUsuIdentificacion());         
+    public void inicializar2() {
+        try {
+            catastroPredialActual = new CatastroPredial();
+            mejoraActual = new Mejora();
+            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
     }
+    
+//    public void obtenerUsuario() {
+//        usuarioActual = new SegUsuario();
+//        usuarioActual = (SegUsuario) getSession().getAttribute("usuario");
+//        //System.out.println(usuarioActual.getUsuIdentificacion());         
+//    }
 
     public GestionContribucionControlador() {
     }
-    
+
     public void listarParroquias() {
         try {
             listaParroquias = catastroPredialServicio.listaCatParroquias();
@@ -233,7 +222,7 @@ public class GestionContribucionControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void listarEjecucion() {
         try {
             listaEjecucion = catastroPredialServicio.listaCatEjecicion();
@@ -242,22 +231,115 @@ public class GestionContribucionControlador extends BaseControlador {
         }
     }
     
-    public void listarContratistas() {
-        
+    public void listarTipoObra() {
         try {
-           codEje = catastroPredialServicio.cargarObjetoCatalogoDetalle(obraProyectoActual.getCatdetEjecucion().getCatdetCodigo()).getCatdetCod();
-           if(codEje.equals("E")){
-               etiquedaEje="Empresa pública:";             
-           }else{
-               if(codEje.equals("C")){
-                    etiquedaEje="Contratista:"; 
-               }
-           }
-                      
-           listaConstructora = constructoraServicio.listarConstructoraXTipo(codEje);
-           
-            System.out.println("tama "+ listaConstructora.size());
-           
+            listaTipoObra = catastroPredialServicio.listaCatTipoObra();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void listarContratistas() {
+
+        try {
+            codEje = catastroPredialServicio.cargarObjetoCatalogoDetalle(obraProyectoActual.getCatdetEjecucion().getCatdetCodigo()).getCatdetCod();
+            if (codEje.equals("E")) {
+                etiquedaEje = "Empresa pública:";
+            } else {
+                if (codEje.equals("C")) {
+                    etiquedaEje = "Contratista:";
+                }
+            }
+            listaConstructora = constructoraServicio.listarConstructoraXTipo(codEje);
+
+            System.out.println("tama " + listaConstructora.size());
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void sumarDistribucion() {
+        try {
+            obraProyectoActual.setObrTotal(obraProyectoActual.getObrViales().add(obraProyectoActual.getObrAcerasBordillos()).
+                    add(obraProyectoActual.getObrServicio()).add(obraProyectoActual.getObrInfUrbana()).add(obraProyectoActual.getObrDesecacionRellenos()));
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void guardarObraProyecto() {
+        try {
+            String mensaje = obraProyectoServicio.crearObraProyecto(obraProyectoActual);
+            addSuccessMessage(mensaje, mensaje);
+
+            inicializar();
+            listarObraProyectos();
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void listarObraProyectos() {
+        try {
+            listaObraProyecto = new ArrayList<ObraProyecto>();
+            listaObraProyecto = obraProyectoServicio.listarObrasProyectos();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void determinar(ObraProyecto obraProyectoActual1) {
+        try {
+            obraProyectoActual=obraProyectoActual1;            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void aceptarDeterminacion() {
+        try {
+            obraProyectoServicio.editarObraProyecto(obraProyectoActual);
+            listarObraProyectos();
+            inicializar();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    ////////////////////////////////////  ASIGNACION DE PREDIOS 
+    
+     public List<CatastroPredial> obtenerCatastroXCalve(String clave) {
+        List<CatastroPredial> lstPP = new ArrayList<CatastroPredial>();
+        try {
+            lstPP = catastroPredialServicio.listarCatastrosPorClaveContieneContiene(clave);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return lstPP;
+    }
+     
+     public void onItemSelectClave(SelectEvent event) {
+        try {
+            CatastroPredial pp = (CatastroPredial) event.getObject();            
+             propietarioPredioBusqueda = new PropietarioPredio();
+             propietarioPredioBusqueda = catastroPredialServicio.buscarPropietarioPredioPorCatastro(pp.getCatpreCodigo());            
+            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());            
+             //limpiar();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+     public void guardarAsignacionObra() {
+        try {
+//            String mensaje = obraProyectoServicio.crearObraProyecto(obraProyectoActual);
+//            addSuccessMessage(mensaje, mensaje);
+//
+//            inicializar();
+//            listarObraProyectos();
+
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -318,7 +400,46 @@ public class GestionContribucionControlador extends BaseControlador {
     public void setEtiquedaEje(String etiquedaEje) {
         this.etiquedaEje = etiquedaEje;
     }
+
+    public List<ObraProyecto> getListaObraProyecto() {
+        return listaObraProyecto;
+    }
+
+    public void setListaObraProyecto(List<ObraProyecto> listaObraProyecto) {
+        this.listaObraProyecto = listaObraProyecto;
+    }
+
+    public List<CatalogoDetalle> getListaTipoObra() {
+        return listaTipoObra;
+    }
+
+    public void setListaTipoObra(List<CatalogoDetalle> listaTipoObra) {
+        this.listaTipoObra = listaTipoObra;
+    }        
+ 
+    public CatastroPredial getCatastroPredialActual() {
+        return catastroPredialActual;
+    }
+
+    public void setCatastroPredialActual(CatastroPredial catastroPredialActual) {
+        this.catastroPredialActual = catastroPredialActual;
+    }
     
+     public PropietarioPredio getPropietarioPredioBusqueda() {
+        return propietarioPredioBusqueda;
+    }
+
+    public void setPropietarioPredioBusqueda(PropietarioPredio propietarioPredioBusqueda) {
+        this.propietarioPredioBusqueda = propietarioPredioBusqueda;
+    }
+
+    public Mejora getMejoraActual() {
+        return mejoraActual;
+    }
+
+    public void setMejoraActual(Mejora mejoraActual) {
+        this.mejoraActual = mejoraActual;
+    }
     
     
 }
