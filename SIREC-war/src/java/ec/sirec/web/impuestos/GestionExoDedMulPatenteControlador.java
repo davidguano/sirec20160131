@@ -76,8 +76,8 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
         try {
             buscNumPat = "";
             numPatente = "";
-            verActualiza=0;
-            verGuarda=0;
+            verActualiza = 0;
+            verGuarda = 0;
             patenteArchivoActual = new PatenteArchivo();
             adiDeductivoActual = new AdicionalesDeductivos();
             patenteActual = new Patente();
@@ -184,11 +184,11 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             } else {
                 if (cargarExistePatValExtra()) {
                     patValExActual = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
-                  //  adiDeductivoActual.setAdidedCodigo(patValExActual.getAdidedCodigo().getAdidedCodigo());
+                    //  adiDeductivoActual.setAdidedCodigo(patValExActual.getAdidedCodigo().getAdidedCodigo());
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //  "AE-MPM-" + patenteActual.getPatCodigo();
-                    verActualiza=1;
-                    verGuarda=0;
+                    verActualiza = 1;
+                    verGuarda = 0;
                     System.out.println("Guarda" + verGuarda);
                     System.out.println("Actualiza" + verActualiza);
                 } else {
@@ -200,9 +200,9 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
                     patValExActual.setPatentePorcIngreso(Double.valueOf(100));
                     patValExActual.setPatenteBaseimpNegativa(BigDecimal.ZERO);
                     adiDeductivoActual = new AdicionalesDeductivos();
-                    verGuarda=1;
-                    verActualiza=0;
-                     System.out.println("Guarda" + verGuarda);
+                    verGuarda = 1;
+                    verActualiza = 0;
+                    System.out.println("Guarda" + verGuarda);
                     System.out.println("Actualiza" + verActualiza);
                 }
 
@@ -312,6 +312,19 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             patenteArchivoServicio.eliminarArchivo(file);
             addSuccessMessage("Registro Eliminado");
             listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+            addWarningMessage("No se puede eliminar el regitro");
+        }
+    }
+
+    public void confirmaEliminarArchivoCargado(PatenteArchivo patArchivo) {
+        try {
+            patenteArchivoActual = patArchivo;
+            patenteArchivoServicio.eliminarArchivo(patenteArchivoActual);
+            addSuccessMessage("Registro Eliminado", "Registro Eliminado");
+             listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
