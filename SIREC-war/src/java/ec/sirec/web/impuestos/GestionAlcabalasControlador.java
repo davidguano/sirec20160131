@@ -98,6 +98,9 @@ public class GestionAlcabalasControlador extends BaseControlador {
     private PredioArchivo predioArchivo;
     private PropietarioPredio propietarioPredioBusqueda;
     private int anio;
+    private BigDecimal areaTerreno;
+    private BigDecimal areaCons;
+    private BigDecimal areaTotal;
     
     /// ATRIBUTOS PLUSVALIA
     
@@ -155,7 +158,11 @@ public class GestionAlcabalasControlador extends BaseControlador {
             listaAlcabalasArchivo = new ArrayList<PredioArchivo>();
             predioArchivo = new PredioArchivo();
             anio = 0;
-            //listarCatastroPredial();
+            
+            areaTerreno = new BigDecimal(BigInteger.ZERO);
+            areaCons = new BigDecimal(BigInteger.ZERO);
+            areaTotal = new BigDecimal(BigInteger.ZERO);
+             
             obtenerUsuario();
             listarConceptos();
             listarCatalogosDetalle();
@@ -213,13 +220,10 @@ public class GestionAlcabalasControlador extends BaseControlador {
 
     public void obtenerCamposCatPredial() {
         try {
-
-            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(catastroPredialActual.getCatpreCodigo());
-            
-            //Double d = new Double("0.2").;
-            
-          //  catastroPredialActual.setCatpreAreaTotalCons(1.2);
-
+            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(catastroPredialActual.getCatpreCodigo());                                    
+            areaTerreno = new BigDecimal(catastroPredialActual.getCatpreAreaTotal()).setScale(2, RoundingMode.HALF_UP);
+            areaCons = new BigDecimal(catastroPredialActual.getCatpreAreaTotalCons()).setScale(2, RoundingMode.HALF_UP);
+        
             propietario = new Propietario();
             propietario = catastroPredialServicio.obtenerPropietarioPrincipalPredio(catastroPredialActual.getCatpreCodigo());
             System.out.println("s: " + propietario.getProCi());
@@ -228,7 +232,20 @@ public class GestionAlcabalasControlador extends BaseControlador {
             catastroPredialValoracionActual = new CatastroPredialValoracion();
             catastroPredialValoracionActual = catastroPredialValoracionServicio.existeCatastroValoracion(catastroPredialActual, anio); 
             
-            catastroPredialAlcabalaValoracion.setCatprealcvalAnio(anio);            
+                      
+                        
+            catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredialAnio(catastroPredialActual,anio);
+            if(catastroPredialAlcabalaValoracion==null){
+                
+                catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();                
+                catastroPredialAlcabalaValoracion.setCatprealcvalAnio(anio); 
+            }else{
+            
+                // buscar  adiocnales deductivos.
+            
+            }
+            
+            
             listarArchivos();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -344,9 +361,9 @@ public class GestionAlcabalasControlador extends BaseControlador {
 
             predioArchivoServicio.crearPredioArchivo(predioArchivo);
 
-            FacesMessage msg = new FacesMessage("El documento ", event.getFile().getFileName() + " ha sido cargado satisfactoriamente.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
 
+            addSuccessMessage("El documento "+ event.getFile().getFileName() + " ha sido cargado satisfactoriamente.","El documento "+ event.getFile().getFileName() + " ha sido cargado satisfactoriamente."); 
+            
             listarArchivos();
 
         } catch (Exception ex) {
@@ -376,6 +393,16 @@ public class GestionAlcabalasControlador extends BaseControlador {
         }
         return null;
     }
+    
+    
+    public void calularAdionaclesAlcabalas(AdicionalesDeductivos adicionalesDeductivosActual1) {
+        try {                    
+            cpAlcabalaValoracionExtrasActual.setCpalcvalextBase(catastroPredialAlcabalaValoracion.getCatprealcvalTotal());
+            cpAlcabalaValoracionExtrasActual.setCpalcvalextValor(catastroPredialAlcabalaValoracion.getCatprealcvalTotal().multiply(new BigDecimal(adicionalesDeductivosActual1.getAdidedPorcentaje())).divide(new BigDecimal(100)));           
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
 
     public void guardarDeduccionesExcenciones() {
         try {
@@ -387,16 +414,15 @@ public class GestionAlcabalasControlador extends BaseControlador {
                 try {
                     if (listaAlcabalasArchivo.size() > 0) {
 
-                        catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredial(catastroPredialActual);
+                        //catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredial(catastroPredialActual);
                         if (catastroPredialAlcabalaValoracion != null) {
 
                             for (int i = 0; i < listaAdicionalesDeductivosDeduccionesSeleccion.size(); i++) {
                                 cpAlcabalaValoracionExtrasActual = new CpAlcabalaValoracionExtras();
                                 adicionalesDeductivosActual = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(Integer.parseInt(listaAdicionalesDeductivosDeduccionesSeleccion.get(i)));
                                 cpAlcabalaValoracionExtrasActual.setCatprealcvalCodigo(catastroPredialAlcabalaValoracion);
-                                cpAlcabalaValoracionExtrasActual.setAdidedCodigo(adicionalesDeductivosActual);
-                                cpAlcabalaValoracionExtrasActual.setCpalcvalextBase(BigDecimal.ZERO);
-                                cpAlcabalaValoracionExtrasActual.setCpalcvalextValor(BigDecimal.ZERO);
+                                cpAlcabalaValoracionExtrasActual.setAdidedCodigo(adicionalesDeductivosActual);                                
+                                calularAdionaclesAlcabalas(adicionalesDeductivosActual);                           
                                 cpAlcabalaValoracionExtrasServicio.crearCpAlcabalaValoracionExtras(cpAlcabalaValoracionExtrasActual);
                             }
 
@@ -472,7 +498,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
     
      public void calularDiferenciaBruta() {        
         try {
-            catastroPredialPlusvaliaValoracion.setCatprepluvalDifBruta(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventa().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventaAnt()));                       
+            catastroPredialPlusvaliaValoracion.setCatprepluvalDifBruta(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventa().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalPrecioventaAnt()).setScale(2, RoundingMode.HALF_UP));                       
             BigDecimal valorMejora;            
              ObraProyecto obraProyecto = catastroPredialServicio.buscarMejoraXCatastro(catastroPredialActual);            
              if(obraProyecto.getObrTotal()==null){
@@ -480,7 +506,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
              }else{
                  valorMejora = obraProyecto.getObrTotal();
              }
-            catastroPredialPlusvaliaValoracion.setCatprepluvalValorContrmej(valorMejora);             
+            catastroPredialPlusvaliaValoracion.setCatprepluvalValorContrmej(valorMejora.setScale(2, RoundingMode.HALF_UP));             
             calularDiferenciaNeta();
             
         } catch (Exception ex) {
@@ -490,7 +516,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
     
     public void calularDiferenciaNeta() {        
         try {
-            catastroPredialPlusvaliaValoracion.setCatprepluvalDifNeta(catastroPredialPlusvaliaValoracion.getCatprepluvalDifBruta().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalValorContrmej()));                                                  
+            catastroPredialPlusvaliaValoracion.setCatprepluvalDifNeta(catastroPredialPlusvaliaValoracion.getCatprepluvalDifBruta().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalValorContrmej()).setScale(2, RoundingMode.HALF_UP));                                                  
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -498,8 +524,8 @@ public class GestionAlcabalasControlador extends BaseControlador {
     
     public void calularValorAniosTranDominio() {        
         try {                                  
-            catastroPredialPlusvaliaValoracion.setCatprepluvalAniosTransfVal(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransf()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().multiply(new BigDecimal(0.05))));            
-            catastroPredialPlusvaliaValoracion.setCatprepluvalDifFinal(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransfVal()));                         
+            catastroPredialPlusvaliaValoracion.setCatprepluvalAniosTransfVal(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransf()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().multiply(new BigDecimal(0.05))).setScale(2, RoundingMode.HALF_UP));            
+            catastroPredialPlusvaliaValoracion.setCatprepluvalDifFinal(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransfVal()).setScale(2, RoundingMode.HALF_UP));                         
             calularRebajaDesvalorizacionBaseImpImpuesto();
             
         } catch (Exception ex) {
@@ -510,13 +536,13 @@ public class GestionAlcabalasControlador extends BaseControlador {
 public void calularRebajaDesvalorizacionBaseImpImpuesto() {        
         try {                                  
             // valor quemado porcentaje rebaja
-            catastroPredialPlusvaliaValoracion.setCatprepluvalPorcRebaja(50); 
-            catastroPredialPlusvaliaValoracion.setCatprepluvalValorRebaja(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalPorcRebaja()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal()));
-            catastroPredialPlusvaliaValoracion.setCatprepluvalBaseimp(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalValorRebaja()));                                                            
+            catastroPredialPlusvaliaValoracion.setCatprepluvalPorcRebaja(0); 
+            catastroPredialPlusvaliaValoracion.setCatprepluvalValorRebaja(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalPorcRebaja()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal()).setScale(2, RoundingMode.HALF_UP));
+            catastroPredialPlusvaliaValoracion.setCatprepluvalBaseimp(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalValorRebaja()).setScale(2, RoundingMode.HALF_UP));                                                           
 //            System.out.println("ss: "+catastroPredialServicio.cargarObjetoCatalogoDetalle(catastroPredialPlusvaliaValoracion.getCatdetTipoTarifa().getCatdetCodigo()).getCatdetValorDecimal()); 
 //            System.out.println("ssbaseImp: "+catastroPredialPlusvaliaValoracion.getCatprepluvalBaseimp()); 
-            catastroPredialPlusvaliaValoracion.setCatprepluvalImpuesto(new BigDecimal(catastroPredialServicio.cargarObjetoCatalogoDetalle(catastroPredialPlusvaliaValoracion.getCatdetTipoTarifa().getCatdetCodigo()).getCatdetValorDecimal()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalBaseimp()));             
-            catastroPredialPlusvaliaValoracion.setCatprepluvalTasaproc(new BigDecimal(datoGlobalServicio.obtenerDatoGlobal("Val_tasa_procesamiento").getDatgloValor())); 
+            catastroPredialPlusvaliaValoracion.setCatprepluvalImpuesto(new BigDecimal(catastroPredialServicio.cargarObjetoCatalogoDetalle(catastroPredialPlusvaliaValoracion.getCatdetTipoTarifa().getCatdetCodigo()).getCatdetValorDecimal()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalBaseimp()).setScale(2, RoundingMode.HALF_UP));            
+            catastroPredialPlusvaliaValoracion.setCatprepluvalTasaproc(new BigDecimal(datoGlobalServicio.obtenerDatoGlobal("Val_tasa_procesamiento").getDatgloValor()).setScale(2, RoundingMode.HALF_UP));
             
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -911,6 +937,30 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
 
     public void setEjecutarValoracionSeleccion(EjecutarValoracion ejecutarValoracionSeleccion) {
         this.ejecutarValoracionSeleccion = ejecutarValoracionSeleccion;
+    }
+
+    public BigDecimal getAreaTerreno() {
+        return areaTerreno;
+    }
+
+    public void setAreaTerreno(BigDecimal areaTerreno) {
+        this.areaTerreno = areaTerreno;
+    }
+
+    public BigDecimal getAreaCons() {
+        return areaCons;
+    }
+
+    public void setAreaCons(BigDecimal areaCons) {
+        this.areaCons = areaCons;
+    }
+
+    public BigDecimal getAreaTotal() {
+        return areaTotal;
+    }
+
+    public void setAreaTotal(BigDecimal areaTotal) {
+        this.areaTotal = areaTotal;
     }
     
     
