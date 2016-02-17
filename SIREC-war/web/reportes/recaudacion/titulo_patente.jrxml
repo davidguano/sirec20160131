@@ -2,9 +2,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="titulo_patente" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb07ff80-cd0b-4bfb-a26d-3c5c509aa9b2">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="176"/>
+	<property name="ireport.y" value="111"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="cod_valoracion" class="java.lang.Integer"/>
+	<parameter name="p_es_baja" class="java.lang.Boolean" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[SELECT cp.catpre_cod_nacional||cp.catpre_cod_local as clave_catastral,
       'PATENTE-'||rd.rec_codigo as titulo,
@@ -36,7 +37,8 @@
       patval_total as total_pat,
       pat15val_recargos as recarg_pat15,
       pat15val_total as total_pat15,
-      rec_total as total_general
+      rec_total as total_general,
+      recdet_baja as esbaja
   FROM sirec.patente_valoracion pv, sirec.cuenta_por_cobrar cxc,
   sirec.recaudacion_det rd, sirec.recaudacion_cab rc,
   sirec.patente_15xmil_valoracion pv15, sirec.catastro_predial cp,
@@ -88,6 +90,7 @@
 	<field name="recarg_pat15" class="java.math.BigDecimal"/>
 	<field name="total_pat15" class="java.math.BigDecimal"/>
 	<field name="total_general" class="java.math.BigDecimal"/>
+	<field name="esbaja" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -475,6 +478,25 @@
 			<line>
 				<reportElement x="432" y="560" width="100" height="1" uuid="d1ed0502-0ec9-4eb3-8d2e-9def38e22d90"/>
 			</line>
+			<staticText>
+				<reportElement x="153" y="178" width="269" height="77" forecolor="#FF0000" uuid="779ce7e8-42cd-4a4a-a32c-7e798830ad11">
+					<printWhenExpression><![CDATA[$F{esbaja}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="50"/>
+				</textElement>
+				<text><![CDATA[ANULADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="158" y="97" width="269" height="77" forecolor="#FF0000" uuid="f13bc9e8-0018-4f83-96ab-ce183fea97a5">
+					<printWhenExpression><![CDATA[$P{p_es_baja}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="30"/>
+				</textElement>
+				<text><![CDATA[ANULADO
+VISTA PREVIA]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

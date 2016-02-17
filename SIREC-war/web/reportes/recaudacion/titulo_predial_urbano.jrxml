@@ -5,6 +5,7 @@
 	<property name="ireport.y" value="122"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="cod_valoracion" class="java.lang.Integer"/>
+	<parameter name="p_es_baja" class="java.lang.Boolean"/>
 	<queryString>
 		<![CDATA[SELECT 'PREDIAL-'||rec.rec_codigo as titulo,
        p.pro_ci as identificacion,
@@ -37,7 +38,8 @@
       recdet_valor_inicial as subtotal,
       CASE WHEN recdet_porc_desc > 0 THEN 0  WHEN  recdet_porc_desc < 0 then recdet_porc_desc*recdet_valor_inicial*0.01 END as descuento,
       CASE WHEN recdet_porc_desc > 0 THEN recdet_porc_desc*recdet_valor_inicial*0.01  WHEN  recdet_porc_desc < 0 then 0 END as recargo,
-      recdet_valor as total
+      recdet_valor as total,
+recdet_baja as esbaja
   FROM sirec.catastro_predial_valoracion v, sirec.catastro_predial c, sirec.propietario_predio pp, sirec.propietario p,
        sirec.catalogo_detalle parr,sirec.catalogo_detalle sec, sirec.recaudacion_cab rec, sirec.recaudacion_det recdet
   where c.catpre_codigo=v.catpre_codigo and c.catpre_codigo=pp.catpre_codigo and pp.pro_ci=p.pro_ci
@@ -76,6 +78,7 @@
 	<field name="descuento" class="java.math.BigDecimal"/>
 	<field name="recargo" class="java.math.BigDecimal"/>
 	<field name="total" class="java.math.BigDecimal"/>
+	<field name="esbaja" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -471,6 +474,25 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="159" y="215" width="269" height="77" forecolor="#FF0000" uuid="50d5359a-de35-4db8-971b-ee45b8a01d91">
+					<printWhenExpression><![CDATA[$F{esbaja}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="50"/>
+				</textElement>
+				<text><![CDATA[ANULADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="159" y="146" width="269" height="77" forecolor="#FF0000" uuid="9a7a1978-0d00-43fe-8438-2945bb255e55">
+					<printWhenExpression><![CDATA[$P{p_es_baja}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="30"/>
+				</textElement>
+				<text><![CDATA[ANULADO
+VISTA PREVIA]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>
