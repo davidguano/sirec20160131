@@ -47,6 +47,7 @@ public class EjecutarValoracion {
        
     private BigDecimal totalAlcabalaDeducciones;
     private BigDecimal totalAlcabalaExenciones;
+    private BigDecimal totalAlcabalaFinal;
     
     private CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion;
     private CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion;
@@ -207,5 +208,15 @@ public class EjecutarValoracion {
     public void setAnio(int Anio) {
         this.Anio = Anio;
     }
-                
+
+    public BigDecimal getTotalAlcabalaFinal() {
+        return totalAlcabalaFinal;
+    }
+
+    public void setTotalAlcabalaFinal(BigDecimal totalAlcabalaFinal) {
+        this.totalAlcabalaFinal = totalAlcabalaFinal;
+    }
+         
+    
+    
     }
