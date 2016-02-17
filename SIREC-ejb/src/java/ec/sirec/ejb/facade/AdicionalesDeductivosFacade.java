@@ -75,6 +75,33 @@ public class AdicionalesDeductivosFacade extends AbstractFacade<AdicionalesDeduc
 //  e.catpreval_codigo=17 and
 //  d.adided_tipo_impuesto='PR' and
 //  adided_tipo='D'
+    
+    
+    
+    public List<AdicionalesDeductivos> recuperarAdicionalesDeductivosAlcabala(Object vvalor1, Object vvalor2, Object vvalor3) throws Exception {
+
+      String sql = " SELECT d from CpAlcabalaValoracionExtras e, AdicionalesDeductivos d " +
+"  where e.adidedCodigo=d.adidedCodigo and " +
+"  e.catprealcvalCodigo=:vvalor1 and " +
+"  d.adidedTipoImpuesto=:vvalor2 and " +
+"  d.adidedTipo=:vvalor3";             
+                                                
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vvalor1", vvalor1 ); // tipo        
+        q.setParameter("vvalor2", vvalor2 ); // tipo        
+        q.setParameter("vvalor3", vvalor3 ); // 
+       
+        return q.getResultList();
+    }             
+    
+    
+    
+//    SELECT * from sirec.cp_alcabala_valoracion_extras e, sirec.adicionales_deductivos d
+//  where e.adided_codigo=d.adided_codigo and 
+//  e.catprealcval_codigo=14 and
+//  d.adided_tipo_impuesto='AL' and
+//  d.adided_tipo='D'
+    
 }
 
 
