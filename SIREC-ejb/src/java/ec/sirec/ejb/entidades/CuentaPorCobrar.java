@@ -22,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -91,6 +92,8 @@ public class CuentaPorCobrar implements Serializable {
     @JoinColumn(name = "pro_ci", referencedColumnName = "pro_ci")
     @ManyToOne(optional = false)
     private Propietario proCi;
+    @Transient
+    public boolean seleccionado;
 
     public CuentaPorCobrar() {
     }
@@ -216,6 +219,15 @@ public class CuentaPorCobrar implements Serializable {
     public void setProCi(Propietario proCi) {
         this.proCi = proCi;
     }
+
+    public boolean getSeleccionado() {
+        return seleccionado;
+    }
+
+    public void setSeleccionado(boolean seleccionado) {
+        this.seleccionado = seleccionado;
+    }
+    
     
 
     @Override

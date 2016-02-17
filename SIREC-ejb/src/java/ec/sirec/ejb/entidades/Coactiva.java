@@ -65,6 +65,9 @@ public class Coactiva implements Serializable {
     @Size(min = 1, max = 1)
     @Column(name = "coa_estado")
     private String coaEstado;
+    @Column(name = "coa_fecha_ult_not")
+    @Temporal(TemporalType.DATE)
+    private Date coaFechaUltNot;
     @JoinColumn(name = "usu_identificacion", referencedColumnName = "usu_identificacion")
     @ManyToOne(optional = false)
     private SegUsuario usuIdentificacion;
@@ -73,6 +76,10 @@ public class Coactiva implements Serializable {
     private CuentaPorCobrar cxcCodigo;
 
     public Coactiva() {
+        coaNotificacion1=false;
+        coaNotificacion2=false;
+        coaNotificacion3=false;
+        coaNotificacion=false;
     }
 
     public Coactiva(Integer coaCodigo) {
@@ -174,6 +181,15 @@ public class Coactiva implements Serializable {
         this.cxcCodigo = cxcCodigo;
     }
 
+    public Date getCoaFechaUltNot() {
+        return coaFechaUltNot;
+    }
+
+    public void setCoaFechaUltNot(Date coaFechaUltNot) {
+        this.coaFechaUltNot = coaFechaUltNot;
+    }
+    
+    
     
 
     @Override

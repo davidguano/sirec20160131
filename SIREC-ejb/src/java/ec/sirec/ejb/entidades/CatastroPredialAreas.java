@@ -50,6 +50,8 @@ public class CatastroPredialAreas implements Serializable {
     private CatastroPredial catpreCodigo;
 
     public CatastroPredialAreas() {
+        catpreareBloque=1;
+        catprearePiso=1;
     }
 
     public CatastroPredialAreas(Integer catpreareCodigo) {

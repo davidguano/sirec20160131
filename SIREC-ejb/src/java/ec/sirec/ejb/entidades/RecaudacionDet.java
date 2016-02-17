@@ -57,6 +57,8 @@ public class RecaudacionDet implements Serializable {
     private BigDecimal recdetValorInicial;
     @Column(name = "recdet_porc_desc")
     private Integer recdetPorDesc;
+    @Column(name = "recdet_baja")
+    private Boolean recdetBaja;
     @JoinColumn(name = "rec_codigo", referencedColumnName = "rec_codigo")
     @ManyToOne(optional = false)
     private RecaudacionCab recCodigo;
@@ -157,6 +159,14 @@ public class RecaudacionDet implements Serializable {
 
     public void setRecdetPorDesc(Integer recdetPorDesc) {
         this.recdetPorDesc = recdetPorDesc;
+    }
+
+    public Boolean getRecdetBaja() {
+        return recdetBaja;
+    }
+
+    public void setRecdetBaja(Boolean recdetBaja) {
+        this.recdetBaja = recdetBaja;
     }
     
     

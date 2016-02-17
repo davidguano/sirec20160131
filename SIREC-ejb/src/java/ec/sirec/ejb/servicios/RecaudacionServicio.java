@@ -87,6 +87,7 @@ public class RecaudacionServicio {
                 for (RecaudacionDet det : lstDets) {
                     if (det.getActivo()) {
                         det.setRecCodigo(vcabecera);
+                        det.setRecdetBaja(false);
                         if (det.getRecdetValor() == null) {
                             det.setRecdetValor(BigDecimal.ZERO);
                         }

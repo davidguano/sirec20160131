@@ -55,7 +55,7 @@ public class ConvenioPago implements Serializable {
     private Integer conpagPorcentaje;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Size(min = 1, max = 1)
     @Column(name = "conpag_estado")
     private String conpagEstado;
     @Column(name = "conpag_saldo")
