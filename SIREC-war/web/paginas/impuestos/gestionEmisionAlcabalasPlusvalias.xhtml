@@ -49,34 +49,72 @@
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  emptyMessage="No se han encontrado Predios"
                                  rowIndexVar="rowId"
-                                 selectionMode="single"
-                                 >                                              
+                                 selectionMode="single">
                         <f:facet name="header">
                             <p:outputLabel value="Lista de Predios" style="font-size:10px;"/> 
-                        </f:facet>   
+                        </f:facet>
+                                                                         
                         <p:ajax event="rowSelect" listener="#{gestionAlcabalasControlador.onRowSelect}" process="@this" update="" />
-                        <p:column headerText="#{txt.clave_catastral}" filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" width="60" style="font-size:10px;"> 
+                        
+                        <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column rowspan="2" headerText="#{txt.clave_catastral}"  style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.nombre_razón_social}" style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.ruc_ci}" style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.parroquia_t}" style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.dirección}" style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.anio_t}" style="font-size:10px;"/>
+                                    <p:column colspan="4" headerText="Alcabalas" style="font-size:10px;"/>
+                                    <p:column rowspan="2" headerText="#{txt.total} Plusvalia" style="font-size:10px;"/>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column headerText="Subtotal" style="font-size:10px;"/>
+                                    <p:column headerText="- Deducciones" style="font-size:10px;"/>               
+                                    <p:column headerText="- Exenciones" style="font-size:10px;"/>               
+                                    <p:column headerText="Total" style="font-size:10px;"/>               
+                                            
+                                </p:row>
+                            </p:columnGroup>
+                        
+                        
+                        <p:column filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" width="90" > 
                             <h:outputText value="#{catastroP.catpreClaveCatastal}" style="font-size:11px;" />
                         </p:column>
-                        <p:column headerText="#{txt.nombre_razón_social}" filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
+                        <p:column  filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.proCi.proRazonSocial}"  style="font-size:11px;" />
                         </p:column>
-                        <p:column headerText="#{txt.ruc_ci}" filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
+                        <p:column filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.proCi.proCi}"  style="font-size:10px;" />
                         </p:column>
-                        <p:column headerText="#{txt.parroquia_t}" filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
+                        <p:column  filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}"  style="font-size:10px;" />
                         </p:column>                            
-                        <p:column headerText="#{txt.dirección}" filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
+                        <p:column  filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.proCi.proDireccion}"  style="font-size:10px;"/>
                         </p:column> 
-                        <p:column headerText="#{txt.anio_t}" filterBy="#{catastroP.anio}" filterMatchMode="contains" width="50" style="font-size:10px;"> 
+                        <p:column  filterBy="#{catastroP.anio}" filterMatchMode="contains" width="30" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.anio}"  style="font-size:10px;"/>
-                        </p:column>                                                                                                                                                 
-                        <p:column headerText="#{txt.total} Alcabala" width="40" style="font-size:11px;"> 
+                        </p:column>    
+                        
+                        
+                        
+                        <p:column width="40" style="font-size:11px;"> 
                             <h:outputText value="#{catastroP.catastroPredialAlcabalaValoracion.catprealcvalTotal}"  style="font-size:10px;"/>
-                        </p:column>                                                                                                                        
-                        <p:column headerText="#{txt.total} Plusvalia" width="40" style="font-size:11px;"> 
+                        </p:column>                          
+                         <p:column  width="40" style="font-size:11px;"> 
+                             <h:outputText value="#{catastroP.totalAlcabalaDeducciones}"  style="font-size:10px;"/>
+                        </p:column>                        
+                         <p:column  width="40" style="font-size:11px;"> 
+                             <h:outputText value="#{catastroP.totalAlcabalaExenciones}"  style="font-size:10px;"/>
+                        </p:column>
+                         <p:column  width="40" style="font-size:11px;"> 
+                             <h:outputText value="#{catastroP.totalAlcabalaFinal}"  style="font-size:10px;"/>
+                        </p:column>
+                        
+                        
+                                                                                                                                              
+                        <p:column  width="40" style="font-size:11px;"> 
                             <h:outputText value="#{catastroP.catastroPredialPlusvaliaValoracion.catprepluvalImpuesto}"  style="font-size:10px;"/>
                         </p:column>                                                                                                                        
                        <!-- <p:column headerText="Seleccione" selectionMode="single" exportable="false" width="40" style="width:16px;text-align:center"/>                                                                                                                                                                       

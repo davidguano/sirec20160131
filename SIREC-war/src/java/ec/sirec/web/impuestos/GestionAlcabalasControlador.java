@@ -584,15 +584,37 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
                 eVal.setProCi(catastroPredialServicio.obtenerPropietarioPrincipalPredio(CP.getCatpreCodigo())); 
                 
                 CatastroPredialAlcabalaValoracion ALCA = catastroPredialServicio.buscarAlcabalaPorCatastroPredialAnio(CP, catDetAnio.getCatdetValor());                                                                                                               
-                if(ALCA!=null){                    
-                    if(ALCA.getCatprealcvalTotal()==null){
+                if (ALCA != null) {
+                    if (ALCA.getCatprealcvalTotal() == null) {
                         ALCA.setCatprealcvalTotal(BigDecimal.ZERO);
+                    } else {
+
+                        if (cpAlcabalaValoracionExtrasServicio.obteneValorTipoAdicionalAlcabala(ALCA.getCatprealcvalCodigo(), "AL", "D") != null) {
+                            eVal.setTotalAlcabalaDeducciones(cpAlcabalaValoracionExtrasServicio.obteneValorTipoAdicionalAlcabala(ALCA.getCatprealcvalCodigo(), "AL", "D"));
+                        } else {
+                            eVal.setTotalAlcabalaDeducciones(BigDecimal.ZERO);
+                        }
+                        
+                        if (cpAlcabalaValoracionExtrasServicio.obteneValorTipoAdicionalAlcabala(ALCA.getCatprealcvalCodigo(), "AL", "E") != null) {
+                            eVal.setTotalAlcabalaExenciones(cpAlcabalaValoracionExtrasServicio.obteneValorTipoAdicionalAlcabala(ALCA.getCatprealcvalCodigo(), "AL", "E"));
+                        } else {
+                            eVal.setTotalAlcabalaExenciones(BigDecimal.ZERO);
+                        }
+                        
+                        BigDecimal totalFinal = ALCA.getCatprealcvalTotal().subtract(eVal.getTotalAlcabalaDeducciones()).subtract(eVal.getTotalAlcabalaExenciones()); 
+                        if(totalFinal.signum()==-1){
+                            totalFinal = BigDecimal.ZERO;
+                        }                        
+                        eVal.setTotalAlcabalaFinal(totalFinal);                         
                     }
                                                                                
                 }else{
                     ALCA = new CatastroPredialAlcabalaValoracion();
                     ALCA.setCatprealcvalTotal(BigDecimal.ZERO);                                        
                 }
+                
+                
+                
                 eVal.setCatastroPredialAlcabalaValoracion(ALCA); 
                   
                 CatastroPredialPlusvaliaValoracion PLUS = catastroPredialServicio.buscarPlusvaliaPorCatastroPredialAnio(CP,catDetAnio.getCatdetValor());                                                                 
