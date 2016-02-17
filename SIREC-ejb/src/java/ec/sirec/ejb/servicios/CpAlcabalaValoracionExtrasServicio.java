@@ -8,6 +8,7 @@ package ec.sirec.ejb.servicios;
 
 import ec.sirec.ejb.entidades.CpAlcabalaValoracionExtras;
 import ec.sirec.ejb.facade.CpAlcabalaValoracionExtrasFacade;
+import java.math.BigDecimal;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -36,5 +37,8 @@ public class CpAlcabalaValoracionExtrasServicio {
         return "Se ha modificado el CpAlcabalaValoracionExtras" + cpAlcabalaValoracionExtras.getCatprealcvalCodigo();
     }
     
-
+    public BigDecimal obteneValorTipoAdicionalAlcabala(Integer codigoAl, String TipoImp, String tipo) throws Exception {
+        return cpAlcabalaValoracionExtrasDao.obteneValorTipoAdicionalAlcabala(codigoAl, TipoImp, tipo);
+    }
+    
 }

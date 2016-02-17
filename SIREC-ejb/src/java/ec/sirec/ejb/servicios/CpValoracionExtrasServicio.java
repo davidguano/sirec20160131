@@ -5,22 +5,15 @@
  */
 package ec.sirec.ejb.servicios;
 
-import ec.sirec.ejb.entidades.AdicionalesDeductivos;
-import ec.sirec.ejb.entidades.CatalogoDetalle;
-import ec.sirec.ejb.entidades.CatastroPredial;
+
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
 import ec.sirec.ejb.entidades.CpValoracionExtras;
-import ec.sirec.ejb.entidades.SegPermiso;
-import ec.sirec.ejb.facade.AdicionalesDeductivosFacade;
-import ec.sirec.ejb.facade.CatalogoDetalleFacade;
 import ec.sirec.ejb.facade.CpValoracionExtrasFacade;
-import ec.sirec.ejb.facade.SegPermisoFacade;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
-import javax.persistence.Query;
 
 /**
  *
