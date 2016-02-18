@@ -61,6 +61,8 @@ public class CatastroPredialValoracion implements Serializable {
     private Integer catprevalAnio;
     @Column(name = "catpreval_activo")
     private Boolean catprevalActivo;
+    @Column(name = "catpreval_contrib_mejora")
+    private BigDecimal catprevalContribMejora;
     @JoinColumn(name = "catpre_codigo", referencedColumnName = "catpre_codigo")
     @ManyToOne(optional = false)
     private CatastroPredial catpreCodigo;
@@ -178,6 +180,14 @@ public class CatastroPredialValoracion implements Serializable {
 
     public void setCatprevalActivo(Boolean catprevalActivo) {
         this.catprevalActivo = catprevalActivo;
+    }
+
+    public BigDecimal getCatprevalContribMejora() {
+        return catprevalContribMejora;
+    }
+
+    public void setCatprevalContribMejora(BigDecimal catprevalContribMejora) {
+        this.catprevalContribMejora = catprevalContribMejora;
     }
     
     
