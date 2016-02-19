@@ -109,7 +109,72 @@
                                 
                             </h:panelGrid>                                                        
                         </p:panel>   
-                             
+                            
+                        
+                        <p:panel id="pnlDocPl" header="#{txt.DOCUMENTOS}" style="background: #EED290;">    
+                        
+                               <p:fileUpload fileUploadListener="#{gestionAlcabalasControlador.handleFileUploadPL}"  
+                                                      mode="advanced"
+                                                      dragDropSupport="false"
+                                                      multiple="true"  
+                                                      update=":frmAlcabalas:msgs,:frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArchPL"
+                                                      sizeLimit="50000000000"
+                                                      allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
+                                                      invalidSizeMessage="El archivo debe ser maximo 1MB"
+                                                      label="Seleccione el Documento" 
+                                                      uploadLabel="Cargar"
+                                                      cancelLabel="Cancelar"
+                                                      process="@this,">                                                                                                                                        
+                                        </p:fileUpload>
+                            
+                            
+                             <br/>
+                                <p:commandButton value="#{txt.VER_dOC_btn}" 
+                                                     id="btnVerDocPL" 
+                                                     action="#{gestionAlcabalasControlador.listarArchivosPL()}" 
+                                                     icon="ui-icon-disk"  
+                                                     process="@this" 
+                                                     update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArchPL,:frmAlcabalas:msgs"
+                                                     async="true"
+                                                     global="false"
+                                                     />
+                            <p:panel id="pnllstArchPL">                                
+                                <p:dataTable id="lstArchPL" value="#{gestionAlcabalasControlador.listaPlusvaliaArchivo}"  var="archivo"  
+                                             rowKey="#{archivo.prearcCodigo}">
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Lista de Archivos" style="font-size:12px;"/>
+                                        </f:facet>
+                                        <p:column headerText="Tipo" width="50">                                           
+                                            <h:outputText value="Plusvalía" rendered="#{archivo.prearcTipo =='PL'}" style="font-size:12px;" />
+                                        </p:column>
+                                        <p:column headerText="Nombre del Archivo" width="150">
+                                            <h:outputText value="#{archivo.prearcNombre}" style="font-size:12px;" />
+                                        </p:column>
+                                        <p:column headerText="Fecha de Creación" width="105">
+                                            <h:outputText value="#{archivo.ultaccMarcatiempo}" style="font-size:12px;"/>
+                                        </p:column>
+                                       <p:column headerText="Descargar" width="100">
+                                           <center>
+                                               <p:commandButton icon="fa fa-download fa-lg" async="true" global="false" process="@this" actionListener="#{gestionAlcabalasControlador.descargarArchivo(archivo)}" oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/DescargarArchivos','DescargarArchivos')">                                        
+                                               </p:commandButton>
+                                    </center>         
+                                        </p:column>                                           
+                                        <p:column headerText="Eliminar" width="50">
+                                            <p:commandButton icon="ui-icon-trash" action="#{gestionAlcabalasControlador.eliminarArchivoPL(archivo)}" 
+                                                             update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArchPL,:frmAlcabalas:msgs"
+                                                             process="@this" global="false" async="true"  ajax="true" >
+                                                <p:confirm header="Confirmacion" message="Desea eliminar el Archivo?" icon="ui-icon-alert" />
+                                            </p:commandButton>
+                                            <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                            </p:confirmDialog>
+                                        </p:column>
+                                    </p:dataTable>
+                                
+                                </p:panel>
+                        </p:panel>
+                        
                             
                        <p:commandButton value="#{txt.guardar_btn}" 
                                                      id="btnGuardarPlus" 
@@ -119,6 +184,7 @@
                                                      update=":frmAlcabalas:msgs"
                                                      async="true"
                                                      global="false"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      />                                                                              
                                                                                                                                            
                   </h:panelGrid>

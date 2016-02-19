@@ -25,7 +25,7 @@
                                 </p:panel>
                             
                         <p:panel id="pnlEx" header="#{txt.EXENCIONES}" style="background: #A2AFD3;">                                
-                                <h:panelGrid columns="2">
+                                <h:panelGrid columns="1">
                                     <p:selectManyCheckbox id="cmbExc" value="#{gestionAlcabalasControlador.listaAdicionalesDeductivosExcencionesSeleccion}"
                                                   layout="grid" columns="1"
                                                   style="width:1000px" 
@@ -34,7 +34,24 @@
                                                value="#{gestionAlcabalasControlador.listaAdicionalesDeductivosExcenciones}" 
                                                itemLabel="#{tipo.adidedDescripcion}" 
                                                itemValue="#{tipo.adidedCodigo}"/> 
+                                <p:ajax event="change" listener="#{gestionAlcabalasControlador.muestraRenumeracion()}"                                        
+                                                    update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnlEx" 
+                                                    process="@this" 
+                                                    async="true" global="false"/>
+                                
                             </p:selectManyCheckbox>
+                                    <h:panelGrid id="pnlRenumeracion" columns="3" rendered="#{gestionAlcabalasControlador.visibleRenumeracion=='E_R10'}">                                        
+                                         <p:outputLabel value="REMUNERACION:"/>
+                                     <p:inputText id="alRen" value="#{gestionAlcabalasControlador.renumeracion}" 
+                                             required="true" requiredMessage="Se nesecita un valor: REMUNERACION"
+                                             onkeypress="return isDecimalKey(event)"
+                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                        <p:message  for="alRen" display="icon"/>
+                                    </h:panelGrid>
+                                         
+                                         
+                                    
+                                    
                                 </h:panelGrid>                                                                                                       
                                 
                                 </p:panel>
@@ -72,8 +89,8 @@
                                         <f:facet name="header">
                                             <p:outputLabel value="Lista de Archivos" style="font-size:12px;"/>
                                         </f:facet>
-                                        <p:column headerText="Tipo" width="50">
-                                            <h:outputText value="#{archivo.prearcTipo}" style="font-size:12px;" />
+                                        <p:column headerText="Tipo" width="50">                                           
+                                            <h:outputText value="Alcabala" rendered="#{archivo.prearcTipo =='AL'}" style="font-size:12px;" />
                                         </p:column>
                                         <p:column headerText="Nombre del Archivo" width="150">
                                             <h:outputText value="#{archivo.prearcNombre}" style="font-size:12px;" />
@@ -111,6 +128,7 @@
                                                      update=":frmAlcabalas:msgs"
                                                      async="true"
                                                      global="false"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      />                                                                                                                    
                   </h:panelGrid>
                 </center>
