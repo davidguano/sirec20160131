@@ -6,9 +6,11 @@
 package ec.sirec.ejb.servicios;
 
 
+import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.entidades.CpAlcabalaValoracionExtras;
 import ec.sirec.ejb.facade.CpAlcabalaValoracionExtrasFacade;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -41,4 +43,15 @@ public class CpAlcabalaValoracionExtrasServicio {
         return cpAlcabalaValoracionExtrasDao.obteneValorTipoAdicionalAlcabala(codigoAl, TipoImp, tipo);
     }
     
+    public List<CpAlcabalaValoracionExtras> listarCpValoracionExtrasXALCA(CatastroPredialAlcabalaValoracion catPreALCAValCodigo) throws Exception {
+     return cpAlcabalaValoracionExtrasDao.listarPorCampoOrdenada(ENTIDAD_CPALCABALA_VALORACION_EXTRAS,"catprealcvalCodigo", catPreALCAValCodigo,"cpalcvalextCodigo", "asc");
+    }
+    
+     public String eliminarCpValoracionExtrar(CatastroPredialAlcabalaValoracion catPreALCAValCodigo) throws Exception {
+        List<CpAlcabalaValoracionExtras> listarCp = listarCpValoracionExtrasXALCA(catPreALCAValCodigo);
+          for (int i = 0; i < listarCp.size(); i++) {  
+              cpAlcabalaValoracionExtrasDao.eliminarGenerico(ENTIDAD_CPALCABALA_VALORACION_EXTRAS, "cpalcvalextCodigo", listarCp.get(i).getCpalcvalextCodigo());
+          }                
+        return "se han eliminado los CpValALCA";
+    }
 }
