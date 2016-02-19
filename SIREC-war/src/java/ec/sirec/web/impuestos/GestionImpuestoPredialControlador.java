@@ -113,6 +113,8 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
     private CatalogoDetalle catalogoSector;
     private boolean existe;
     private PropietarioPredio propietarioPredioBusqueda;
+     private String visibleRebHipotecaria;
+     private BigDecimal rebHipotecaria;
    
     private EjecutarValoracion ejecutarValoracionAcual;
 
@@ -142,6 +144,8 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
             obtenerUsuario();
             catastroPredialActual = new CatastroPredial();
             listaPredioArchivo = new ArrayList<PredioArchivo>();
+            visibleRebHipotecaria = "";
+            rebHipotecaria = new BigDecimal(BigInteger.ZERO).setScale(2, RoundingMode.HALF_UP);
             
             listarTodasComboClaves();
             listarCatastroPredialERD();
@@ -986,6 +990,24 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
+     
+     
+    public void muestraRejabaHipotecaria() {
+        try {
+            visibleRebHipotecaria = "";
+            for (int i = 0; i < listaAdicionalesDeductivosDeduccionesSeleccion.size(); i++) {
+                adicionalesDeductivosActual = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(Integer.parseInt(listaAdicionalesDeductivosDeduccionesSeleccion.get(i)));
+
+                if (adicionalesDeductivosActual.getAdidedNemonico().equals("D_RHI")) {
+                    visibleRebHipotecaria = adicionalesDeductivosActual.getAdidedNemonico();
+                    i = listaAdicionalesDeductivosDeduccionesSeleccion.size();
+                }
+            }
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
     
     // METODOS
     public List<AdicionalesDeductivos> getListaAdicionalesDeductivosRecargos() {
@@ -1171,5 +1193,23 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
 
     public void setExiste(boolean existe) {
         this.existe = existe;
-    }        
+    }      
+
+    public String getVisibleRebHipotecaria() {
+        return visibleRebHipotecaria;
+    }
+
+    public void setVisibleRebHipotecaria(String visibleRebHipotecaria) {
+        this.visibleRebHipotecaria = visibleRebHipotecaria;
+    }
+
+    public BigDecimal getRebHipotecaria() {
+        return rebHipotecaria;
+    }
+
+    public void setRebHipotecaria(BigDecimal rebHipotecaria) {
+        this.rebHipotecaria = rebHipotecaria;
+    }
+    
+    
 }
