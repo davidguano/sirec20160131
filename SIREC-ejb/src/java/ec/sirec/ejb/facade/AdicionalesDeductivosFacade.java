@@ -92,10 +92,7 @@ public class AdicionalesDeductivosFacade extends AbstractFacade<AdicionalesDeduc
         q.setParameter("vvalor3", vvalor3 ); // 
        
         return q.getResultList();
-    }             
-    
-    
-    
+    }                         
 //    SELECT * from sirec.cp_alcabala_valoracion_extras e, sirec.adicionales_deductivos d
 //  where e.adided_codigo=d.adided_codigo and 
 //  e.catprealcval_codigo=14 and
@@ -103,8 +100,3 @@ public class AdicionalesDeductivosFacade extends AbstractFacade<AdicionalesDeduc
 //  d.adided_tipo='D'
     
 }
-
-
-
-
-
