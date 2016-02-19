@@ -59,7 +59,22 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
                 + " and pa.pat_codigo=:codPatente "
-                + " and pv.patval_anio=:anio";
+                + " and pv.patval_anio=:anio "
+                + "union "
+                + " select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
+                + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
+                + " pv.patval_impuesto as impuestoPatente,pv.patval_tasa_bomb as tasaBomberos,pv.patval_tasa_proc as tasaProcesamiento, pv.patval_total as totalPatente "
+                + ",0 as baseImponible,0 as impuestoxMil,0 as tasaProxMil, "
+                + " 0 as totalValxMil  "
+                + " from  sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, sirec.patente pa, "
+                + " sirec.patente_valoracion pv, sirec.catalogo_detalle cdp "
+                + "  where p.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo "
+                + "  and cp.catpre_codigo=pa.catpre_codigo "
+                + "   and pa.pat_codigo=pv.pat_codigo  "
+                + "   and cp.catdet_parroquia=cdp.catdet_codigo "
+                + "and pa.pat_codigo not in (select pat_codigo from sirec.patente_15xmil_valoracion ) "
+                + "  and pa.pat_codigo=:codPatente "
+                + "    and pv.patval_anio=:anio";
 
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("codPatente", codPatente).setParameter("anio", anio);
@@ -90,7 +105,22 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
                 + " and cp.catdet_parroquia=:parroquia "
-                + " and pv.patval_anio=:anio";
+                + " and pv.patval_anio=:anio "
+                + "union "
+                + "select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
+                + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
+                + " pv.patval_impuesto as impuestoPatente,pv.patval_tasa_bomb as tasaBomberos,pv.patval_tasa_proc as tasaProcesamiento, pv.patval_total as totalPatente "
+                + ",0 as baseImponible,0 as impuestoxMil,0 as tasaProxMil, "
+                + " 0 as totalValxMil  "
+                + " from  sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, sirec.patente pa, "
+                + " sirec.patente_valoracion pv, sirec.catalogo_detalle cdp "
+                + "  where p.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo "
+                + "  and cp.catpre_codigo=pa.catpre_codigo "
+                + " and cp.catdet_parroquia=cdp.catdet_codigo "
+                + "   and pa.pat_codigo=pv.pat_codigo "
+                + "  and pa.pat_codigo not in (select pat_codigo from sirec.patente_15xmil_valoracion ) "
+                + "   and cp.catdet_parroquia=:parroquia  "
+                + "   and pv.patval_anio=:anio";
 
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("parroquia", parroquia).setParameter("anio", anio);
@@ -120,7 +150,22 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pv.pat_codigo"
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
-                + " and pv.patval_anio=:anio";
+                + " and pv.patval_anio=:anio "
+                + "union "
+                + "select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
+                + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
+                + " pv.patval_impuesto as impuestoPatente,pv.patval_tasa_bomb as tasaBomberos,pv.patval_tasa_proc as tasaProcesamiento, pv.patval_total as totalPatente "
+                + ",0 as baseImponible,0 as impuestoxMil,0 as tasaProxMil, "
+                + " 0 as totalValxMil  "
+                + " from  sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, sirec.patente pa, "
+                + " sirec.patente_valoracion pv, sirec.catalogo_detalle cdp "
+                + "  where p.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo "
+                + "  and cp.catpre_codigo=pa.catpre_codigo "
+                + "   and pa.pat_codigo=pv.pat_codigo  "
+                + "   and cp.catdet_parroquia=cdp.catdet_codigo  "
+                + "   and pa.pat_codigo not in (select pat_codigo from sirec.patente_15xmil_valoracion ) "
+                + "    and pv.patval_anio=:anio "
+                + "    order by 1";
 
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("anio", anio);
@@ -147,6 +192,21 @@ public class PatenteFacade extends AbstractFacade<Patente> {
             return null;
         } else {
             return (Patente) q.getResultList().get(0);
+        }
+    }
+
+    public boolean buscaPatentePrimeraVez(int codPatValoracion, int catasPredial, int anio) {
+        String sql = " select pa.pat_codigo as codigoPatente from sirec.patente pa,sirec.patente_valoracion pv "
+                + "where pa.pat_codigo=pv.pat_codigo "
+                + "and pv.patval_anio=:anio "
+                + "and pa.catpre_codigo=:catPredial "
+                + "and pv.pat_codigo=:patValoracion ";
+        Query q = getEntityManager().createNativeQuery(sql);
+        q.setParameter("patValoracion", codPatValoracion).setParameter("catPredial", catasPredial).setParameter("anio", anio);
+        if (q.getResultList().isEmpty()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
