@@ -281,7 +281,7 @@
                             <p:message for="compPnl1_16" display="icon"/>
 
                             <p:outputLabel style="font-size: #{txt.font_size}" for="button" value="#{txt.lbl_inicio_actividad}"/>                               
-                            <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button" value="#{gestionPatenteControlador.fecActividadEconomica}" showOn="button" />
+                            <p:calendar navigator="true" locale="es" required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button" value="#{gestionPatenteControlador.fecActividadEconomica}" showOn="button" />
                             <p:message for="button" display="icon"/>
                         </h:panelGrid>
                         <h:panelGrid columns="6">

@@ -7,7 +7,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:psirec="http://java.sun.com/jsf/composite/psirec">
-    <!--DETERMINACION DE PATERNTES-->
+     <!--DETERMINACION DE PATERNTES-->
     <h:panelGrid>
         <center>
             <h:panelGrid id="pnlConTblAmortizacion" width="1000" columns="1" >
@@ -67,14 +67,14 @@
                                                       titulo="#{txt.lbl_head_error_patente}" tamanioTitulo="15" colorTitulo="white"
                                                       texto="#{txt.lbl_error_num_patente}" tamanioTexto="12" colorTexto="white"/>
                         </h:panelGrid>
-                    </p:panel>
-                    <h:panelGrid>
+                    </p:panel>                   
+                    <h:panelGrid>                        
                         <h:panelGrid columns="3" id="pnlTblFechas">
                             <p:outputLabel style="font-size: #{txt.font_size}" for="buttonAdju" value="#{txt.lbl_fecha_adjudicacion}"/>                               
-                            <p:calendar requiredMessage="#{txt.lbl_fecha_adjudicacion} Se necesita un valor" required="true" id="buttonAdju" value="#{gestionTblAmortizaControlador.fechaAdjudica}" showOn="button" />
+                            <p:calendar navigator="true" locale="es" requiredMessage="#{txt.lbl_fecha_adjudicacion} Se necesita un valor" required="true" id="buttonAdju" value="#{gestionTblAmortizaControlador.fechaAdjudica}" showOn="button" />
                             <p:message for="buttonAdju" display="icon"/>
                             <p:outputLabel style="font-size: #{txt.font_size}" for="buttonVen" value="#{txt.lbl_fecha_vencimiento}"/>                               
-                            <p:calendar requiredMessage="#{txt.lbl_fecha_vencimiento} Se necesita un valor"  required="true" id="buttonVen" value="#{gestionTblAmortizaControlador.fechaVencmiento}" showOn="button" />
+                            <p:calendar navigator="true" locale="es" requiredMessage="#{txt.lbl_fecha_vencimiento} Se necesita un valor"  required="true" id="buttonVen" value="#{gestionTblAmortizaControlador.fechaVencmiento}" showOn="button" />
                             <p:message for="buttonVen" display="icon"/>
                         </h:panelGrid>
 
