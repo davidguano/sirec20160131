@@ -125,13 +125,16 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     public void actualizaPatenteValExtra() {
         try {
-            patValExActual.setAdidedCodigo(adiDeductivoActual);
-            patValExActual.setPatvalCodigo(patenteValoracionActal);
+            //  patValExActual.setAdidedCodigo(adiDeductivoActual);
+            //  patValExActual.setPatvalCodigo(patenteValoracionActal);
             patenteServicio.editarPatenteValoracionExtra(patValExActual);
             addSuccessMessage("Actualizado Exitosamente", "Patente Valoración Extra Actualizado");
             patValExActual = new PatenteValoracionExtras();
-            cargaObjetosBitacora();
-            guardarArchivos();
+            if (!listaFiles.isEmpty()) {
+                cargaObjetosBitacora();
+                guardarArchivos();
+            }
+
             inicializar();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -324,7 +327,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             patenteArchivoActual = patArchivo;
             patenteArchivoServicio.eliminarArchivo(patenteArchivoActual);
             addSuccessMessage("Registro Eliminado", "Registro Eliminado");
-             listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
+            listadoArchivos = patenteArchivoServicio.listarArchivoPorPatente(patenteActual);
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);

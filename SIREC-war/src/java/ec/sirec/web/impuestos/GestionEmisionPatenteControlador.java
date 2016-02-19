@@ -75,6 +75,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     private int verBusPatente;
     private int verBusGlobal;
     private boolean global;
+    private int msjVerificaSaldo;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -82,6 +83,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            msjVerificaSaldo=0;
             numPatente = "";
             patenteActual = new Patente();
             patValoracionActual = new PatenteValoracion();
@@ -122,16 +124,21 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     }
 
     public void listarEmisionPatente() {
+        msjVerificaSaldo = 0;
         CatalogoDetalle objCatDet = new CatalogoDetalle();
         try {
             objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
             if (verBusPatente == 1) {
                 System.out.println("Entra opcion1");
                 listaEmisionPatente = patenteServicio.listarEmisionAnioPatente(patenteActual.getPatCodigo(), Integer.parseInt(objCatDet.getCatdetTexto()));
+                Patente objAuxPat = new Patente();
+                objAuxPat = patenteServicio.cargarObjPatente(patenteActual.getPatCodigo());
+                if (objAuxPat.getPatDeudaInicial() != null) {
+                    msjVerificaSaldo = 1;
+                }
             }
             if (verBusParroquias == 1) {
                 System.out.println("Entra opcion 2");
-
                 listaEmisionPatente = patenteServicio.listarEmisionAnioParroquia(Integer.parseInt(objCatDet.getCatdetTexto()), catDetParroquias.getCatdetCodigo());
             }
             if (verBusGlobal == 1) {
@@ -210,9 +217,15 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
         }
     }
 
+    public void emisionPatente() {
+        addWarningMessage("Los valores se han enviado a recaudación", "Emision de Patentes");
+        inicializar();
+    }
+
     public void listarParroquias() throws Exception {
         listDetParroquias = catalogoDetalleServicio.listarPorNemonicoCatalogo("PARROQUIAS");
     }
+
     public List<Object[]> getListaEmisionPatente() {
         return listaEmisionPatente;
     }
@@ -307,6 +320,14 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
 
     public void setVerBusGlobal(int verBusGlobal) {
         this.verBusGlobal = verBusGlobal;
+    }
+
+    public int getMsjVerificaSaldo() {
+        return msjVerificaSaldo;
+    }
+
+    public void setMsjVerificaSaldo(int msjVerificaSaldo) {
+        this.msjVerificaSaldo = msjVerificaSaldo;
     }
 
 }
