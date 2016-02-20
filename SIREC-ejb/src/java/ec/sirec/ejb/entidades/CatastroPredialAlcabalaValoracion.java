@@ -73,6 +73,8 @@ public class CatastroPredialAlcabalaValoracion implements Serializable {
     private CatalogoDetalle catdetConcepto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "catprealcvalCodigo")
     private List<CpAlcabalaValoracionExtras> cpAlcabalaValoracionExtrasList;
+    @Column(name = "catprealcval_total_ded_ex")
+    private BigDecimal catprealcvalTotalDedEx;
 
     public CatastroPredialAlcabalaValoracion() {
     }
@@ -196,6 +198,14 @@ public class CatastroPredialAlcabalaValoracion implements Serializable {
 
     public void setCatprealcvalActivo(Boolean catprealcvalActivo) {
         this.catprealcvalActivo = catprealcvalActivo;
+    }
+
+    public BigDecimal getCatprealcvalTotalDedEx() {
+        return catprealcvalTotalDedEx;
+    }
+
+    public void setCatprealcvalTotalDedEx(BigDecimal catprealcvalTotalDedEx) {
+        this.catprealcvalTotalDedEx = catprealcvalTotalDedEx;
     }
     
     

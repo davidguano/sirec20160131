@@ -19,6 +19,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.Buffer;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,6 +71,14 @@ public class GestionDetPatenteControlador extends BaseControlador {
     private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteControlador.class.getName());
     private int verguarda;
     private int verActualiza;
+    long diferenciaMils;
+    long segundos = 0;
+    long dias = 0;
+    long horas = 0;
+    long minutos = 0;
+    private int verDetDeducciones;
+    private int verBotDetDeducciones;
+    ArrayList<String> detaleExoDedMul;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -71,6 +86,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            detaleExoDedMul = new ArrayList<String>();
             activaBaseImponible = 0;
             verBuscaPatente = 0;
             inicializarValCalcula();
@@ -84,6 +100,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
             catDetAnio = new CatalogoDetalle();
             verguarda = 0;
             verActualiza = 0;
+            verDetDeducciones = 0;
+            verBotDetDeducciones = 0;
             listarAnios();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -107,6 +125,9 @@ public class GestionDetPatenteControlador extends BaseControlador {
         patenteValoracionActal.setPatvalSubtotal(null);
         patenteValoracionActal.setPatvalTasaProc(null);
         patenteValoracionActal.setPatvalTotal(null);
+        detaleExoDedMul = null;
+        verBotDetDeducciones = 0;
+        verDetDeducciones = 0;
     }
 
     public void listarAnios() throws Exception {
@@ -124,6 +145,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void calcularValorPatrimonio() {
         try {
+            detaleExoDedMul = new ArrayList<String>();
             valPatrimonio = patenteValoracionActal.getPatvalActivos().subtract(patenteValoracionActal.getPatvalPasivos());
             valPatrimonio = valPatrimonio.setScale(2, RoundingMode.HALF_UP);
             patenteValoracionActal.setPatvalPatrimonio(valPatrimonio);
@@ -251,15 +273,18 @@ public class GestionDetPatenteControlador extends BaseControlador {
             BigDecimal valAdDeductivo = BigDecimal.ZERO;
             BigDecimal valTasaProc = BigDecimal.ZERO;
             BigDecimal valEvaTributaria = BigDecimal.ZERO;
+            BigDecimal valIncPlazoDeclaracion = BigDecimal.ZERO;
+            BigDecimal valObtPatTardia = BigDecimal.ZERO;
             BigDecimal valIncumpleObligado = BigDecimal.ZERO;
             BigDecimal valIncumpleNoObligado = BigDecimal.ZERO;
             BigDecimal valIncumpleSujetosPasivos = BigDecimal.ZERO;
             BigDecimal valSueldoBasico = BigDecimal.ZERO;
+
             DatoGlobal objDatglobSueldoBasico = new DatoGlobal();
             objDatglobSueldoBasico = patenteServicio.cargarObjDatGloPorNombre("Val_sueldo_basico");
             valSueldoBasico = BigDecimal.valueOf(Double.parseDouble(objDatglobSueldoBasico.getDatgloValor()));
 
-            //--------------------------------------------------  
+            //-----------------------------Variables----------------------------------------------  
             BigDecimal valPerdidaMitad = BigDecimal.ZERO; //Valor Perdida mitad
             BigDecimal valPerdidaTerceraParte = BigDecimal.ZERO; //Valor Perdida Tercera parte
             BigDecimal valDatFalso = BigDecimal.ZERO; //Valor Falsedad Datos
@@ -270,49 +295,76 @@ public class GestionDetPatenteControlador extends BaseControlador {
             PatenteValoracionExtras objPatValorExtAux = new PatenteValoracionExtras();
             objPatValorExtAux = patenteServicio.buscaPatValExtraPorPatValoracion(objPatValoracionAux.getPatvalCodigo());
 //*************************Adicionales Deductivos*********************************
-            if (objPatValorExtAux.getAdidedCodigo().getAdidedCodigo() != 0) {
-                AdicionalesDeductivos objAdiDed = new AdicionalesDeductivos();
-                objAdiDed = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(objPatValorExtAux.getAdidedCodigo().getAdidedCodigo());
-                valAdDeductivo = objAdiDed.getAdidedValorfijo();
-                System.out.println("Valor Adicional deductivo:" + valAdDeductivo);
-            }
+            //if (objPatValorExtAux.getAdidedCodigo().getAdidedCodigo() != 0) { //Suspendido No se ha aclarado el uso de adicionales deductivos
+            //AdicionalesDeductivos objAdiDed = new AdicionalesDeductivos();
+            //objAdiDed = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(objPatValorExtAux.getAdidedCodigo().getAdidedCodigo());
+            //valAdDeductivo = objAdiDed.getAdidedValorfijo();
+            //System.out.println("Valor Adicional deductivo:" + valAdDeductivo);
+            //}
 //************************Exoneraciones******************************************           
             if (objPatValorExtAux.getPatvalextReduccionMitad() == true) { //Reducción Perdidas a la mitad
                 valPerdidaMitad = valImpPatente.divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 valPerdidaMitad.setScale(verBuscaPatente, RoundingMode.HALF_UP);
                 valImpPatente = valPerdidaMitad;
+                detaleExoDedMul.add("Exoneración: Perdidad (mitad) valor Imp.:" + valImpPatente + "\n");
                 System.out.println("Exoneración: Perdida mitad impuesto:valimp: " + valImpPatente);
             }
             if (objPatValorExtAux.getPatvalextReduccion3eraparte() == true) {//Reducción`Perdidad tercera parte
                 valPerdidaTerceraParte = valImpPatente.divide(BigDecimal.valueOf(3), 2, RoundingMode.UP);
                 valPerdidaTerceraParte.setScale(2, RoundingMode.HALF_UP);
                 valImpPatente = valPerdidaTerceraParte;
+                detaleExoDedMul.add("Exoneración: Perdidad (tercera parte) valor Imp.:" + valImpPatente + "\n");
                 System.out.println("Exoneración: Perdida tercera parte impuesto: valimp: " + valImpPatente);
             }
             //Exoneracion Artesano Calificado---------------------------
             if (objPatValorExtAux.getPatvalextExonArtCalificado() == true) {
                 valImpPatente = BigDecimal.ZERO;
+                detaleExoDedMul.add("Exoneración: Artesano Calificado: valor Imp." + valImpPatente + "\n");
                 System.out.println("Exonera impuesto artesano:valimp: " + valImpPatente);
                 patenteValoracionActal.setPatvalImpuesto(valImpPatente);
             }
 //*****************************Multas*******************************   
-            //Incumplimiento de notificacion----------------------------
+            //Incumplimiento de plazo de declaracion de mulas articulo 9 -------------
+            if (objPatValorExtAux.getPatvalextNumMesesIncum() != 0) {
+                BigDecimal porcIncPlazoDeclara = BigDecimal.ZERO;
+                DatoGlobal objDatglobAux = new DatoGlobal();
+                objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_inc_noti_obligado");
+                porcIncPlazoDeclara = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
+                valIncPlazoDeclaracion = porcIncPlazoDeclara.multiply(valImpPatente).multiply(BigDecimal.valueOf(objPatValorExtAux.getPatvalextNumMesesIncum())); //<--Valor a deducir-->
+                detaleExoDedMul.add("Multas: Incumple plazo declaración (Num meses): valor" + valIncPlazoDeclaracion + "\n");
+                System.out.println("Multas:Incumple plazo de declaración de patentes (Num meses):" + valIncPlazoDeclaracion);
+            }
+            //if (verificaPatentePrimeraVez() == true) {
+            //int diasRetraso = evaluaPatenteTardia();
+            // if (diasRetraso > 30) {
+            //  BigDecimal porcValImpTardio = BigDecimal.ZERO;
+            // DatoGlobal objDatglobAux = new DatoGlobal();
+            // objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_obtiene_pat_tardiamente");
+            // porcValImpTardio = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
+            // valObtPatTardia = porcValImpTardio.multiply(valSueldoBasico);
+            // detaleExoDedMul.append("Multas:Incumple declaración patente tardia (primera vez):" + valIncumpleObligado + "\n");
+            // System.out.println("Multas:Incumple declaración patente tardia:" + valIncumpleObligado);
+            // }
+            //}
+            //Incumplimiento de notificacion------------------------------
             if (objPatValorExtAux.getPatvalextObligado() == true) { //obligado
                 BigDecimal porcIncObligado = BigDecimal.ZERO;
                 DatoGlobal objDatglobAux = new DatoGlobal();
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_inc_noti_obligado");
                 porcIncObligado = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valIncumpleObligado = porcIncObligado.multiply(valSueldoBasico);
-                valIncumpleObligado.setScale(2, RoundingMode.HALF_UP);
+                valIncumpleObligado.setScale(2, RoundingMode.HALF_UP); //<--Valor a deducir-->
+                detaleExoDedMul.add("Multas:Incumple notificacion (Obligado a llevar cont.) valor:" + valIncumpleObligado + "\n");
                 System.out.println("Multas:Incumple notificacion obligado" + valIncumpleObligado);
             }
-            if (objPatValorExtAux.getPatvalextObligado() == false) {//No obligado
+            if (objPatValorExtAux.getPatvalextNoObligado() == true) {//No obligado
                 BigDecimal porcIncNoObligado = BigDecimal.ZERO;
                 DatoGlobal objDatglobAux = new DatoGlobal();
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_inc_noti_no_obligado");
                 porcIncNoObligado = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valIncumpleNoObligado = porcIncNoObligado.multiply(valSueldoBasico);
-                valIncumpleNoObligado.setScale(2, RoundingMode.HALF_UP);
+                valIncumpleNoObligado.setScale(2, RoundingMode.HALF_UP); //<--Valor a deducir-->
+                detaleExoDedMul.add("Multas:Incumple notificacion (No Obligado a llevar cont.) valor:" + valIncumpleNoObligado + "\n");
                 System.out.println("Multas:Incumple notificacion no obligado" + valIncumpleNoObligado);
             }
             //Incumplimiento sujetos pasivos exentos de pago----------------
@@ -322,28 +374,30 @@ public class GestionDetPatenteControlador extends BaseControlador {
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_inc_sujetos_pasivos");
                 porcIncSujetosPasivos = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valIncumpleSujetosPasivos = porcIncSujetosPasivos.multiply(valSueldoBasico);
-                valIncumpleSujetosPasivos.setScale(2, RoundingMode.HALF_UP);
-                System.out.println("Multas:Incumple Plazo declaracion sujetos pasivos" + valIncumpleSujetosPasivos);
+                valIncumpleSujetosPasivos.setScale(2, RoundingMode.HALF_UP); //<--Valor a deducir-->
+                detaleExoDedMul.add("Multas:Incumplimiento (Plazo de declaración de patentes sujetos pasivos extentos de pago) valor:" + valIncumpleSujetosPasivos + "\n");
+                System.out.println("Multas:Incumplimiento (Plazo de declaración de patentes sujetos pasivos extentos de pago) valor:" + valIncumpleSujetosPasivos);
             }
 
             //Incumplimiento plazo de declaración de patentes------------
-            if (objPatValorExtAux.getPatvalextNumMesesIncum() != 0) {
-                BigDecimal porcentajeImp = BigDecimal.ZERO;
-                DatoGlobal objDatglobAux = new DatoGlobal();
-                objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_incumple_declaracion");
-                porcentajeImp = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
-                valMultaPlazoDeclaracion = (valImpPatente.multiply(porcentajeImp)).multiply(BigDecimal.valueOf(objPatValorExtAux.getPatvalextNumMesesIncum()));
-                valMultaPlazoDeclaracion.setScale(2, RoundingMode.HALF_UP);
-                System.out.println("Multas:Incumple plazo declaracion:valor" + valMultaPlazoDeclaracion);
-
-            }
+            //if (objPatValorExtAux.getPatvalextNumMesesIncum() != 0) { //Duplicado
+            // BigDecimal porcentajeImp = BigDecimal.ZERO;
+            // DatoGlobal objDatglobAux = new DatoGlobal();
+            //objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_incumple_declaracion");
+            //porcentajeImp = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
+            // valMultaPlazoDeclaracion = (valImpPatente.multiply(porcentajeImp)).multiply(BigDecimal.valueOf(objPatValorExtAux.getPatvalextNumMesesIncum()));
+            // valMultaPlazoDeclaracion.setScale(2, RoundingMode.HALF_UP);
+            //System.out.println("Multas:Incumple plazo declaracion:valor" + valMultaPlazoDeclaracion);
+            //}
             //Falsedad de datos------------------------------------------
             if (objPatValorExtAux.getPatentePorcDatosfalsos() != 0) {
-                BigDecimal valPorcentajeDatosFalos = BigDecimal.valueOf(objPatValorExtAux.getPatentePorcDatosfalsos().doubleValue() / 100);
+                BigDecimal valPorcentajeDatosFalos = BigDecimal.valueOf(objPatValorExtAux.getPatentePorcDatosfalsos().doubleValue()).divide(BigDecimal.valueOf(100));
                 valDatFalso = valSueldoBasico.multiply(valPorcentajeDatosFalos);
+                valDatFalso.setScale(2, RoundingMode.HALF_UP);//<--Valor a deducir-->
+                detaleExoDedMul.add("Multas:Falsedad de datos: valor: " + valDatFalso + "\n");
                 System.out.println("Multas:Falsedad de datos: valor: " + valDatFalso);
             }
-            //Evasion Tributaria-----------------------------------
+            //Evasion Tributaria------------------------------------------
             if (!objPatValorExtAux.getPatenteEvasionTributaria().equals("")) {
                 switch (Integer.parseInt(objPatValorExtAux.getPatenteEvasionTributaria())) {
                     case 1:
@@ -356,14 +410,11 @@ public class GestionDetPatenteControlador extends BaseControlador {
                         valEvaTributaria = valImpPatente.multiply(BigDecimal.valueOf(3));
                         break;
                 }
+                valEvaTributaria.setScale(2, RoundingMode.HALF_UP);//<--Valor a deducir-->
+                detaleExoDedMul.add("Multas:Evación tributaria Tipo 1 : valor: " + valEvaTributaria + "\n");
+                System.out.println("Multas:Evación tributaria Tipo 1 : valor: " + valEvaTributaria);
             }
-            //Porcentaje de ingreso------------------------------------------
-            if (objPatValorExtAux.getPatentePorcIngreso() != 0) {
-
-            }
-            //Base imponible---------------------------------
-            //-----------------------------------------------
-            valDeduciones = valMultaPlazoDeclaracion.add(valDatFalso).add(valTasaProc).add(valEvaTributaria).add(valIncumpleObligado).add(valIncumpleNoObligado).add(valIncumpleSujetosPasivos);
+            valDeduciones = valMultaPlazoDeclaracion.add(valDatFalso).add(valTasaProc).add(valEvaTributaria).add(valIncumpleObligado).add(valObtPatTardia).add(valIncumpleNoObligado).add(valIncumpleSujetosPasivos);
             System.out.println("Valor total deducciones:" + valDeduciones);
             patenteValoracionActal.setPatvalDeducciones(valDeduciones);
             objPatValorExtAux = new PatenteValoracionExtras();
@@ -374,6 +425,80 @@ public class GestionDetPatenteControlador extends BaseControlador {
         }
     }
 
+    public void verPanelDetalleDeducciones() {
+        verDetDeducciones = 1;
+    }
+
+    public int evaluaPatenteTardia() {
+        int diasTardeFecha;
+        int diasIniciaFinMes;
+        diasTardeFecha = retornaDiasTardiosObtencionPatente((Timestamp) patenteActual.getPatInicioActEco());
+        diasIniciaFinMes = retornaNumDiaFecIniActiFinMes();
+        int totDiasTranscurridos = diasTardeFecha - diasIniciaFinMes;
+        return totDiasTranscurridos;
+    }
+
+    public int retornaDiasTardiosObtencionPatente(Timestamp fechaMenor) {
+        java.util.Date today = new java.util.Date();
+        java.sql.Timestamp fechaMayor = new java.sql.Timestamp(today.getTime());
+        diferenciaMils = fechaMayor.getTime() - fechaMenor.getTime();
+        // obtenemos los segundos
+        segundos = diferenciaMils / 1000;
+        // obtener los dias
+        dias = segundos / (3600 * 24);
+        segundos = segundos % (3600 * 24);
+        // obtenemos las horas
+        horas = segundos / 3600;
+        // restamos las horas para continuar con minutos
+        segundos -= horas * 3600;
+        // igual que el paso anterior
+        minutos = segundos / 60;
+        segundos -= minutos * 60;
+        int tiempoDias = Integer.valueOf(String.valueOf(dias));
+        return tiempoDias;
+    }
+
+    public boolean verificaPatentePrimeraVez() {
+        boolean patPrimeraVez = false;
+        try {
+            java.util.Date date = new Date();
+            Calendar calendarioIniActi = Calendar.getInstance();
+            calendarioIniActi.setTime(date);
+            int anio = calendarioIniActi.get(Calendar.YEAR);
+            patPrimeraVez = patenteServicio.buscaPatPrimeraVez(patenteActual.getPatCodigo(), patenteActual.getCatpreCodigo().getCatpreCodigo(), anio);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return patPrimeraVez;
+    }
+
+    public int retornaNumDiaFecIniActiFinMes() {
+        Calendar calendarioIniActi = Calendar.getInstance();
+        calendarioIniActi.setTime(patenteActual.getPatInicioActEco());
+        int numeroMes = calendarioIniActi.get(Calendar.MONTH);
+        Calendar calendarioDiaInicio = Calendar.getInstance();
+        Calendar calendarioDiaFin = Calendar.getInstance();
+        Calendar gc = new GregorianCalendar();
+        gc.set(Calendar.MONTH, numeroMes);
+        gc.set(Calendar.DAY_OF_MONTH, 1);
+        Date monthStart = gc.getTime();
+        calendarioDiaInicio.setTime(monthStart);
+        int diaInicio = calendarioDiaInicio.get(calendarioDiaInicio.DAY_OF_MONTH);
+        gc.add(Calendar.MONTH, numeroMes);
+        gc.add(Calendar.DAY_OF_MONTH, -1);
+        Date monthEnd = gc.getTime();
+        calendarioDiaFin.setTime(monthEnd);
+        int diaFin = calendarioDiaFin.get(Calendar.DAY_OF_MONTH);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println("Calcula mes inicia fecha : " + format.format(monthStart));
+        System.out.println("Calcula mes  fin  fecha : " + format.format(monthEnd));
+        int diferenciaDias = diaFin - diaInicio;
+        System.out.println("Dia inicial: " + diaInicio);
+        System.out.println("Dia Final: " + diaFin);
+        System.out.println("Diferencia entre meses:" + diferenciaDias);
+        return diferenciaDias;
+    }
+
     public void calculaTotal() {
         try {
             //Tasa de procesamiento-------------------------------
@@ -382,9 +507,10 @@ public class GestionDetPatenteControlador extends BaseControlador {
             valTasaProc = BigDecimal.valueOf(Double.parseDouble(objDatglobAuxTp.getDatgloValor()));
             patenteValoracionActal.setPatvalTasaProc(valTasaProc);
             //---------------------------------------------------- 
-            valTotal = (valSubTotal.add(valDeduciones)).add(valTasaProc);
+            valTotal = valSubTotal.subtract(valDeduciones).add(valTasaProc);
             valTotal.setScale(2, RoundingMode.HALF_UP);
             patenteValoracionActal.setPatvalTotal(valTotal);
+            verBotDetDeducciones = 1;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -414,6 +540,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
     }
 
     public void cagarPatenteActual() {
+        verBotDetDeducciones = 0;
+        verDetDeducciones = 0;
         try {
             patenteActual = patenteServicio.cargarObjPatente(Integer.parseInt(buscNumPat));
             if (patenteActual == null) {
@@ -607,6 +735,30 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void setValBaseImpNegativa(BigDecimal valBaseImpNegativa) {
         this.valBaseImpNegativa = valBaseImpNegativa;
+    }
+
+    public ArrayList<String> getDetaleExoDedMul() {
+        return detaleExoDedMul;
+    }
+
+    public void setDetaleExoDedMul(ArrayList<String> detaleExoDedMul) {
+        this.detaleExoDedMul = detaleExoDedMul;
+    }
+
+    public int getVerBotDetDeducciones() {
+        return verBotDetDeducciones;
+    }
+
+    public void setVerBotDetDeducciones(int verBotDetDeducciones) {
+        this.verBotDetDeducciones = verBotDetDeducciones;
+    }
+
+    public int getVerDetDeducciones() {
+        return verDetDeducciones;
+    }
+
+    public void setVerDetDeducciones(int verDetDeducciones) {
+        this.verDetDeducciones = verDetDeducciones;
     }
 
 }

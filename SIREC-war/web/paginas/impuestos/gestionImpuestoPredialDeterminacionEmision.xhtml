@@ -95,7 +95,8 @@
                                      process="@this, panelIngreso, pnlProAnio" 
                                      update=":frmImpPredial:tabImpPred:pnllstVal"
                                      async="true"
-                                     global="false"                                     
+                                     global="false"
+                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                      />
                    <h:panelGrid  id="pnllstVal" >
                         <p:dataTable id="lstVals" value="#{gestionImpuestoPredialControlador.listaEjecutarValoracion}"  var="catastroP"  
@@ -194,6 +195,7 @@
                                      async="true"
                                      global="false"
                                      immediate="true"
+                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                      >
                         <p:dataExporter type="xlsx" target="lstVals" fileName="Emision_Valoracion" postProcessor="#{gestionImpuestoPredialControlador.postProcessXLS}"/>
                     </p:commandButton>                                                                        

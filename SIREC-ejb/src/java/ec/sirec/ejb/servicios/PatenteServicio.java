@@ -90,18 +90,24 @@ public class PatenteServicio {
         return datoGlobalDao.buscarPorCampo(ENTIDAD_DATO_GLOBAL, "datgloNombre", nombre);
     }
 
-    public List<Object[]> listarEmisionAnioPatente(int codPatente,int anio) {
-        return patenteDao.listaDatosEmisionAnioPatente(codPatente,anio);
+    public List<Object[]> listarEmisionAnioPatente(int codPatente, int anio) {
+        return patenteDao.listaDatosEmisionAnioPatente(codPatente, anio);
     }
-    public List<Object[]> listarEmisionAnioParroquia(int anio,int parroquia) {
-        return patenteDao.listaDatosEmisionAnioParroquia(anio,parroquia);
+
+    public List<Object[]> listarEmisionAnioParroquia(int anio, int parroquia) {
+        return patenteDao.listaDatosEmisionAnioParroquia(anio, parroquia);
     }
+
     public List<Object[]> listarEmisionAnioGlobal(int anio) {
         return patenteDao.listaDatosEmisionAnioGlobal(anio);
     }
 
     public Patente buscaParPrRucActEco(String cedula, int actEcon) throws Exception {
         return patenteDao.buscaPatentePorRucActEcon(cedula, actEcon);
+    }
+
+    public boolean buscaPatPrimeraVez(int codPatValor, int catasPredial, int anio) throws Exception {
+        return patenteDao.buscaPatentePrimeraVez(codPatValor, catasPredial, anio);
     }
 
 //*****************************Metodos Exoneracion Deduccion y Multas de Patente*************************

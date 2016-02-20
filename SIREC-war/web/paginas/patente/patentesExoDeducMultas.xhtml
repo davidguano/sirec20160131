@@ -91,11 +91,13 @@
                         <p:inputText requiredMessage="#{txt.lbl_mes_incumplimiento} Se nesecita un valor"  id="txtMesIncumplimiento"  value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextNumMesesIncum}" 
                                      maxlength="2" size="10"/>
                         <p:message for="txtMesIncumplimiento" display="icon"/>
+                        <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_notif_incumpliemento_obligado}"/>
+                        <p:selectBooleanButton id="lblInNotObligado" value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextObligado}" onLabel="Si" offLabel="No" style="width:80px" />
+                        <p:message for="lblInNotObligado" display="icon"/>
 
-                        <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_notif_incumpliemento}"/>
-                        <p:selectBooleanButton id="lblInNot" value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextObligado}" onLabel="Obligado" offLabel="No Obligado" style="width:80px" />
-                        <p:message for="lblInNot" display="icon"/>
-
+                        <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_notif_incumpliemento_no_obligado}"/>
+                        <p:selectBooleanButton id="lblInNotNoObligado" value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextNoObligado}" onLabel="Si" offLabel="No" style="width:80px" />
+                        <p:message for="lblInNotNoObligado" display="icon"/>                                           
 
                         <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_reduc_impuesto_mitad}"/>
                         <p:selectBooleanButton id="redImpMitad" value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextReduccionMitad}" onLabel="Si" offLabel="No" style="width:60px" />
@@ -242,7 +244,6 @@
                                             </p:commandButton>
                                         </center>
                                     </p:column>
-                                    
                                     <p:column headerText="#{txt.lbl_eliminar}" style="width:50px;text-align: center;font-size:12px;" >
                                         <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
                                                          actionListener="#{gestionExoDedMulPatenteControlador.confirmaEliminarArchivoCargado(archivoColumna)}" 
@@ -251,7 +252,6 @@
                                             <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
                                         </p:commandButton>
                                     </p:column>  
-                                    
                                 </p:dataTable>     
                             </p:panel>
                             <psirec:panelInformativo  rendered="#{gestionExoDedMulPatenteControlador.verArchivos==1}" id="infExoDedMulSinFiles" background="#042B69" ancho="220" icono="fa-exclamation-triangle"

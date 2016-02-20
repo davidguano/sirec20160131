@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
@@ -40,6 +39,8 @@ public class PatenteValoracionExtras implements Serializable {
     private Integer patvalextNumMesesIncum;
     @Column(name = "patvalext_obligado")
     private Boolean patvalextObligado;
+    @Column(name = "patvalext_no_obligado")
+    private Boolean patvalextNoObligado;
     @Column(name = "patvalext_reduccion_mitad")
     private Boolean patvalextReduccionMitad;
     @Column(name = "patvalext_reduccion_3eraparte")
@@ -176,6 +177,14 @@ public class PatenteValoracionExtras implements Serializable {
         this.adidedCodigo = adidedCodigo;
     }
 
+    public Boolean getPatvalextNoObligado() {
+        return patvalextNoObligado;
+    }
+
+    public void setPatvalextNoObligado(Boolean patvalextNoObligado) {
+        this.patvalextNoObligado = patvalextNoObligado;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -200,5 +209,5 @@ public class PatenteValoracionExtras implements Serializable {
     public String toString() {
         return "ec.sirec.ejb.entidades.PatenteValoracionExtras[ patvalextCodigo=" + patvalextCodigo + " ]";
     }
-    
+
 }

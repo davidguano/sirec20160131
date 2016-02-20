@@ -182,11 +182,11 @@
                                     <p:message for="compPnl1_11" display="icon"/>
 
                                     <p:outputLabel style="font-size: #{txt.font_size}" for="button" value="#{txt.lbl_fec_fallece}"/>                               
-                                    <p:calendar required="true" requiredMessage="#{txt.lbl_fec_fallece} Se necesita un valor" id="button" value="#{gestionCementeriosControlador.fechaFallece}" showOn="button" />
+                                    <p:calendar navigator="true" required="true" locale="es" requiredMessage="#{txt.lbl_fec_fallece} Se necesita un valor" id="button" value="#{gestionCementeriosControlador.fechaFallece}" showOn="button" />
                                     <p:message for="button" display="icon"/>
 
                                     <p:outputLabel style="font-size: #{txt.font_size}" for="button" value="#{txt.lbl_fec_fin_contrato}"/>                               
-                                    <p:calendar required="true" requiredMessage="#{txt.lbl_fec_fin_contrato} Se necesita un valor" id="button1" value="#{gestionCementeriosControlador.fehcaFinContrato}" showOn="button" />
+                                    <p:calendar navigator="true" required="true" locale="es" requiredMessage="#{txt.lbl_fec_fin_contrato} Se necesita un valor" id="button1" value="#{gestionCementeriosControlador.fehcaFinContrato}" showOn="button" />
                                     <p:message for="button1" display="icon"/>
 
                                 </h:panelGrid> 

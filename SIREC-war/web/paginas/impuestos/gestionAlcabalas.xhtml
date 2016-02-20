@@ -41,7 +41,11 @@
                                             <f:selectItem itemLabel="2016" itemValue="2016" />          
                                             <f:selectItem itemLabel="2017" itemValue="2017" />
                                             <p:ajax listener="#{gestionAlcabalasControlador.obtenerCamposCatPredial}"  
-                                                   update=":frmAlcabalas:tabAlcaTodo:tabAlca:alAnio, :frmAlcabalas:tabAlcaTodo:tabAlca:panelIngreso, :frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch" 
+                                                   update=":frmAlcabalas:tabAlcaTodo:tabAlca:alAnio, 
+                                                   :frmAlcabalas:tabAlcaTodo:tabAlca:panelIngreso, 
+                                                   :frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch, 
+                                                   :frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArchPL, 
+                                                   :frmAlcabalas:tabAlcaTodo:tabAlca:panelContieneAplicacion2"                                                    
                                                     process="@this" async="true" global="false"/>
                                         </p:selectOneMenu>                                                                  
                             </h:panelGrid>
