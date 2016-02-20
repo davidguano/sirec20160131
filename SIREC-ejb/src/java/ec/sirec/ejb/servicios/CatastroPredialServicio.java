@@ -29,6 +29,7 @@ import ec.sirec.ejb.facade.CatastroPredialPlusvaliaValoracionFacade;
 import ec.sirec.ejb.facade.CatastroPredialUsosueloFacade;
 import ec.sirec.ejb.facade.MejoraFacade;
 import ec.sirec.ejb.facade.ObraProyectoFacade;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -95,7 +96,7 @@ public class CatastroPredialServicio {
     public PropietarioPredio buscarPropietarioPredioPorCodigo(Integer vPPcod) throws Exception {
         return propietarioServicio.buscarPropietarioPredioPorCodigo(vPPcod);
     }
-    
+
     public PropietarioPredio buscarPropietarioPredioPorCatastro(Integer vcodCatastro) throws Exception {
         return propietarioServicio.buscarPropietarioPredioPorCatastro(vcodCatastro);
     }
@@ -124,12 +125,26 @@ public class CatastroPredialServicio {
         catastroPredialDao.crear(vcatastro);
     }
 
+    public BigDecimal obtenerValorPrecioBasePredio(CatastroPredial vcatastro) throws Exception {
+        CatastroPredialValoracion val = valoracionPredioServicio.buscarPorCatastroPredial(vcatastro);
+        if (val == null) {
+            return new BigDecimal("0");
+        } else {
+            if (vcatastro.getCatpreAreaTotal() != null) {
+                return val.getCatprevalAvaluoTerr().divide(new BigDecimal(String.valueOf(vcatastro.getCatpreAreaTotal())));
+            } else {
+                return new BigDecimal("0");
+            }
+        }
+    }
     public CatastroPredialValoracion obtenerValoracionPredio(CatastroPredial vcatastro) throws Exception {
         CatastroPredialValoracion val = valoracionPredioServicio.buscarPorCatastroPredial(vcatastro);
         if (val == null) {
             return new CatastroPredialValoracion();
         } else {
-            return val;
+            
+                return val;
+            
         }
     }
 
@@ -222,7 +237,7 @@ public class CatastroPredialServicio {
                 vcatastro.setCatdetSector(null);
             }
         }
-        if (vcatastro.getCatdetTipoVia()!= null) {
+        if (vcatastro.getCatdetTipoVia() != null) {
             if (vcatastro.getCatdetTipoVia().getCatdetCodigo() == null) {
                 vcatastro.setCatdetTipoVia(null);
             }
@@ -399,7 +414,6 @@ public class CatastroPredialServicio {
         }
     }
 
-
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     //AREAS BLOQUE
@@ -511,6 +525,70 @@ public class CatastroPredialServicio {
                     catastroPredialEdificacionDao.crear(edif);
 
                 }
+            }
+            // 5 (9 items) sin bloques y pisos
+            for (int i = 1; i <= 9; i++) {
+                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                edif.setCatpreCodigo(vcatastro);
+                edif.setCatpreediGrupo("5");
+                edif.setCatpreediSubgrupo(String.valueOf(i));
+                edif.setCatpreediBloque("0");
+                edif.setCatpreediPiso("0");
+                catastroPredialEdificacionDao.crear(edif);
+            }
+        }
+    }
+    
+    public void crearRegistrosEdificacionesPorArea(CatastroPredial vcatastro, CatastroPredialAreas area) throws Exception {
+
+        if (area!=null) {
+            // 1 (4 items)
+
+            for (int i = 1; i <= 4; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("1");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+                
+            }
+            // 2 (6 items)
+            for (int i = 1; i <= 6; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("2");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+                
+
+            }
+            // 3 (10 items)
+            for (int i = 1; i <= 10; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("3");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+
+                
+            }
+            // 4 (3 items)
+            for (int i = 1; i <= 3; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("4");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+
+                
             }
             // 5 (9 items) sin bloques y pisos
             for (int i = 1; i <= 9; i++) {
@@ -750,7 +828,7 @@ public class CatastroPredialServicio {
     public CatastroPredialAlcabalaValoracion buscarAlcabalaPorCatastroPredialAnio(CatastroPredial catastroPredial, Integer anio) throws Exception {
         return catastroPredialAlcabalaValoracionDao.buscarPor2Campos("CatastroPredialAlcabalaValoracion", "catpreCodigo", catastroPredial, "catprealcvalAnio", anio);
     }
-    
+
     public CatastroPredialPlusvaliaValoracion buscarPlusvaliaPorCatastroPredial(CatastroPredial catastroPredial) throws Exception {
         return catastroPredialPlusvaliaValoracionDao.buscarPorCampo("CatastroPredialPlusvaliaValoracion", "catpreCodigo", catastroPredial);
     }
@@ -758,7 +836,7 @@ public class CatastroPredialServicio {
     public CatastroPredialPlusvaliaValoracion buscarPlusvaliaPorCatastroPredialAnio(CatastroPredial catastroPredial, Integer anio) throws Exception {
         return catastroPredialPlusvaliaValoracionDao.buscarPor2Campos("CatastroPredialPlusvaliaValoracion", "catpreCodigo", catastroPredial, "catprepluvalAnio", anio);
     }
-    
+
     public ObraProyecto buscarMejoraXCatastro(CatastroPredial catastroPredial) throws Exception {
         ObraProyecto obraProyecto = obraProyectoDao.buscarValorMejora(catastroPredial);
         if (obraProyecto == null) {
@@ -767,68 +845,68 @@ public class CatastroPredialServicio {
             return obraProyecto;
         }
     }
-    
-    public void crearCatastroXParroquiaVal(CatalogoDetalle codParroquia, int anio) throws Exception {      
-       List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();       
-               lstCat = catastroPredialDao.listarPorCampoOrdenada(ENTIDAD_CATASTRO, "catdetParroquia", codParroquia, "catpreCodigo", "asc");
-             for (int i = 0; i < lstCat.size(); i++) {                                               
-            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);            
-          if (CPV == null) {
-              CatastroPredialValoracion CP2 = new  CatastroPredialValoracion();
-                CP2.setCatpreCodigo(lstCat.get(i)); 
+
+    public void crearCatastroXParroquiaVal(CatalogoDetalle codParroquia, int anio) throws Exception {
+        List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();
+        lstCat = catastroPredialDao.listarPorCampoOrdenada(ENTIDAD_CATASTRO, "catdetParroquia", codParroquia, "catpreCodigo", "asc");
+        for (int i = 0; i < lstCat.size(); i++) {
+            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);
+            if (CPV == null) {
+                CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
+                CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
                 valoracionPredioServicio.crearAplicacion(CP2);
-           }
-        }                               
+            }
+        }
     }
-    
+
     public void crearCatastroXCasatroVal(CatastroPredial CatastroPredial, int anio) throws Exception {      //                                                  
-            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(CatastroPredial, anio);            
-          if (CPV == null) {
-              CatastroPredialValoracion CP2 = new  CatastroPredialValoracion();
-                CP2.setCatpreCodigo(CatastroPredial); 
+        CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(CatastroPredial, anio);
+        if (CPV == null) {
+            CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
+            CP2.setCatpreCodigo(CatastroPredial);
+            CP2.setCatprevalAnio(anio);
+            valoracionPredioServicio.crearAplicacion(CP2);
+        }
+    }
+
+    public void crearCatastroXSectorVal(CatalogoDetalle codSecto, int anio) throws Exception {
+        List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();
+        lstCat = catastroPredialDao.listarPorCampoOrdenada(ENTIDAD_CATASTRO, "catdetSector", codSecto, "catpreCodigo", "asc");
+        for (int i = 0; i < lstCat.size(); i++) {
+            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);
+            if (CPV == null) {
+                CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
+                CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
                 valoracionPredioServicio.crearAplicacion(CP2);
-           }                                
+            }
+        }
     }
-    
-    public void crearCatastroXSectorVal(CatalogoDetalle codSecto, int anio) throws Exception {      
-       List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();       
-               lstCat = catastroPredialDao.listarPorCampoOrdenada(ENTIDAD_CATASTRO, "catdetSector", codSecto, "catpreCodigo", "asc");
-             for (int i = 0; i < lstCat.size(); i++) {                                               
-            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);            
-          if (CPV == null) {
-              CatastroPredialValoracion CP2 = new  CatastroPredialValoracion();
-                CP2.setCatpreCodigo(lstCat.get(i)); 
+
+    public void crearCatastroXTodo(int anio) throws Exception {
+        List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();
+        lstCat = catastroPredialDao.listarTodos();
+        for (int i = 0; i < lstCat.size(); i++) {
+            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);
+            if (CPV == null) {
+                CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
+                CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
                 valoracionPredioServicio.crearAplicacion(CP2);
-           }
-        }                               
+            }
+        }
     }
-    
-    public void crearCatastroXTodo(int anio) throws Exception {      
-       List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();       
-               lstCat = catastroPredialDao.listarTodos();
-             for (int i = 0; i < lstCat.size(); i++) {                                               
-            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);            
-          if (CPV == null) {
-              CatastroPredialValoracion CP2 = new  CatastroPredialValoracion();
-                CP2.setCatpreCodigo(lstCat.get(i)); 
-                CP2.setCatprevalAnio(anio);
-                valoracionPredioServicio.crearAplicacion(CP2);
-           }
-        }                               
-    }
-    
-     public List<CatalogoDetalle> listaCatEstadoObr() throws Exception {
+
+    public List<CatalogoDetalle> listaCatEstadoObr() throws Exception {
         return catalogoDetalleServicio.listarPorNemonicoCatalogo("EST_OBRA");
     }
-     
-      public List<CatalogoDetalle> listaCatEjecicion() throws Exception {
+
+    public List<CatalogoDetalle> listaCatEjecicion() throws Exception {
         return catalogoDetalleServicio.listarPorNemonicoCatalogo("EJE_OBRA");
     }
-      
-       public List<CatalogoDetalle> listaCatTipoObra() throws Exception {
+
+    public List<CatalogoDetalle> listaCatTipoObra() throws Exception {
         return catalogoDetalleServicio.listarPorNemonicoCatalogo("TIPO_OBRA");
     }
-} 
+}
